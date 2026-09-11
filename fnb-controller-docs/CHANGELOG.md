@@ -6,6 +6,16 @@ and DESIGN Part B). One dated line per shipped thing.
 ## Foundations — 2026
 
 ### 2026-09-11
+- F4 done: own-auth in `lib/auth/` — argon2 password hashing (`password.ts`, admin-generated
+  passwords, shown once, never stored plaintext); signed-cookie sessions (`session.ts`,
+  `cookies.ts`) backed by the `sessions` table, cookie value is a random session id plus an
+  HMAC-SHA256 signature (`AUTH_SECRET`) so a tampered cookie is rejected before any DB lookup;
+  `getCurrentUser`/`requireRole` (`rbac.ts`) resolve the signed-in user from the session, never a
+  hardcoded name; `createAuditor`/`resetPassword`/`forceSignOut`/`setAuditorStatus`
+  (`accounts.ts`) back A3 — duplicate email refused, reset and force-sign-out are separate
+  actions, suspend ends all sessions immediately. Verified: argon2 hash/verify round-trip,
+  cookie sign/verify round-trip, tamper and malformed-cookie rejection, all against real crypto
+  (no DB needed for these). No screens yet — A1/B1 build the login UI against this.
 - F3 done: Drizzle schema + migration 1 (`db/schema/`, `db/migrations/0000_migration_1.sql`) — 16
   tables, `org_id` on every one but `orgs` itself; `brands` → `outlets` hierarchy; `audits` references
   `outlet_id`/`auditor_id`/`template_id` by FK uuid, replacing the design's name strings (R6);

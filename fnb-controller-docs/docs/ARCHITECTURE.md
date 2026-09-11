@@ -89,6 +89,12 @@ Three roles, RBAC-gated: `super_admin`, `auditor`, `outlet` (reader, **no login 
   design's Show/Hide row, with client sign-off). No self-service signup or email-invite flow this build.
 - Outlet report access = an **unguessable token** on the report row; no user account (D5).
 
+Built in `lib/auth/` (F4) — hand-rolled rather than Lucia (deprecated) or Auth.js: argon2
+hash/verify, a signed-cookie session (random id + HMAC-SHA256 signature, so a tampered cookie is
+rejected before any DB read) backed by the `sessions` table, `getCurrentUser`/`requireRole` for
+RBAC, and the admin-side account actions (`createAuditor`, `resetPassword`, `forceSignOut`,
+`setAuditorStatus`) that A3 calls into. No screens yet — A1/B1 build the login UI against this.
+
 ---
 
 ## 5. Data model

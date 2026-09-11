@@ -11,7 +11,7 @@ Legend: ☐ todo · ◐ in progress · ☑ done (clear on next rollup)
   remote yet; add with F6 deploy pipeline)
 - ☑ Token layer + 12 primitives, App UI and Report kept separate · F2
 - ☑ Drizzle schema + migration 1: org_id everywhere, brand→outlet, FK ids · F3
-- ☐ Own-auth: users, sessions, argon2, RBAC, end all sessions · F4
+- ☑ Own-auth: users, sessions, argon2, RBAC, end all sessions · F4
 - ☐ Supabase Storage bucket + signed URLs · F5
 - ☐ Deploy pipeline · F6
 - ☐ Shared calculation core `computeMetrics` + ₹ formatter, unit-tested vs seed · F7
@@ -39,5 +39,5 @@ Legend: ☐ todo · ◐ in progress · ☑ done (clear on next rollup)
 - ☐ Publish: version stamp, PDF via Playwright, XLSX; split from share link · C5
 - ☐ Outlet reader portal — token access, per-client branding · C6
 
-F1, F2, F3 done — F4 (own-auth and RBAC) is the next package. Completed docs work rolled to
+F1–F4 done — F5 (Supabase Storage) is the next package. Completed docs work rolled to
 `docs/archive/2026-09-tasks.md`.
