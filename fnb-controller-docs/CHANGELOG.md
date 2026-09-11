@@ -6,6 +6,16 @@ and DESIGN Part B). One dated line per shipped thing.
 ## Foundations — 2026
 
 ### 2026-09-11
+- F7 done: the shared calculation core in `lib/calc/` — `computeMetrics(defs, values)` is a
+  verbatim port of Super Admin Flow.dc.html's derived cascade (covers, net/bar/kitchen sale,
+  discounts, taxes vs. charges, gross sale, bar/kitchen/nc cost, F&B/net-F&B cost);
+  `formatINR` (Indian digit grouping, `₹2,47,975`) is the one full-precision ₹ formatter,
+  `formatINRShort` (`₹4.80L` / `₹1.13Cr`) the compact one for report KPIs; both render
+  null/undefined as `—`, never `₹0`. `npm run test` (Vitest, new) — 14 tests reproduce the
+  design file's own MTD_FULL seed figures exactly (grossSale ₹2,74,999, netFnbCost ₹80,894,
+  etc.), plus null-propagation cases (all-empty group → null; a partially-filled group sums
+  only what's present, not treating missing rows as 0). computeMetrics is the only place a
+  total is derived — B2, C2 and C4 all call into this rather than recomputing.
 - F5 done: Supabase Storage in `lib/storage/` — one private bucket (`audit-files`, `public: false`)
   for photos, PDFs and uploads; `uploadFile`/`createSignedUrl`/`deleteFile` wrap the Storage API
   behind the `service_role` (`sb_secret_…`) key, server-only; `ensureBucketExists` is idempotent

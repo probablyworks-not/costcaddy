@@ -14,7 +14,7 @@ Legend: ☐ todo · ◐ in progress · ☑ done (clear on next rollup)
 - ☑ Own-auth: users, sessions, argon2, RBAC, end all sessions · F4
 - ☑ Supabase Storage bucket + signed URLs · F5
 - ☐ Deploy pipeline · F6
-- ☐ Shared calculation core `computeMetrics` + ₹ formatter, unit-tested vs seed · F7
+- ☑ Shared calculation core `computeMetrics` + ₹ formatter, unit-tested vs seed · F7
 
 ## Super Admin
 - ☐ Login + one-message error · A1
@@ -39,5 +39,5 @@ Legend: ☐ todo · ◐ in progress · ☑ done (clear on next rollup)
 - ☐ Publish: version stamp, PDF via Playwright, XLSX; split from share link · C5
 - ☐ Outlet reader portal — token access, per-client branding · C6
 
-F1–F5 done — F6 (deploy pipeline) or F7 (shared calculation core) is next. Completed docs work
-rolled to `docs/archive/2026-09-tasks.md`.
+F1–F5, F7 done — F6 (deploy pipeline) is the only foundation left; A1 (Super Admin login) can also
+start now that F7 exists. Completed docs work rolled to `docs/archive/2026-09-tasks.md`.
