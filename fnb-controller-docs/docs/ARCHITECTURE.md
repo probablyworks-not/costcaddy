@@ -92,8 +92,12 @@ Three roles, RBAC-gated: `super_admin`, `auditor`, `outlet` (reader, **no login 
 ---
 
 ## 5. Data model
-Inferred from the design seed data (the closest thing to a schema), reconciled with the Plan. Verify
-against real migrations as they land.
+Inferred from the design seed data (the closest thing to a schema), reconciled with the Plan, and built
+as Drizzle schema + migration 1 in `db/schema/` (F3). The shape below now matches the real tables; the
+migration additionally normalises MetricDef/ChecklistPoint into their own tables (`template_metrics`,
+`template_departments`, `template_checklist_points`), each frozen into `audit_metric_defs`/`audit_items`
+at assign, and stores only raw entered figures in `audit_metric_values` — calculated totals are never
+persisted (F7 derives them at read time).
 
 ```
 Org            { id }                              // single firm; org_id on every table from migration 1

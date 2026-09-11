@@ -6,6 +6,14 @@ and DESIGN Part B). One dated line per shipped thing.
 ## Foundations — 2026
 
 ### 2026-09-11
+- F3 done: Drizzle schema + migration 1 (`db/schema/`, `db/migrations/0000_migration_1.sql`) — 16
+  tables, `org_id` on every one but `orgs` itself; `brands` → `outlets` hierarchy; `audits` references
+  `outlet_id`/`auditor_id`/`template_id` by FK uuid, replacing the design's name strings (R6);
+  `audit_metric_defs`/`audit_items` are the frozen per-audit copy taken at assign (template snapshot
+  invariant), kept separate from the editable `template_metrics`/`template_checklist_points` they were
+  cloned from; `audit_metric_values` holds only raw entered figures — calculated totals stay
+  unstored, computed live by F7. `postgres`/`drizzle-orm`/`drizzle-kit` added; `db:generate`/
+  `db:migrate`/`db:push`/`db:studio` npm scripts.
 - F2 done: `styles/tokens.css` ports DESIGN.md Part A to CSS custom properties (App UI unprefixed,
   Report `--r-`/`--font-report-*`, kept as two separate type systems); real fonts wired in
   `app/layout.tsx` (Inter + Newsreader via `next/font`, Inter Tight + IBM Plex Mono for the report
