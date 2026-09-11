@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ek Quarter · Audit Report Q2 FY26</title>
+<!-- Google Fonts: Inter Tight, IBM Plex Mono & Hanken Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Inter+Tight:wght@400;500;600;700;800&amp;family=Hanken+Grotesk:wght@500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        colors: {
+          "brand-dark": "#0d3b34",
+          "brand-teal": "#1f6f62",
+          "brand-sage": "#4a9c8c",
+          "brand-pale": "#8fc5b8",
+          "brand-wash": "#cfe3dd",
+          "rust-dark": "#7a2e14",
+          "rust-mid": "#b8541f",
+          "alert-red": "#9f1d17",
+          "alert-bg": "#fdeceb",
+          "warn-amber": "#8a6a09",
+          "warn-bg": "#fdf5d9",
+          "pass-green": "#15803d",
+          "pass-bg": "#e8f5ec",
+          "slate-body": "#16202e",
+          "slate-sub": "#4a5464",
+          "slate-muted": "#6b7686",
+          "slate-border": "#e4e8ee",
+          "slate-surface": "#f5f7f8"
+        },
+        fontFamily: {
+          sans: ['"Inter Tight"', '"Hanken Grotesk"', 'system-ui', 'sans-serif'],
+          mono: ['"IBM Plex Mono"', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+<style>
+  .material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 20px;
+    line-height: 1;
+    display: inline-block;
+    vertical-align: middle;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media print {
+    body { background: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .no-print { display: none !important; }
+    .print-avoid { page-break-inside: avoid; }
+    .print-break { page-break-before: always; }
+  }
+</style>
+</head>
+<body class="bg-[#f5f7f8] text-slate-body font-sans antialiased min-h-screen flex flex-col">
+<!-- Publication Print / Export Utility Header (No-print) -->
+<header class="no-print bg-[#0d3b34] text-white py-2.5 px-4 md:px-8 flex justify-between items-center shadow-md sticky top-0 z-50">
+<div class="flex items-center gap-3 text-xs tracking-wide">
+<span class="inline-flex items-center gap-1.5 bg-[#1f6f62] px-2.5 py-0.5 rounded text-[11px] font-mono font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-[#8fc5b8] animate-pulse"></span>
+      DELIVERABLE v3.2
+    </span>
+<span class="text-[#cfe3dd] hidden sm:inline">Ek Quarter · Financial Control &amp; Operations Audit Q2 FY26</span>
+</div>
+<div class="flex items-center gap-2.5">
+<div class="hidden md:flex items-center gap-1 bg-[#1f6f62]/60 border border-[#4a9c8c]/40 px-2.5 py-1 rounded text-[11px] font-mono text-[#cfe3dd]">
+<span class="material-symbols-outlined text-[15px] text-[#8fc5b8]">verified</span>
+      Audit Verified · ISO-FSSAI 2026
+    </div>
+<div class="relative inline-block text-left">
+<button class="bg-[#1f6f62] hover:bg-[#4a9c8c] text-[#cfe3dd] hover:text-white px-3 py-1.5 rounded text-xs font-mono font-medium transition-colors flex items-center gap-1" onclick="alert('Exporting raw ledger dataset (.xlsx)...')" type="button">
+<span class="material-symbols-outlined text-[15px]">file_download</span> Export Data
+      </button>
+</div>
+<button class="bg-[#8fc5b8] hover:bg-[#aceeee] text-[#0d3b34] px-3.5 py-1.5 rounded text-xs font-bold transition-colors flex items-center gap-1.5 shadow-sm" onclick="window.print()">
+<span class="material-symbols-outlined text-[16px]">print</span> Print / PDF Deliverable
+    </button>
+</div>
+</header>
+<!-- Main Document Canvas -->
+<main class="flex-grow w-full max-w-[1420px] mx-auto my-6 md:my-8 px-4 sm:px-6 lg:px-8 py-8 md:py-10 bg-white border border-[#e4e8ee] shadow-sm rounded-lg print:border-none print:shadow-none print:p-0 print:m-0">
+<!-- Document Masthead & Metadata -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-5 pb-4 print-avoid">
+<div>
+<h1 class="text-[40px] md:text-[44px] font-bold tracking-[-0.025em] leading-[1.02] text-[#0d3b34]">Ek Quarter</h1>
+<div class="text-[12px] md:text-[13px] tracking-[0.18em] uppercase text-slate-muted font-semibold mt-2">
+        Audit Report · Q2 FY26
+      </div>
+</div>
+<div class="text-left md:text-right">
+<div class="text-[10.5px] tracking-[0.08em] uppercase text-slate-muted font-semibold">Audit Period</div>
+<div class="text-[14px] font-semibold text-slate-body mt-0.5">April 1 – June 30, 2026</div>
+<div class="text-[11.5px] font-mono text-slate-muted mt-1">Issued July 12, 2026</div>
+</div>
+</div>
+<div class="h-[1px] bg-[#c9d0d8] mt-2 mb-6"></div>
+<!-- SECTION 1: TOP METRICS & EDITORIAL UNIT ECONOMICS -->
+<section class="mb-10 print-avoid">
+<div class="flex items-baseline justify-between gap-3 mb-3.5">
+<div class="flex items-baseline gap-3 flex-1">
+<h2 class="text-[11px] font-bold tracking-[0.16em] uppercase text-[#0d3b34]">Section 1 · Key Financial &amp; Unit Economic Metrics</h2>
+<div class="flex-1 h-[1px] bg-[#e4e8ee]"></div>
+</div>
+<span class="text-[11px] font-mono text-slate-muted">Quarter to date (92 Days)</span>
+</div>
+<!-- 6-Metric Top Summary Ribbon -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 border border-[#e4e8ee] rounded-lg overflow-hidden bg-white mb-6 shadow-sm">
+<!-- Metric 1: Gross Sales -->
+<div class="p-3.5 md:p-4 border-b sm:border-b-0 border-r border-[#e4e8ee] bg-white flex flex-col justify-between">
+<div class="text-[10.5px] tracking-[0.08em] uppercase text-slate-muted font-semibold">Gross Sales</div>
+<div class="my-1.5">
+<div class="text-[21px] font-bold font-mono text-[#0d3b34]">₹118.00L</div>
+<div class="text-[11px] font-mono text-slate-muted">₹1,18,00,000</div>
+</div>
+<div class="pt-1.5 border-t border-[#e4e8ee] flex items-center justify-between">
+<span class="text-[10px] uppercase font-bold tracking-wider text-slate-muted">Per Pax</span>
+<span class="font-mono text-[12.5px] font-bold text-[#0d3b34]">₹475</span>
+</div>
+</div>
+<!-- Metric 2: Total Pax -->
+<div class="p-3.5 md:p-4 border-b sm:border-b-0 sm:border-r border-[#e4e8ee] bg-white flex flex-col justify-between">
+<div class="text-[10.5px] tracking-[0.08em] uppercase text-slate-muted font-semibold">Total Pax (Covers)</div>
+<div class="my-1.5">
+<div class="text-[21px] font-bold font-mono text-slate-body">24,850</div>
+<div class="text-[11px] font-mono text-slate-muted">Covers audited</div>
+</div>
+<div class="pt-1.5 border-t border-[#e4e8ee] flex items-center justify-between">
+<span class="text-[10px] uppercase font-bold tracking-wider text-slate-muted">Daily Avg</span>
+<span class="font-mono text-[12.5px] font-bold text-slate-sub">273 / day</span>
+</div>
+</div>
+<!-- Metric 3: Food Sales -->
+<div class="p-3.5 md:p-4 border-b lg:border-b-0 border-r border-[#e4e8ee] bg-white flex flex-col justify-between">
+<div class="text-[10.5px] tracking-[0.08em] uppercase text-slate-muted font-semibold">Food Sales</div>
+<div class="my-1.5">
+<div class="text-[21px] font-bold font-mono text-slate-body">₹62.40L</div>
+<div class="text-[11px] font-mono text-slate-muted">₹62,40,000</div>
+</div>
+<div class="pt-1.5 border-t border-[#e4e8ee] flex items-center justify-between">
+<span class="text-[10px] uppercase font-bold tracking-wider text-slate-muted">Per Pax</span>
+<span class="font-mono text-[12.5px] font-bold text-slate-body">₹251</span>
+</div>
+</div>
+<!-- Metric 4: Bar Sales (Beverages) -->
+<div class="p-3.5 md:p-4 border-r border-[#e4e8ee] bg-white flex flex-col justify-between">
+<div class="text-[10.5px] tracking-[0.08em] uppercase text-slate-muted font-semibold">Bar Sales (Bev)</div>
+<div class="my-1.5">
+<div class="text-[21px] font-bold font-mono text-slate-body">₹9.80L</div>
+<div class="text-[11px] font-mono text-slate-muted">₹9,80,000</div>
+</div>
+<div class="pt-1.5 border-t border-[#e4e8ee] flex items-center justify-between">
+<span class="text-[10px] uppercase font-bold tracking-wider text-slate-muted">Per Pax</span>
+<span class="font-mono text-[12.5px] font-bold text-slate-body">₹39</span>
+</div>
+</div>
+<!-- Metric 5: Liquor Sales -->
+<div class="p-3.5 md:p-4 border-r border-[#e4e8ee] bg-white flex flex-col justify-between">
+<div class="text-[10.5px] tracking-[0.08em] uppercase text-slate-muted font-semibold">Liquor Sales</div>
+<div class="my-1.5">
+<div class="text-[21px] font-bold font-mono text-slate-body">₹28.60L</div>
+<div class="text-[11px] font-mono text-slate-muted">₹28,60,000</div>
+</div>
+<div class="pt-1.5 border-t border-[#e4e8ee] flex items-center justify-between">
+<span class="text-[10px] uppercase font-bold tracking-wider text-slate-muted">Per Pax</span>
+<span class="font-mono text-[12.5px] font-bold text-slate-body">₹115</span>
+</div>
+</div>
+<!-- Metric 6: Net Sales at Restaurant -->
+<div class="p-3.5 md:p-4 bg-[#f9fbfa] flex flex-col justify-between">
+<div class="text-[10.5px] tracking-[0.08em] uppercase text-[#0d3b34] font-bold">Net Sales (Ex-Tax)</div>
+<div class="my-1.5">
+<div class="text-[21px] font-bold font-mono text-[#0d3b34]">₹105.80L</div>
+<div class="text-[11px] font-mono text-slate-muted">₹1,05,80,000</div>
+</div>
+<div class="pt-1.5 border-t border-[#e4e8ee] flex items-center justify-between">
+<span class="text-[10px] uppercase font-bold tracking-wider text-[#0d3b34]">Per Pax</span>
+<span class="font-mono text-[12.5px] font-bold text-[#0d3b34]">₹426</span>
+</div>
+</div>
+</div>
+<!-- Sales & Per-Customer Revenue Matrix -->
+<div class="border border-[#e4e8ee] rounded-[10px] overflow-hidden bg-white shadow-sm mb-6">
+<div class="bg-[#f2f6f5] border-b border-[#e4e8ee] px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<h3 class="text-[13.5px] font-bold text-[#0d3b34] uppercase tracking-[0.05em]">Sales &amp; Per-Customer Revenue Matrix</h3>
+<p class="text-[11px] text-slate-sub mt-0.5">Comprehensive audit reconciliation of total earnings, revenue share, and per-guest realization (APC)</p>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse text-left">
+<thead>
+<tr class="border-b border-[#c9d0d8] text-[11px] font-semibold text-slate-body bg-white">
+<th class="py-2.5 pl-4 pr-3">Revenue Category</th>
+<th class="py-2.5 px-3 text-right">Total Revenue (₹)</th>
+<th class="py-2.5 px-3 text-right">% Share (Net Sales)</th>
+<th class="py-2.5 px-3 text-right">Audited Covers</th>
+<th class="py-2.5 px-3 text-right bg-[#f9fbfa] pr-4">APC / Per Pax (₹)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#e4e8ee] text-[12px]">
+<tr class="hover:bg-[#f5f7f8]/60 transition-colors">
+<td class="py-3 pl-4 pr-3 font-semibold text-slate-body flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#0d3b34]"></span>
+                Food Sales
+              </td>
+<td class="py-3 px-3 text-right font-mono font-medium text-slate-body">₹62,40,000</td>
+<td class="py-3 px-3 text-right font-mono font-semibold text-slate-body">58.98%</td>
+<td class="py-3 px-3 text-right font-mono text-slate-sub">24,850 Pax</td>
+<td class="py-3 px-3 text-right font-mono font-bold text-[#0d3b34] bg-[#f9fbfa]">₹251.10</td>
+</tr>
+<tr class="bg-[#f5f7f8]/40 hover:bg-[#eceeed] transition-colors">
+<td class="py-3 pl-4 pr-3 font-semibold text-slate-body flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#4a9c8c]"></span>
+                Bar Sales (Beverages non-alc)
+              </td>
+<td class="py-3 px-3 text-right font-mono font-medium text-slate-body">₹9,80,000</td>
+<td class="py-3 px-3 text-right font-mono font-semibold text-slate-body">9.26%</td>
+<td class="py-3 px-3 text-right font-mono text-slate-sub">24,850 Pax</td>
+<td class="py-3 px-3 text-right font-mono font-bold text-[#0d3b34] bg-[#f9fbfa]">₹39.44</td>
+</tr>
+<tr class="hover:bg-[#f5f7f8]/60 transition-colors">
+<td class="py-3 pl-4 pr-3 font-semibold text-slate-body flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#1f6f62]"></span>
+                Liquor Sales
+              </td>
+<td class="py-3 px-3 text-right font-mono font-medium text-slate-body">₹28,60,000</td>
+<td class="py-3 px-3 text-right font-mono font-semibold text-slate-body">27.03%</td>
+<td class="py-3 px-3 text-right font-mono text-slate-sub">24,850 Pax</td>
+<td class="py-3 px-3 text-right font-mono font-bold text-[#0d3b34] bg-[#f9fbfa]">₹115.09</td>
+</tr>
+<tr class="hover:bg-[#f5f7f8]/60 transition-colors text-slate-sub">
+<td class="py-3 pl-4 pr-3 font-medium text-slate-sub flex items-center gap-2 pl-6 text-[11.5px]">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                Service Charge &amp; Non-tax Extras
+              </td>
+<td class="py-3 px-3 text-right font-mono text-[11.5px]">₹5,00,000</td>
+<td class="py-3 px-3 text-right font-mono text-[11.5px]">4.73%</td>
+<td class="py-3 px-3 text-right font-mono text-[11.5px]">24,850 Pax</td>
+<td class="py-3 px-3 text-right font-mono text-[11.5px] bg-[#f9fbfa]">₹20.12</td>
+</tr>
+<tr class="bg-[#f2f6f5] border-t-2 border-[#c9d0d8] font-bold">
+<td class="py-3 pl-4 pr-3 text-[12.5px] text-[#0d3b34]">Net Sales at Restaurant (ex-tax)</td>
+<td class="py-3 px-3 text-right font-mono text-[13px] text-[#0d3b34]">₹1,05,80,000</td>
+<td class="py-3 px-3 text-right font-mono text-[13px] text-[#0d3b34]">100.00%</td>
+<td class="py-3 px-3 text-right font-mono text-slate-body font-semibold">24,850 Pax</td>
+<td class="py-3 px-3 text-right font-mono text-[14px] text-[#0d3b34] bg-[#e6edea]">₹425.75</td>
+</tr>
+<tr class="hover:bg-[#f5f7f8]/60 transition-colors text-slate-sub">
+<td class="py-2.5 pl-4 pr-3 text-slate-muted italic flex items-center gap-2 pl-6 text-[11.5px]">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+                Statutory Taxes &amp; GST Collected
+              </td>
+<td class="py-2.5 px-3 text-right font-mono text-[11.5px] text-slate-muted">₹12,20,000</td>
+<td class="py-2.5 px-3 text-right font-mono text-[11.5px] text-slate-muted">–</td>
+<td class="py-2.5 px-3 text-right font-mono text-[11.5px] text-slate-muted">24,850 Pax</td>
+<td class="py-2.5 px-3 text-right font-mono text-[11.5px] text-slate-muted bg-[#f9fbfa]">₹49.09</td>
+</tr>
+<tr class="border-t border-[#0d3b34] bg-white font-bold">
+<td class="py-3.5 pl-4 pr-3 text-[13px] text-slate-body uppercase tracking-wider">Gross Sales (Total Invoiced)</td>
+<td class="py-3.5 px-3 text-right font-mono text-[14px] text-slate-body font-bold">₹1,18,00,000</td>
+<td class="py-3.5 px-3 text-right font-mono text-[13px] text-slate-body">111.53%</td>
+<td class="py-3.5 px-3 text-right font-mono text-slate-body font-bold">24,850 Pax</td>
+<td class="py-3.5 px-3 text-right font-mono text-[15px] text-[#0d3b34] bg-[#f2f6f5] font-bold pr-4">₹474.85</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Dual Donut Charts & Composition Cards -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+<!-- Left Card: Sales Composition -->
+<div class="border border-[#e4e8ee] rounded-[10px] p-4 md:p-5 bg-white flex flex-col justify-between shadow-sm">
+<div>
+<div class="flex items-baseline justify-between mb-3.5">
+<h3 class="text-[14px] font-bold text-[#0d3b34]">Sales Composition</h3>
+<span class="font-mono text-[12px] text-[#4a5464]">₹118.00 total</span>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-5 my-2">
+<div class="relative flex-none w-[170px] h-[170px]">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 180 180">
+<circle cx="90" cy="90" fill="transparent" r="70" stroke="#0d3b34" stroke-dasharray="232.7 440" stroke-dashoffset="0" stroke-width="28"></circle>
+<circle cx="90" cy="90" fill="transparent" r="70" stroke="#1f6f62" stroke-dasharray="106.5 440" stroke-dashoffset="-232.7" stroke-width="28"></circle>
+<circle cx="90" cy="90" fill="transparent" r="70" stroke="#4a9c8c" stroke-dasharray="36.5 440" stroke-dashoffset="-339.2" stroke-width="28"></circle>
+<circle cx="90" cy="90" fill="transparent" r="70" stroke="#8fc5b8" stroke-dasharray="18.5 440" stroke-dashoffset="-375.7" stroke-width="28"></circle>
+<circle cx="90" cy="90" fill="transparent" r="70" stroke="#cfe3dd" stroke-dasharray="45.8 440" stroke-dashoffset="-394.2" stroke-width="28"></circle>
+<circle cx="90" cy="90" fill="white" r="56"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+<span class="text-[10px] uppercase font-bold text-slate-muted">Sales</span>
+<span class="font-mono text-[14px] font-bold text-[#0d3b34]">₹118.0L</span>
+</div>
+</div>
+<div class="flex-1 w-full flex flex-col gap-2">
+<div class="flex items-center gap-2 text-[12px]">
+<span class="w-2.5 h-2.5 rounded-[3px] bg-[#0d3b34] flex-none"></span>
+<span class="flex-1 text-slate-body font-medium">Food</span>
+<span class="font-mono text-[#4a5464]">₹62.40</span>
+<span class="font-mono font-semibold w-11 text-right text-slate-body">52.9%</span>
+</div>
+<div class="flex items-center gap-2 text-[12px]">
+<span class="w-2.5 h-2.5 rounded-[3px] bg-[#1f6f62] flex-none"></span>
+<span class="flex-1 text-slate-body font-medium">Liquor</span>
+<span class="font-mono text-[#4a5464]">₹28.60</span>
+<span class="font-mono font-semibold w-11 text-right text-slate-body">24.2%</span>
+</div>
+<div class="flex items-center gap-2 text-[12px]">
+<span class="w-2.5 h-2.5 rounded-[3px] bg-[#4a9c8c] flex-none"></span>
+<span class="flex-1 text-slate-body font-medium">Beverage (non-alc)</span>
+<span class="font-mono text-[#4a5464]">₹9.80</span>
+<span class="font-mono font-semibold w-11 text-right text-slate-body">8.3%</span>
+</div>
+<div class="flex items-center gap-2 text-[12px]">
+<span class="w-2.5 h-2.5 rounded-[3px] bg-[#8fc5b8] flex-none"></span>
+<span class="flex-1 text-slate-body font-medium">Service charge</span>
+<span class="font-mono text-[#4a5464]">₹5.00</span>
+<span class="font-mono font-semibold w-11 text-right text-slate-body">4.2%</span>
+</div>
+<div class="flex items-center gap-2 text-[12px]">
+<span class="w-2.5 h-2.5 rounded-[3px] bg-[#cfe3dd] flex-none"></span>
+<span class="flex-1 text-slate-body font-medium">Statutory taxes</span>
+<span class="font-mono text-[#4a5464]">₹12.20</span>
+<span class="font-mono font-semibold w-11 text-right text-slate-body">10.3%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Card: Cost Composition -->
+<div class="border border-[#e4e8ee] rounded-[10px] p-4 md:p-5 bg-white flex flex-col justify-between shadow-sm">
+<div>
+<div class="flex items-baseline justify-between mb-3.5">
+<h3 class="text-[14px] font-bold text-[#7a2e14]">Cost Composition</h3>
+<span class="font-mono text-[12px] text-[#4a5464]">₹43.20 total</span>
+</div>
+<div class="flex flex-col sm:flex-row items-center gap-5 my-2">
+<div class="relative flex-none w-[170px] h-[170px]">
+<svg class="w-full h-full transform -rotate-90" viewbox="0 0 180 180">
+<circle cx="90" cy="90" fill="transparent" r="70" stroke="#7a2e14" stroke-dasharray="222.2 440" stroke-dashoffset="0" stroke-width="28"></circle>
+<circle cx="90" cy="90" fill="transparent" r="70" stroke="#b8541f" stroke-dasharray="90.6 440" stroke-dashoffset="-222.2" stroke-width="28"></circle>
+<circle cx="90" cy="90" fill="transparent" r="70" stroke="#d98b4a" stroke-dasharray="31.7 440" stroke-dashoffset="-312.8" stroke-width="28"></circle>
+<circle cx="90" cy="90" fill="transparent" r="70" stroke="#f0c9a0" stroke-dasharray="95.5 440" stroke-dashoffset="-344.5" stroke-width="28"></circle>
+<circle cx="90" cy="90" fill="white" r="56"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+<span class="text-[10px] uppercase font-bold text-slate-muted">Cost</span>
+<span class="font-mono text-[14px] font-bold text-[#7a2e14]">₹43.2L</span>
+</div>
+</div>
+<div class="flex-1 w-full flex flex-col gap-2">
+<div class="flex items-center gap-2 text-[12px]">
+<span class="w-2.5 h-2.5 rounded-[3px] bg-[#7a2e14] flex-none"></span>
+<span class="flex-1 text-slate-body font-medium">Food cost</span>
+<span class="font-mono text-[#4a5464]">₹21.80</span>
+<span class="font-mono font-semibold w-11 text-right text-slate-body">50.5%</span>
+</div>
+<div class="flex items-center gap-2 text-[12px]">
+<span class="w-2.5 h-2.5 rounded-[3px] bg-[#b8541f] flex-none"></span>
+<span class="flex-1 text-slate-body font-medium">Liquor cost</span>
+<span class="font-mono text-[#4a5464]">₹8.90</span>
+<span class="font-mono font-semibold w-11 text-right text-slate-body">20.6%</span>
+</div>
+<div class="flex items-center gap-2 text-[12px]">
+<span class="w-2.5 h-2.5 rounded-[3px] bg-[#d98b4a] flex-none"></span>
+<span class="flex-1 text-slate-body font-medium">Beverage cost</span>
+<span class="font-mono text-[#4a5464]">₹3.10</span>
+<span class="font-mono font-semibold w-11 text-right text-slate-body">7.2%</span>
+</div>
+<div class="flex items-center gap-2 text-[12px]">
+<span class="w-2.5 h-2.5 rounded-[3px] bg-[#f0c9a0] flex-none"></span>
+<span class="flex-1 text-slate-body font-medium">Kitchen overheads</span>
+<span class="font-mono text-[#4a5464]">₹9.40</span>
+<span class="font-mono font-semibold w-11 text-right text-slate-body">21.8%</span>
+</div>
+<div class="text-[11px] text-slate-muted leading-relaxed pt-1 border-t border-[#e4e8ee]/70">
+Overheads cover gas, consumables and spoilage; not attributed to a single revenue bucket.
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 1B: COST ANALYSIS & COST AS % OF SALES -->
+<section class="mb-10 print-avoid">
+<div class="flex items-baseline justify-between gap-3 mb-3.5">
+<div class="flex items-baseline gap-3 flex-1">
+<h2 class="text-[11px] font-bold tracking-[0.16em] uppercase text-[#0d3b34]">Section 1B · Costing &amp; Cost as % of Sales</h2>
+<div class="flex-1 h-[1px] bg-[#e4e8ee]"></div>
+</div>
+<span class="text-[11px] font-mono text-slate-muted">Reconciled vs. Gross &amp; Departmental Sales</span>
+</div>
+<!-- Costing Table Container -->
+<div class="border border-[#e4e8ee] rounded-[10px] overflow-hidden bg-white shadow-sm">
+<div class="bg-[#f2f6f5] border-b border-[#e4e8ee] px-4 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div>
+<h3 class="text-[13.5px] font-bold text-[#0d3b34] uppercase tracking-[0.05em]">Cost Analysis &amp; Food &amp; Beverage Cost Breakdown</h3>
+<p class="text-[11px] text-slate-sub mt-0.5">Category-wise procurement &amp; kitchen cost reconciliation against departmental net sales (Audited 24,850 Covers)</p>
+</div>
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1 bg-white border border-[#c9d0d8] px-2.5 py-1 rounded text-[11px] font-mono text-[#0d3b34] font-semibold shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-[#15803d]"></span>
+          Net F&amp;B Cost: 32.62%
+        </span>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full border-collapse text-left">
+<thead>
+<tr class="border-b border-[#c9d0d8] text-[11px] font-semibold text-slate-body bg-white">
+<th class="py-2.5 pl-4 pr-3 w-[50%]">Cost Category / Line Item</th>
+<th class="py-2.5 px-4 text-right w-[25%]">Direct Cost (₹)</th>
+<th class="py-2.5 pr-4 pl-3 text-right w-[25%]">%age (Sales Share)</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#e4e8ee] text-[12px]">
+<tr class="bg-[#f5f7f8]/60">
+<td class="py-1.5 pl-4 pr-3 text-[10.5px] font-bold uppercase tracking-wider text-slate-muted" colspan="3">
+              A. Bar &amp; Cellar Cost Breakdown
+            </td>
+</tr>
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-2.5 pl-6 pr-3 font-medium text-slate-body flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#4a9c8c]"></span>
+              BEVERAGE
+            </td>
+<td class="py-2.5 px-4 text-right font-mono font-medium text-slate-body">₹3,654</td>
+<td class="py-2.5 pr-4 pl-3 text-right font-mono font-medium text-slate-body">26.89%</td>
+</tr>
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-2.5 pl-6 pr-3 font-medium text-slate-body flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#1f6f62]"></span>
+              LIQUOR
+            </td>
+<td class="py-2.5 px-4 text-right font-mono font-medium text-slate-body">₹7,895</td>
+<td class="py-2.5 pr-4 pl-3 text-right font-mono font-medium text-slate-body">28.38%</td>
+</tr>
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-2.5 pl-6 pr-3 font-medium text-slate-body flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#8fc5b8]"></span>
+              PERISHABLES AND PROVISION
+            </td>
+<td class="py-2.5 px-4 text-right font-mono font-medium text-slate-body">₹5,000</td>
+<td class="py-2.5 pr-4 pl-3 text-right font-mono font-medium text-slate-body">12.07%</td>
+</tr>
+<tr class="bg-[#eef1f4] font-bold border-t border-[#c9d0d8]">
+<td class="py-3 pl-4 pr-3 text-[12.5px] text-[#0d3b34] uppercase tracking-wide">TOTAL BAR COST</td>
+<td class="py-3 px-4 text-right font-mono text-[13px] text-[#0d3b34]">₹16,549</td>
+<td class="py-3 pr-4 pl-3 text-right font-mono text-[13px] text-[#0d3b34]">39.96%</td>
+</tr>
+<tr class="bg-[#f5f7f8]/60">
+<td class="py-1.5 pl-4 pr-3 text-[10.5px] font-bold uppercase tracking-wider text-slate-muted" colspan="3">
+              B. Kitchen &amp; Production Cost Breakdown
+            </td>
+</tr>
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-2.5 pl-6 pr-3 font-medium text-slate-body flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#0d3b34]"></span>
+              FOOD KITCHEN
+            </td>
+<td class="py-2.5 px-4 text-right font-mono font-medium text-slate-body">₹25,648</td>
+<td class="py-2.5 pr-4 pl-3 text-right font-mono font-medium text-slate-body">31.06%</td>
+</tr>
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-2.5 pl-6 pr-3 font-medium text-slate-body flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>
+              STAFF FOOD
+            </td>
+<td class="py-2.5 px-4 text-right font-mono font-medium text-slate-body">₹7,000</td>
+<td class="py-2.5 pr-4 pl-3 text-right font-mono font-medium text-slate-body">8.48%</td>
+</tr>
+<tr class="bg-[#eef1f4] font-bold border-t border-[#c9d0d8]">
+<td class="py-3 pl-4 pr-3 text-[12.5px] text-[#0d3b34] uppercase tracking-wide">TOTAL KITCHEN COST</td>
+<td class="py-3 px-4 text-right font-mono text-[13px] text-[#0d3b34]">₹32,648</td>
+<td class="py-3 pr-4 pl-3 text-right font-mono text-[13px] text-[#0d3b34]">39.54%</td>
+</tr>
+<tr class="bg-[#f2f6f5] border-t-2 border-[#c9d0d8] font-bold">
+<td class="py-3 pl-4 pr-3 text-[12.5px] text-[#0d3b34] uppercase tracking-wide">TOTAL F&amp;B COST</td>
+<td class="py-3 px-4 text-right font-mono text-[13px] text-[#0d3b34]">₹49,197</td>
+<td class="py-3 pr-4 pl-3 text-right font-mono text-[13px] text-[#0d3b34]">39.68%</td>
+</tr>
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors text-slate-sub">
+<td class="py-2.5 pl-6 pr-3 text-slate-muted italic flex items-center gap-2 text-[11.5px]">
+<span class="material-symbols-outlined text-[14px] text-slate-muted">remove</span>
+              NON COMMERCIAL COST (Adjustment)
+            </td>
+<td class="py-2.5 px-4 text-right font-mono text-[11.5px] text-slate-muted">₹8,750</td>
+<td class="py-2.5 pr-4 pl-3 text-right font-mono text-[11.5px] text-slate-muted">7.06%</td>
+</tr>
+<tr class="border-t-2 border-[#0d3b34] bg-[#0d3b34] text-white font-bold">
+<td class="py-3.5 pl-4 pr-3 text-[13px] uppercase tracking-wider text-white flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-[#8fc5b8]">check_circle</span>
+              TOTAL NET F&amp;B COST
+            </td>
+<td class="py-3.5 px-4 text-right font-mono text-[14px] text-white font-bold">₹40,447</td>
+<td class="py-3.5 pr-4 pl-3 text-right font-mono text-[14px] text-[#8fc5b8] font-bold">32.62%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- SECTION 2: DEPARTMENT CHECKLISTS (COMPACT MATRIX / EXECUTIVE DELIVERABLE LAYOUT) -->
+<section class="mb-8 print-break">
+<div class="flex items-baseline gap-3 mb-3.5">
+<h2 class="text-[11px] font-bold tracking-[0.16em] uppercase text-[#0d3b34]">Section 2 · Department Checklists &amp; Compliance Matrix</h2>
+<div class="flex-1 h-[1px] bg-[#e4e8ee]"></div>
+<span class="text-[11px] text-slate-muted font-medium">4 departments · 11 checkpoints</span>
+</div>
+<!-- Checkpoint Summary Ribbon -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 border border-[#e4e8ee] rounded-lg overflow-hidden bg-white mb-6 shadow-sm">
+<div class="p-2.5 md:p-3 text-center border-b sm:border-b-0 border-r border-[#e4e8ee] flex items-center justify-center gap-1.5">
+<span class="text-[18px] font-bold font-mono text-slate-body">11</span>
+<span class="text-[10.5px] tracking-[0.08em] uppercase text-slate-muted font-semibold">Checkpoints</span>
+</div>
+<div class="p-2.5 md:p-3 text-center border-b sm:border-b-0 sm:border-r border-[#e4e8ee] flex items-center justify-center gap-1.5">
+<span class="text-[18px] font-bold font-mono text-[#9f1d17]">3</span>
+<span class="text-[10.5px] tracking-[0.08em] uppercase text-[#9f1d17] font-bold">High</span>
+</div>
+<div class="p-2.5 md:p-3 text-center border-b lg:border-b-0 border-r border-[#e4e8ee] flex items-center justify-center gap-1.5">
+<span class="text-[18px] font-bold font-mono text-[#8a6a09]">1</span>
+<span class="text-[10.5px] tracking-[0.08em] uppercase text-[#8a6a09] font-bold">Medium</span>
+</div>
+<div class="p-2.5 md:p-3 text-center border-r border-[#e4e8ee] flex items-center justify-center gap-1.5">
+<span class="text-[18px] font-bold font-mono text-[#4a5464]">1</span>
+<span class="text-[10.5px] tracking-[0.08em] uppercase text-[#4a5464] font-semibold">Low</span>
+</div>
+<div class="p-2.5 md:p-3 text-center flex items-center justify-center gap-1.5">
+<span class="text-[18px] font-bold font-mono text-[#15803d]">6</span>
+<span class="text-[10.5px] tracking-[0.08em] uppercase text-[#15803d] font-bold">Passed</span>
+</div>
+</div>
+<!-- DEPARTMENT 1: SECURITY -->
+<div class="border border-[#e4e8ee] rounded-[10px] overflow-hidden bg-white mb-6 print-avoid shadow-sm">
+<div class="flex items-center gap-3 px-4 py-2.5 bg-[#f2f6f5] border-b border-[#e4e8ee]">
+<span class="material-symbols-outlined text-[17px] text-[#0d3b34]">security</span>
+<span class="font-mono text-[12px] text-slate-muted">1.</span>
+<h3 class="text-[14px] font-bold text-[#0d3b34] flex-1">Security</h3>
+<span class="text-[11px] text-slate-muted">2 checkpoints · <strong class="text-[#9f1d17]">1 high</strong> · <strong class="text-[#15803d]">1 passed</strong></span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-[#c9d0d8] text-[10.5px] font-semibold text-slate-muted bg-white uppercase tracking-wider">
+<th class="py-2.5 px-3 pl-4 w-[65px]">Ref ID</th>
+<th class="py-2.5 px-3 w-[26%] min-w-[220px]">Checkpoint &amp; Observation</th>
+<th class="py-2.5 px-3 w-[18%] min-w-[170px]">Operational Impact</th>
+<th class="py-2.5 px-2.5 w-[90px] text-center">Risk Severity</th>
+<th class="py-2.5 px-3 w-[22%] min-w-[190px]">Immediate Corrective Action</th>
+<th class="py-2.5 px-2.5 w-[75px] text-center">SLA</th>
+<th class="py-2.5 px-3 w-[15%] min-w-[145px]">Assigned Ownership</th>
+<th class="py-2.5 pr-4 pl-2 w-[70px] text-center">Evidence</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#e4e8ee] text-[12px]">
+<!-- SEC-01 -->
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">SEC–01</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">Key control: sign-in/out log for dry store &amp; liquor cage.</p>
+<p class="text-slate-sub text-[11.5px]">Log abandoned mid-quarter; liquor cage key found unattended at the cashier desk.</p>
+</td>
+<!-- Operational Impact: Tinted Alert Cell -->
+<td class="py-3 px-3 align-top">
+<div class="p-2 rounded border border-[#f5c6cb]/60 bg-[#fdeceb]/60 text-[#721c24] text-[11.5px] leading-snug">
+<span class="font-semibold flex items-center gap-1 text-[11px] text-[#9f1d17] mb-0.5">
+<span class="material-symbols-outlined text-[13px]">lock_open</span> Pilferage &amp; Compliance Risk
+                  </span>
+                  High risk of liquor inventory pilferage, unauthorized cellar access, and compromised audit trails.
+                </div>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#fdeceb] text-[#9f1d17] border border-[#f8d7da]">High</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-sub text-[11.5px] leading-relaxed">
+                Reinstate the key register with named custody per shift and mandatory nightly close-out signature verification.
+              </td>
+<td class="py-3 px-2.5 align-top text-center font-mono font-bold text-[#9f1d17] text-[11px] whitespace-nowrap">24 Hrs</td>
+<!-- Assigned Ownership: Structured Dept Tag -->
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-[#0d3b34] text-white flex items-center justify-center text-[10px] font-bold flex-none font-mono">SL</span>
+<div class="min-w-0">
+<p class="text-[12px] font-semibold text-slate-body leading-tight truncate">Security Lead</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">Facility Guard</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center">
+<div class="w-12 h-12 mx-auto rounded border border-[#e4e8ee] bg-[#f5f7f8] flex flex-col items-center justify-center text-slate-muted hover:border-[#0d3b34] transition-colors cursor-pointer group shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-slate-muted group-hover:text-[#0d3b34]">photo_camera</span>
+<span class="text-[8.5px] font-mono mt-0.5 text-slate-muted">Key-01</span>
+</div>
+</td>
+</tr>
+<!-- SEC-02 -->
+<tr class="bg-[#f5f7f8]/30 hover:bg-[#eceeed] transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">SEC–02</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">Material inward/outward register &amp; gate pass book.</p>
+<p class="text-slate-sub text-[11.5px]">All returns traced to gate passes; no unrecorded outward movement in the audit sample.</p>
+</td>
+<td class="py-3 px-3 align-top">
+<span class="text-[11px] font-mono text-[#15803d] flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> No operational vulnerability noted
+                </span>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#e8f5ec] text-[#15803d]">Passed</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-muted italic text-[11.5px]">Maintain current dispatch &amp; gate pass cadence.</td>
+<td class="py-3 px-2.5 align-top text-center font-mono text-slate-muted text-[11px]">–</td>
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-bold flex-none font-mono">GO</span>
+<div class="min-w-0">
+<p class="text-[12px] font-medium text-slate-body leading-tight truncate">Gate Officer</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">Stores Support</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center text-slate-muted font-mono text-[11px]">–</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- DEPARTMENT 2: KITCHEN & FOOD SAFETY -->
+<div class="border border-[#e4e8ee] rounded-[10px] overflow-hidden bg-white mb-6 print-avoid shadow-sm">
+<div class="flex items-center gap-3 px-4 py-2.5 bg-[#f2f6f5] border-b border-[#e4e8ee]">
+<span class="material-symbols-outlined text-[17px] text-[#0d3b34]">kitchen</span>
+<span class="font-mono text-[12px] text-slate-muted">2.</span>
+<h3 class="text-[14px] font-bold text-[#0d3b34] flex-1">Kitchen &amp; Food Safety</h3>
+<span class="text-[11px] text-slate-muted">4 checkpoints · <strong class="text-[#9f1d17]">2 high</strong> · <strong class="text-[#15803d]">2 passed</strong></span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-[#c9d0d8] text-[10.5px] font-semibold text-slate-muted bg-white uppercase tracking-wider">
+<th class="py-2.5 px-3 pl-4 w-[65px]">Ref ID</th>
+<th class="py-2.5 px-3 w-[26%] min-w-[220px]">Checkpoint &amp; Observation</th>
+<th class="py-2.5 px-3 w-[18%] min-w-[170px]">Operational Impact</th>
+<th class="py-2.5 px-2.5 w-[90px] text-center">Risk Severity</th>
+<th class="py-2.5 px-3 w-[22%] min-w-[190px]">Immediate Corrective Action</th>
+<th class="py-2.5 px-2.5 w-[75px] text-center">SLA</th>
+<th class="py-2.5 px-3 w-[15%] min-w-[145px]">Assigned Ownership</th>
+<th class="py-2.5 pr-4 pl-2 w-[70px] text-center">Evidence</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#e4e8ee] text-[12px]">
+<!-- KIT-01 -->
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">KIT–01</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">Temperature control: cold storage ≤ 4°C, freezers ≤ −18°C, logged daily.</p>
+<p class="text-slate-sub text-[11.5px]">Prep-line fridge running with no set point or thermometer; an expired soy sauce bottle still on active station.</p>
+</td>
+<!-- Operational Impact: Tinted Alert Cell -->
+<td class="py-3 px-3 align-top">
+<div class="p-2 rounded border border-[#f5c6cb]/60 bg-[#fdeceb]/60 text-[#721c24] text-[11.5px] leading-snug">
+<span class="font-semibold flex items-center gap-1 text-[11px] text-[#9f1d17] mb-0.5">
+<span class="material-symbols-outlined text-[13px]">warning</span> Spoilage &amp; Pathogen Growth
+                  </span>
+                  Accelerated bacterial proliferation, serving compromised ingredients, and FSSAI statutory citation risk.
+                </div>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#fdeceb] text-[#9f1d17] border border-[#f8d7da]">High</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-sub text-[11.5px] leading-relaxed">
+                Immediately discard expired condiment. Calibrate prep unit below 4°C, install physical thermometer, and start dual daily logs.
+              </td>
+<td class="py-3 px-2.5 align-top text-center font-mono font-bold text-[#9f1d17] text-[11px] whitespace-nowrap">24 Hrs</td>
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-[#0d3b34] text-white flex items-center justify-center text-[10px] font-bold flex-none font-mono">SC</span>
+<div class="min-w-0">
+<p class="text-[12px] font-semibold text-slate-body leading-tight truncate">Sous Chef</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">Kitchen Team</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center">
+<img alt="Digital industrial thermometer reading" class="w-12 h-12 object-cover rounded border border-[#e4e8ee] shadow-sm grayscale opacity-90 hover:grayscale-0 hover:opacity-100 transition-all mx-auto cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUYBuoJwOSOY0uZIL25dV8RVBWI7jxApKHxD3ISMnyzTg4x702LEX2EXvE4LZMuXjoZo6cGm4upAv2L5OYIGIEvOdjuGTvvQfAIJl1ha_rf7Yc9_R26b9bGxp6socm0j5Hz_O7VTUd94jgLwMy3gsA7b57UDqGNnkxRB9wlD0iBn3jHUK4K9rXe81HARbimFCGVmIr2q9u5c7LUg8msFyAHJzXcCGD_zrGtJ018eJ2xB4PpuieaH4Vww"/>
+</td>
+</tr>
+<!-- KIT-02 -->
+<tr class="bg-[#f5f7f8]/30 hover:bg-[#eceeed] transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">KIT–02</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">Raw vs. ready-to-eat segregation in frozen storage.</p>
+<p class="text-slate-sub text-[11.5px]">Main freezer holds raw poultry directly against ready-to-eat frozen desserts, with no partition or sealed containment.</p>
+</td>
+<!-- Operational Impact: Tinted Alert Cell -->
+<td class="py-3 px-3 align-top">
+<div class="p-2 rounded border border-[#f5c6cb]/60 bg-[#fdeceb]/60 text-[#721c24] text-[11.5px] leading-snug">
+<span class="font-semibold flex items-center gap-1 text-[11px] text-[#9f1d17] mb-0.5">
+<span class="material-symbols-outlined text-[13px]">dangerous</span> Cross-Contamination Risk
+                  </span>
+                  Severe bacterial cross-contamination danger (salmonella/campylobacter) and direct risk of health-code shutdown.
+                </div>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#fdeceb] text-[#9f1d17] border border-[#f8d7da]">High</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-sub text-[11.5px] leading-relaxed">
+                Immediately physical-segregate into dedicated containment or partitioned raw vs. ready-to-eat storage chambers.
+              </td>
+<td class="py-3 px-2.5 align-top text-center font-mono font-bold text-[#9f1d17] text-[11px] whitespace-nowrap">24 Hrs</td>
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-[#1f6f62] text-white flex items-center justify-center text-[10px] font-bold flex-none font-mono">KS</span>
+<div class="min-w-0">
+<p class="text-[12px] font-semibold text-slate-body leading-tight truncate">Kitchen Supervisor</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">Executive Chef</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center">
+<div class="w-12 h-12 mx-auto rounded border border-[#e4e8ee] bg-[#f5f7f8] flex flex-col items-center justify-center text-slate-muted hover:border-[#0d3b34] transition-colors cursor-pointer group shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-slate-muted group-hover:text-[#0d3b34]">ac_unit</span>
+<span class="text-[8.5px] font-mono mt-0.5 text-slate-muted">Frz-Zone</span>
+</div>
+</td>
+</tr>
+<!-- KIT-03 -->
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">KIT–03</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">Labelling &amp; FIFO: prepped batches dated, oldest stock first.</p>
+<p class="text-slate-sub text-[11.5px]">All opened containers date-labelled; oldest stock front of rack across both stores.</p>
+</td>
+<td class="py-3 px-3 align-top">
+<span class="text-[11px] font-mono text-[#15803d] flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> FIFO rotation fully maintained
+                </span>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#e8f5ec] text-[#15803d]">Passed</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-muted italic text-[11.5px]">Maintain standardized pre-prep dating system.</td>
+<td class="py-3 px-2.5 align-top text-center font-mono text-slate-muted text-[11px]">–</td>
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-bold flex-none font-mono">DP</span>
+<div class="min-w-0">
+<p class="text-[12px] font-medium text-slate-body leading-tight truncate">Demi Chef / Prep</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">Line Crew</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center text-slate-muted font-mono text-[11px]">–</td>
+</tr>
+<!-- KIT-04 -->
+<tr class="bg-[#f5f7f8]/30 hover:bg-[#eceeed] transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">KIT–04</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">Waste sheet: daily waste and spoilage log signed by Executive Chef.</p>
+<p class="text-slate-sub text-[11.5px]">Log complete for all 92 days with sign-off; spoilage within the 1.2% tolerance.</p>
+</td>
+<td class="py-3 px-3 align-top">
+<span class="text-[11px] font-mono text-[#15803d] flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> Spoilage within 1.2% threshold
+                </span>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#e8f5ec] text-[#15803d]">Passed</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-muted italic text-[11.5px]">Maintain daily chef audit verification at close.</td>
+<td class="py-3 px-2.5 align-top text-center font-mono text-slate-muted text-[11px]">–</td>
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-bold flex-none font-mono">EC</span>
+<div class="min-w-0">
+<p class="text-[12px] font-medium text-slate-body leading-tight truncate">Executive Chef</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">Culinary Head</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center text-slate-muted font-mono text-[11px]">–</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- DEPARTMENT 3: PURCHASE & STORES -->
+<div class="border border-[#e4e8ee] rounded-[10px] overflow-hidden bg-white mb-6 print-avoid shadow-sm">
+<div class="flex items-center gap-3 px-4 py-2.5 bg-[#f2f6f5] border-b border-[#e4e8ee]">
+<span class="material-symbols-outlined text-[17px] text-[#0d3b34]">storefront</span>
+<span class="font-mono text-[12px] text-slate-muted">3.</span>
+<h3 class="text-[14px] font-bold text-[#0d3b34] flex-1">Purchase &amp; Stores</h3>
+<span class="text-[11px] text-slate-muted">3 checkpoints · <strong class="text-[#8a6a09]">1 medium</strong> · <strong class="text-[#15803d]">2 passed</strong></span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-[#c9d0d8] text-[10.5px] font-semibold text-slate-muted bg-white uppercase tracking-wider">
+<th class="py-2.5 px-3 pl-4 w-[65px]">Ref ID</th>
+<th class="py-2.5 px-3 w-[26%] min-w-[220px]">Checkpoint &amp; Observation</th>
+<th class="py-2.5 px-3 w-[18%] min-w-[170px]">Operational Impact</th>
+<th class="py-2.5 px-2.5 w-[90px] text-center">Risk Severity</th>
+<th class="py-2.5 px-3 w-[22%] min-w-[190px]">Immediate Corrective Action</th>
+<th class="py-2.5 px-2.5 w-[75px] text-center">SLA</th>
+<th class="py-2.5 px-3 w-[15%] min-w-[145px]">Assigned Ownership</th>
+<th class="py-2.5 pr-4 pl-2 w-[70px] text-center">Evidence</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#e4e8ee] text-[12px]">
+<!-- STR-01 -->
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">STR–01</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">Goods receiving verified against weight at the gate.</p>
+<p class="text-slate-sub text-[11.5px]">No weighing scale on site; vegetable consignments signed off on supplier's stated weight with no variance record.</p>
+</td>
+<!-- Operational Impact: Tinted Alert Cell (Warm Amber) -->
+<td class="py-3 px-3 align-top">
+<div class="p-2 rounded border border-[#ffeeba]/70 bg-[#fdf5d9]/70 text-[#856404] text-[11.5px] leading-snug">
+<span class="font-semibold flex items-center gap-1 text-[11px] text-[#8a6a09] mb-0.5">
+<span class="material-symbols-outlined text-[13px]">trending_down</span> Financial Inventory Leakage
+                  </span>
+                  Unverified short-deliveries, unrecorded billing variances, and vendor lack of accountability inflating food costs.
+                </div>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#fdf5d9] text-[#8a6a09] border border-[#ffeeba]">Medium</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-sub text-[11.5px] leading-relaxed">
+                Procure and install a calibrated commercial scale immediately. Enforce gate weigh-in log for all raw consignments.
+              </td>
+<td class="py-3 px-2.5 align-top text-center font-mono font-bold text-slate-body text-[11px] whitespace-nowrap">48 Hrs</td>
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-[#7a452a] text-white flex items-center justify-center text-[10px] font-bold flex-none font-mono">SK</span>
+<div class="min-w-0">
+<p class="text-[12px] font-semibold text-slate-body leading-tight truncate">Store Keeper</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">Receiver / Stores</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center">
+<div class="w-12 h-12 mx-auto rounded border border-[#e4e8ee] bg-[#f5f7f8] flex flex-col items-center justify-center text-slate-muted hover:border-[#0d3b34] transition-colors cursor-pointer group shadow-sm">
+<span class="material-symbols-outlined text-[18px] text-slate-muted group-hover:text-[#0d3b34]">scale</span>
+<span class="text-[8.5px] font-mono mt-0.5 text-slate-muted">Scale-01</span>
+</div>
+</td>
+</tr>
+<!-- STR-02 -->
+<tr class="bg-[#f5f7f8]/30 hover:bg-[#eceeed] transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">STR–02</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">Daily breakage, spillage and open bottle shot logs maintained.</p>
+<p class="text-slate-sub text-[11.5px]">Bar logs current; open-bottle shot counts reconciled with POS on every sampled day.</p>
+</td>
+<td class="py-3 px-3 align-top">
+<span class="text-[11px] font-mono text-[#15803d] flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> Full POS reconciliation intact
+                </span>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#e8f5ec] text-[#15803d]">Passed</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-muted italic text-[11.5px]">Preserve daily bar shot audit sign-off sheet.</td>
+<td class="py-3 px-2.5 align-top text-center font-mono text-slate-muted text-[11px]">–</td>
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-bold flex-none font-mono">BM</span>
+<div class="min-w-0">
+<p class="text-[12px] font-medium text-slate-body leading-tight truncate">Bar Manager</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">Beverage Team</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center text-slate-muted font-mono text-[11px]">–</td>
+</tr>
+<!-- STR-03 -->
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">STR–03</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">Physical spot check of top 10 high-value items matches ledger.</p>
+<p class="text-slate-sub text-[11.5px]">All ten items within tolerance; largest variance 0.4% on imported cheese.</p>
+</td>
+<td class="py-3 px-3 align-top">
+<span class="text-[11px] font-mono text-[#15803d] flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> Variance &lt; 0.5% (Well within SLA)
+                </span>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#e8f5ec] text-[#15803d]">Passed</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-muted italic text-[11.5px]">Keep bi-weekly ledger cycle active.</td>
+<td class="py-3 px-2.5 align-top text-center font-mono text-slate-muted text-[11px]">–</td>
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-bold flex-none font-mono">AC</span>
+<div class="min-w-0">
+<p class="text-[12px] font-medium text-slate-body leading-tight truncate">Asst. Controller</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">Internal Audit</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center text-slate-muted font-mono text-[11px]">–</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- DEPARTMENT 4: OPERATIONS (FOH) -->
+<div class="border border-[#e4e8ee] rounded-[10px] overflow-hidden bg-white mb-6 print-avoid shadow-sm">
+<div class="flex items-center gap-3 px-4 py-2.5 bg-[#f2f6f5] border-b border-[#e4e8ee]">
+<span class="material-symbols-outlined text-[17px] text-[#0d3b34]">table_restaurant</span>
+<span class="font-mono text-[12px] text-slate-muted">4.</span>
+<h3 class="text-[14px] font-bold text-[#0d3b34] flex-1">Operations (FOH)</h3>
+<span class="text-[11px] text-slate-muted">2 checkpoints · <strong class="text-[#4a5464]">1 low</strong> · <strong class="text-[#15803d]">1 passed</strong></span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-[#c9d0d8] text-[10.5px] font-semibold text-slate-muted bg-white uppercase tracking-wider">
+<th class="py-2.5 px-3 pl-4 w-[65px]">Ref ID</th>
+<th class="py-2.5 px-3 w-[26%] min-w-[220px]">Checkpoint &amp; Observation</th>
+<th class="py-2.5 px-3 w-[18%] min-w-[170px]">Operational Impact</th>
+<th class="py-2.5 px-2.5 w-[90px] text-center">Risk Severity</th>
+<th class="py-2.5 px-3 w-[22%] min-w-[190px]">Immediate Corrective Action</th>
+<th class="py-2.5 px-2.5 w-[75px] text-center">SLA</th>
+<th class="py-2.5 px-3 w-[15%] min-w-[145px]">Assigned Ownership</th>
+<th class="py-2.5 pr-4 pl-2 w-[70px] text-center">Evidence</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[#e4e8ee] text-[12px]">
+<!-- OPS-01 -->
+<tr class="hover:bg-[#f5f7f8]/50 transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">OPS–01</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">FOH hygiene &amp; setup: tables, cutlery, glassware, menus intact.</p>
+<p class="text-slate-sub text-[11.5px]">Setup clean overall; floor tile grout at dry store entrance shows early erosion, creating debris traps.</p>
+</td>
+<!-- Operational Impact: Neutral Grey Tint -->
+<td class="py-3 px-3 align-top">
+<div class="p-2 rounded border border-[#e4e8ee] bg-[#f5f7f8] text-[#404754] text-[11.5px] leading-snug">
+<span class="font-semibold flex items-center gap-1 text-[11px] text-slate-sub mb-0.5">
+<span class="material-symbols-outlined text-[13px]">handyman</span> Dirt Trapping / Minor Hazard
+                  </span>
+                  Physical debris accumulation over time; minor tripping and deep-cleaning maintenance inefficiency.
+                </div>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#eef1f4] text-[#4a5464]">Low</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-sub text-[11.5px] leading-relaxed">
+                Schedule preventative regrouting during upcoming quarterly maintenance shut window.
+              </td>
+<td class="py-3 px-2.5 align-top text-center font-mono font-medium text-slate-sub text-[11px] whitespace-nowrap">30 Days</td>
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-slate-300 text-slate-700 flex items-center justify-center text-[10px] font-bold flex-none font-mono">FM</span>
+<div class="min-w-0">
+<p class="text-[12px] font-semibold text-slate-body leading-tight truncate">Facilities Head</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">Maintenance</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center">
+<img alt="Worn floor tile grout in kitchen" class="w-12 h-12 object-cover rounded border border-[#e4e8ee] shadow-sm grayscale opacity-90 hover:grayscale-0 hover:opacity-100 transition-all mx-auto cursor-pointer" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAFn4ZxHkVAb2NZ9jw1SIDYc8zRCud9AL3MYeBqVApZYbbzMpUWAZwgSoK3rWSx_oDSOaa7Enu-4ZUBPiJqPX-U1rOxIwpefJ8ODVcXsHs4fZ05Ma4FVmtVtxPVpXZnCnVzfP1L1FrWJTW1vqRPubDvpW9oHWvjAVb-HCwydrbKc8xYlCUA0la5ehQYGmIe0KWIrwivEkM7p1bfkNV9X0ol-G4HIZLzLTKdvXn9p7hStVPwnf-Azb3gA"/>
+</td>
+</tr>
+<!-- OPS-02 -->
+<tr class="bg-[#f5f7f8]/30 hover:bg-[#eceeed] transition-colors">
+<td class="py-3 px-3 pl-4 align-top font-mono text-[11px] text-slate-sub font-semibold">OPS–02</td>
+<td class="py-3 px-3 align-top leading-relaxed text-slate-body">
+<p class="font-semibold text-[12.5px] text-slate-body mb-0.5">Staff grooming, PPE and hand-wash stations.</p>
+<p class="text-slate-sub text-[11.5px]">Gloves, hairnets and clean uniforms throughout; soap, sanitiser and towels stocked at all three stations.</p>
+</td>
+<td class="py-3 px-3 align-top">
+<span class="text-[11px] font-mono text-[#15803d] flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">check_circle</span> Grooming &amp; hygiene verified compliant
+                </span>
+</td>
+<td class="py-3 px-2.5 align-top text-center">
+<span class="inline-block text-[10.5px] font-bold px-2.5 py-0.5 rounded-full bg-[#e8f5ec] text-[#15803d]">Passed</span>
+</td>
+<td class="py-3 px-3 align-top text-slate-muted italic text-[11.5px]">Maintain daily shift briefing grooming standards.</td>
+<td class="py-3 px-2.5 align-top text-center font-mono text-slate-muted text-[11px]">–</td>
+<td class="py-3 px-3 align-top">
+<div class="flex items-center gap-2">
+<span class="w-6 h-6 rounded-full bg-slate-200 text-slate-700 flex items-center justify-center text-[10px] font-bold flex-none font-mono">RM</span>
+<div class="min-w-0">
+<p class="text-[12px] font-medium text-slate-body leading-tight truncate">Restaurant Manager</p>
+<p class="text-[10px] font-mono text-slate-muted uppercase tracking-wider">FOH Captain</p>
+</div>
+</div>
+</td>
+<td class="py-3 pr-4 pl-2 align-top text-center text-slate-muted font-mono text-[11px]">–</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<!-- Sign-off & Audit Closure Footer Block -->
+<div class="border-t border-[#e4e8ee] mt-8 pt-4 flex flex-col sm:flex-row justify-between items-start sm:items-center flex-wrap gap-4 text-[11.5px] text-slate-muted print-avoid">
+<div>
+      Prepared by <strong class="text-slate-body font-bold">Riya Sharma</strong>, F&amp;B Controller
+    </div>
+<div>
+      Severity: 
+      <strong class="text-[#9f1d17] font-bold">High</strong> · 
+      <strong class="text-[#8a6a09] font-bold">Medium</strong> · 
+      <strong class="text-[#4a5464] font-bold">Low</strong> · 
+      <strong class="text-[#15803d] font-bold">Passed</strong>
+</div>
+<div>
+      Next review <strong class="text-slate-body font-bold">July 19, 2026</strong>
+</div>
+</div>
+</main>
+<!-- Executive Audit Footer (Screen & Print Safe) -->
+<footer class="bg-white border-t border-[#e4e8ee] py-5 px-6 max-w-[1420px] mx-auto w-full text-xs text-slate-muted flex flex-col md:flex-row justify-between items-center gap-3 print-avoid">
+<div class="flex items-center gap-2">
+<span class="font-bold text-[#0d3b34] tracking-tight">Ek Quarter Hospitality</span>
+<span>· Internal Financial Control &amp; Compliance Group</span>
+</div>
+<div class="flex items-center gap-4 text-[11px]">
+<span>Confidential Financial Audit Deliverable</span>
+<span class="hidden sm:inline">|</span>
+<a class="hover:underline text-slate-sub" href="#">Audit Scope &amp; Methodology</a>
+<a class="hover:underline text-slate-sub" href="#">Controller Sign-Off Log</a>
+</div>
+</footer>
+</body></html>

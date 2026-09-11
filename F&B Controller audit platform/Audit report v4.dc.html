@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com" rel="preconnect">
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&amp;family=Inter+Tight:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; background: #f5f7f8; }
+  a { color: #4a5464; }
+  a:hover { color: #1e3a5f; }
+  @media print {
+    body { background: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    [data-noprint] { display: none !important; }
+    [data-avoid] { page-break-inside: avoid; }
+    [data-break] { page-break-before: always; }
+  }
+</style>
+</helmet>
+<div style="font-family:'Inter Tight','Hanken Grotesk',system-ui,sans-serif;color:#16202e;background:#f5f7f8;min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased">
+
+<header data-noprint="" style="position:sticky;top:0;z-index:50;background:#1e3a5f;color:#fff;padding:10px 20px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;box-shadow:0 2px 6px rgba(13,59,52,.25)">
+<div style="display:flex;align-items:center;gap:12px;font-size:12px;letter-spacing:.02em">
+<span style="display:inline-flex;align-items:center;gap:6px;background:#2f5d8a;padding:2px 10px;border-radius:4px;font-size:11px;font-family:'IBM Plex Mono',monospace;font-weight:500">
+<span style="width:6px;height:6px;border-radius:9999px;background:#a8c4de"></span>
+DELIVERABLE v4.0
+</span>
+<span style="color:#d6e2ee">Ek Quarter · Financial Control &amp; Operations Audit Q2 FY26</span>
+</div>
+<div style="display:flex;align-items:center;gap:10px">
+<div style="display:flex;align-items:center;gap:4px;background:rgba(47,93,138,.6);border:1px solid rgba(91,131,173,.4);padding:4px 10px;border-radius:4px;font-size:11px;font-family:'IBM Plex Mono',monospace;color:#d6e2ee">
+<span style="font-family:'Material Symbols Outlined';font-size:15px;line-height:1;color:#a8c4de">verified</span>
+Audit Verified · ISO-FSSAI 2026
+</div>
+<sc-if value="{{ savedFlash }}"><span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#a8c4de">Saved ✓</span></sc-if>
+<button type="button" onClick="{{ toggleEdit }}" style="background:{{ editBtnBg }};color:{{ editBtnColor }};border:1px solid {{ editBtnBorder }};padding:6px 12px;border-radius:4px;font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:600;display:flex;align-items:center;gap:5px;cursor:pointer"><span style="font-family:'Material Symbols Outlined';font-size:15px;line-height:1">edit</span> {{ editBtnLabel }}</button>
+<sc-if value="{{ editMode }}"><button type="button" onClick="{{ saveReport }}" style="background:#a8c4de;color:#1e3a5f;border:none;padding:6px 14px;border-radius:4px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:5px;cursor:pointer"><span style="font-family:'Material Symbols Outlined';font-size:15px;line-height:1">save</span> Save report</button></sc-if>
+<button type="button" style="background:#2f5d8a;color:#d6e2ee;border:none;padding:6px 12px;border-radius:4px;font-size:12px;font-family:'IBM Plex Mono',monospace;font-weight:500;display:flex;align-items:center;gap:4px;cursor:pointer" style-hover="background:#5b83ad;color:#ffffff">
+<span style="font-family:'Material Symbols Outlined';font-size:15px;line-height:1">file_download</span> Export Data
+</button>
+<button type="button" onClick="{{ doPrint }}" style="background:#a8c4de;color:#1e3a5f;border:none;padding:6px 14px;border-radius:4px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;cursor:pointer;box-shadow:0 1px 2px rgba(16,24,40,.05)" style-hover="background:#aceeee">
+<span style="font-family:'Material Symbols Outlined';font-size:16px;line-height:1">print</span> Print / PDF Deliverable
+</button>
+</div>
+</header>
+
+<main style="flex:1;width:100%;max-width:1420px;margin:28px auto;padding:36px 28px;background:#fff;border:1px solid #e4e8ee;border-radius:8px;box-shadow:0 1px 2px rgba(16,24,40,.05);box-sizing:border-box">
+
+<div data-avoid="" style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px;padding-bottom:16px">
+<div>
+<h1 style="margin:0;font-size:44px;font-weight:700;letter-spacing:-.025em;line-height:1.02;color:#1e3a5f">Ek Quarter</h1>
+<div style="font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#6b7686;font-weight:600;margin-top:8px">Audit Report · Q2 FY26</div>
+</div>
+<div style="text-align:right">
+<div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6b7686;font-weight:600">Audit Period</div>
+<div style="font-size:14px;font-weight:600;color:#16202e;margin-top:2px">April 1 – June 30, 2026</div>
+<div style="font-size:11.5px;font-family:'IBM Plex Mono',monospace;color:#6b7686;margin-top:4px">Issued July 12, 2026</div>
+</div>
+</div>
+<div style="height:1px;background:#c9d0d8;margin:8px 0 24px"></div>
+
+<section data-avoid="" style="margin-bottom:40px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px">
+<div style="display:flex;align-items:baseline;gap:12px;flex:1;min-width:0">
+<h2 style="margin:0;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#1e3a5f">Section 1 · Key Financial &amp; Unit Economic Metrics</h2>
+<div style="flex:1;height:1px;background:#e4e8ee"></div>
+</div>
+<span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#6b7686;white-space:nowrap">Quarter to date (92 Days)</span>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));border:1px solid #e4e8ee;border-radius:8px;overflow:hidden;background:#fff;margin-bottom:24px;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<div style="padding:16px;border-right:1px solid #e4e8ee;display:flex;flex-direction:column;justify-content:space-between;gap:6px">
+<div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6b7686;font-weight:600">Gross Sales</div>
+<div>
+<div style="font-size:21px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#1e3a5f;font-variant-numeric:tabular-nums">₹113.20L</div>
+</div>
+<div style="padding-top:6px;border-top:1px solid #e4e8ee;display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:10px;text-transform:uppercase;font-weight:700;letter-spacing:.06em;color:#6b7686">Per Pax</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;color:#1e3a5f">₹456</span>
+</div>
+</div>
+<div style="padding:16px;border-right:1px solid #e4e8ee;display:flex;flex-direction:column;justify-content:space-between;gap:6px">
+<div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6b7686;font-weight:600">Total Pax (Covers)</div>
+<div>
+<div style="font-size:21px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#16202e;font-variant-numeric:tabular-nums">24,850</div>
+<div style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#6b7686">Covers audited</div>
+</div>
+<div style="padding-top:6px;border-top:1px solid #e4e8ee;display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:10px;text-transform:uppercase;font-weight:700;letter-spacing:.06em;color:#6b7686">Daily Avg</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;color:#4a5464">273 / day</span>
+</div>
+</div>
+<div style="padding:16px;border-right:1px solid #e4e8ee;display:flex;flex-direction:column;justify-content:space-between;gap:6px">
+<div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6b7686;font-weight:600">Food Sales</div>
+<div>
+<div style="font-size:21px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#16202e;font-variant-numeric:tabular-nums">₹62.40L</div>
+</div>
+<div style="padding-top:6px;border-top:1px solid #e4e8ee;display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:10px;text-transform:uppercase;font-weight:700;letter-spacing:.06em;color:#6b7686">Per Pax</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;color:#16202e">₹251</span>
+</div>
+</div>
+<div style="padding:16px;border-right:1px solid #e4e8ee;display:flex;flex-direction:column;justify-content:space-between;gap:6px">
+<div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6b7686;font-weight:600">Bar Sales (Bev)</div>
+<div>
+<div style="font-size:21px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#16202e;font-variant-numeric:tabular-nums">₹9.80L</div>
+</div>
+<div style="padding-top:6px;border-top:1px solid #e4e8ee;display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:10px;text-transform:uppercase;font-weight:700;letter-spacing:.06em;color:#6b7686">Per Pax</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;color:#16202e">₹39</span>
+</div>
+</div>
+<div style="padding:16px;border-right:1px solid #e4e8ee;display:flex;flex-direction:column;justify-content:space-between;gap:6px">
+<div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6b7686;font-weight:600">Liquor Sales</div>
+<div>
+<div style="font-size:21px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#16202e;font-variant-numeric:tabular-nums">₹28.60L</div>
+</div>
+<div style="padding-top:6px;border-top:1px solid #e4e8ee;display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:10px;text-transform:uppercase;font-weight:700;letter-spacing:.06em;color:#6b7686">Per Pax</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;color:#16202e">₹115</span>
+</div>
+</div>
+<div style="padding:16px;border-right:1px solid #e4e8ee;display:flex;flex-direction:column;justify-content:space-between;gap:6px">
+<div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6b7686;font-weight:600">Total Discount</div>
+<div>
+<div style="font-size:21px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#8c4a2f;font-variant-numeric:tabular-nums">₹4.80L</div>
+</div>
+<div style="padding-top:6px;border-top:1px solid #e4e8ee;display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:10px;text-transform:uppercase;font-weight:700;letter-spacing:.06em;color:#6b7686">Per Pax</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;color:#8c4a2f">₹19</span>
+</div>
+</div>
+<div style="padding:16px;background:#f8fafc;display:flex;flex-direction:column;justify-content:space-between;gap:6px">
+<div style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#1e3a5f;font-weight:700">Net Sales (Ex-Tax)</div>
+<div>
+<div style="font-size:21px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#1e3a5f;font-variant-numeric:tabular-nums">₹100.80L</div>
+</div>
+<div style="padding-top:6px;border-top:1px solid #e4e8ee;display:flex;align-items:center;justify-content:space-between">
+<span style="font-size:10px;text-transform:uppercase;font-weight:700;letter-spacing:.06em;color:#1e3a5f">Per Pax</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:700;color:#1e3a5f">₹406</span>
+</div>
+</div>
+</div>
+
+<div style="border:1px solid #e4e8ee;border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.05);margin-bottom:24px">
+<div style="background:#eef2f7;border-bottom:1px solid #e4e8ee;padding:12px 16px">
+<h3 style="margin:0;font-size:13.5px;font-weight:700;color:#1e3a5f;text-transform:uppercase;letter-spacing:.05em">Sales &amp; Per-Customer Revenue Matrix</h3>
+<p style="margin:2px 0 0;font-size:11px;color:#4a5464">Sales − discount = net sales; + taxes + service charge = gross sale. Taxes and service charge allocated pro-rata on net sales; APC on 24,850 covers.</p>
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;text-align:left">
+<thead>
+<tr style="border-bottom:1px solid #c9d0d8;font-size:11px;font-weight:600;color:#16202e;background:#fff">
+<th style="padding:10px 12px 10px 16px;font-weight:600">Category</th>
+<th style="padding:10px 12px;text-align:right;font-weight:600">Sales (₹)</th><th style="padding:10px 12px;text-align:right;font-weight:600">Discount (₹)</th><th style="padding:10px 12px;text-align:right;font-weight:600">Net Sales (₹)</th><th style="padding:10px 12px;text-align:right;font-weight:600">Taxes (₹)</th><th style="padding:10px 12px;text-align:right;font-weight:600">Service Charge (₹)</th><th style="padding:10px 12px;text-align:right;font-weight:600">Gross Sale (₹)</th>
+<th style="padding:10px 16px 10px 12px;text-align:right;font-weight:600;background:#f8fafc">APC (₹)</th>
+</tr>
+</thead>
+<tbody style="font-size:12px">
+<tr style="border-bottom:1px solid #e4e8ee;">
+<td style="padding:12px 12px 12px 16px;font-weight:600;color:#16202e">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:9999px;background:#0d3b34;display:inline-block"></span>Food</span>
+</td>
+<td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹62,40,000</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#8c4a2f">₹3,20,000</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:600;color:#16202e">₹59,20,000</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹7,52,400</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹3,08,300</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1e3a5f">₹69,80,700</td>
+<td style="padding:12px 16px 12px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:700;color:#1e3a5f;background:#f8fafc">₹280.91</td>
+</tr>
+<tr style="border-bottom:1px solid #e4e8ee;background:#fafbfc">
+<td style="padding:12px 12px 12px 16px;font-weight:600;color:#16202e">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:9999px;background:#4a9c8c;display:inline-block"></span>Bar</span>
+</td>
+<td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹9,80,000</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#8c4a2f">₹45,000</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:600;color:#16202e">₹9,35,000</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹1,18,800</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹48,700</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1e3a5f">₹11,02,500</td>
+<td style="padding:12px 16px 12px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:700;color:#1e3a5f;background:#f8fafc">₹44.36</td>
+</tr>
+<tr style="border-bottom:1px solid #e4e8ee;">
+<td style="padding:12px 12px 12px 16px;font-weight:600;color:#16202e">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:8px;height:8px;border-radius:9999px;background:#1f6f62;display:inline-block"></span>Liquor</span>
+</td>
+<td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹28,60,000</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#8c4a2f">₹1,15,000</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:600;color:#16202e">₹27,45,000</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹3,48,800</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹1,43,000</td><td style="padding:12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:600;color:#1e3a5f">₹32,36,800</td>
+<td style="padding:12px 16px 12px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:700;color:#1e3a5f;background:#f8fafc">₹130.26</td>
+</tr>
+<tr style="border-top:2px solid #1e3a5f;background:#eef2f7;font-weight:700">
+<td style="padding:14px 12px 14px 16px;font-size:12.5px;color:#16202e;text-transform:uppercase;letter-spacing:.05em">Total</td>
+<td style="padding:14px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#16202e">₹1,00,80,000</td><td style="padding:14px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#8c4a2f">₹4,80,000</td><td style="padding:14px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#16202e">₹96,00,000</td><td style="padding:14px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#16202e">₹12,20,000</td><td style="padding:14px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#16202e">₹5,00,000</td><td style="padding:14px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#1e3a5f">₹1,13,20,000</td>
+<td style="padding:14px 16px 14px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:#1e3a5f;background:#e2e9f1">₹455.53</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<sc-if value="{{ showCharts }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:20px;margin-bottom:24px">
+<div style="border:1px solid #e4e8ee;border-radius:10px;padding:20px;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
+<h3 style="margin:0;font-size:14px;font-weight:700;color:#1e3a5f">Sales Composition</h3>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4a5464">₹113.20L after discount</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:20px">
+<div style="position:relative;flex:none;width:170px;height:170px">
+<svg viewBox="0 0 180 180" style="width:100%;height:100%;transform:rotate(-90deg)">
+<circle cx="90" cy="90" r="70" fill="transparent" stroke="#0d3b34" stroke-width="28" stroke-dasharray="230.0 440" stroke-dashoffset="0"></circle>
+<circle cx="90" cy="90" r="70" fill="transparent" stroke="#1f6f62" stroke-width="28" stroke-dasharray="106.6 440" stroke-dashoffset="-230.0"></circle>
+<circle cx="90" cy="90" r="70" fill="transparent" stroke="#4a9c8c" stroke-width="28" stroke-dasharray="36.3 440" stroke-dashoffset="-336.6"></circle>
+<circle cx="90" cy="90" r="70" fill="transparent" stroke="#8fc5b8" stroke-width="28" stroke-dasharray="19.4 440" stroke-dashoffset="-372.9"></circle>
+<circle cx="90" cy="90" r="70" fill="transparent" stroke="#cfe3dd" stroke-width="28" stroke-dasharray="47.4 440" stroke-dashoffset="-392.3"></circle>
+<circle cx="90" cy="90" r="56" fill="#ffffff"></circle>
+</svg>
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none">
+<span style="font-size:10px;text-transform:uppercase;font-weight:700;color:#6b7686">Sales</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:#1e3a5f">₹113.2L</span>
+</div>
+</div>
+<div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+<span style="width:10px;height:10px;border-radius:3px;background:#0d3b34;flex:none"></span>
+<span style="flex:1;color:#16202e;font-weight:500">Food</span>
+<span style="font-family:'IBM Plex Mono',monospace;color:#4a5464">₹59.20L</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-weight:600;width:44px;text-align:right;color:#16202e">52.3%</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+<span style="width:10px;height:10px;border-radius:3px;background:#1f6f62;flex:none"></span>
+<span style="flex:1;color:#16202e;font-weight:500">Liquor</span>
+<span style="font-family:'IBM Plex Mono',monospace;color:#4a5464">₹27.45L</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-weight:600;width:44px;text-align:right;color:#16202e">24.3%</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+<span style="width:10px;height:10px;border-radius:3px;background:#4a9c8c;flex:none"></span>
+<span style="flex:1;color:#16202e;font-weight:500">Beverage (non-alc)</span>
+<span style="font-family:'IBM Plex Mono',monospace;color:#4a5464">₹9.35L</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-weight:600;width:44px;text-align:right;color:#16202e">8.3%</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+<span style="width:10px;height:10px;border-radius:3px;background:#8fc5b8;flex:none"></span>
+<span style="flex:1;color:#16202e;font-weight:500">Service charge</span>
+<span style="font-family:'IBM Plex Mono',monospace;color:#4a5464">₹5.00L</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-weight:600;width:44px;text-align:right;color:#16202e">4.4%</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+<span style="width:10px;height:10px;border-radius:3px;background:#cfe3dd;flex:none"></span>
+<span style="flex:1;color:#16202e;font-weight:500">Statutory taxes</span>
+<span style="font-family:'IBM Plex Mono',monospace;color:#4a5464">₹12.20L</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-weight:600;width:44px;text-align:right;color:#16202e">10.8%</span>
+</div>
+</div>
+</div>
+</div>
+<div style="border:1px solid #e4e8ee;border-radius:10px;padding:20px;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:14px">
+<h3 style="margin:0;font-size:14px;font-weight:700;color:#7a2e14">Cost Composition</h3>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#4a5464">₹43.20L total</span>
+</div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:20px">
+<div style="position:relative;flex:none;width:170px;height:170px">
+<svg viewBox="0 0 180 180" style="width:100%;height:100%;transform:rotate(-90deg)">
+<circle cx="90" cy="90" r="70" fill="transparent" stroke="#7a2e14" stroke-width="28" stroke-dasharray="222.2 440" stroke-dashoffset="0"></circle>
+<circle cx="90" cy="90" r="70" fill="transparent" stroke="#b8541f" stroke-width="28" stroke-dasharray="90.6 440" stroke-dashoffset="-222.2"></circle>
+<circle cx="90" cy="90" r="70" fill="transparent" stroke="#d98b4a" stroke-width="28" stroke-dasharray="31.7 440" stroke-dashoffset="-312.8"></circle>
+<circle cx="90" cy="90" r="70" fill="transparent" stroke="#f0c9a0" stroke-width="28" stroke-dasharray="95.5 440" stroke-dashoffset="-344.5"></circle>
+<circle cx="90" cy="90" r="56" fill="#ffffff"></circle>
+</svg>
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none">
+<span style="font-size:10px;text-transform:uppercase;font-weight:700;color:#6b7686">Cost</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:700;color:#7a2e14">₹43.2L</span>
+</div>
+</div>
+<div style="flex:1;min-width:180px;display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+<span style="width:10px;height:10px;border-radius:3px;background:#7a2e14;flex:none"></span>
+<span style="flex:1;color:#16202e;font-weight:500">Food cost</span>
+<span style="font-family:'IBM Plex Mono',monospace;color:#4a5464">₹21.80L</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-weight:600;width:44px;text-align:right;color:#16202e">50.5%</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+<span style="width:10px;height:10px;border-radius:3px;background:#b8541f;flex:none"></span>
+<span style="flex:1;color:#16202e;font-weight:500">Liquor cost</span>
+<span style="font-family:'IBM Plex Mono',monospace;color:#4a5464">₹8.90L</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-weight:600;width:44px;text-align:right;color:#16202e">20.6%</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+<span style="width:10px;height:10px;border-radius:3px;background:#d98b4a;flex:none"></span>
+<span style="flex:1;color:#16202e;font-weight:500">Beverage cost</span>
+<span style="font-family:'IBM Plex Mono',monospace;color:#4a5464">₹3.10L</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-weight:600;width:44px;text-align:right;color:#16202e">7.2%</span>
+</div>
+<div style="display:flex;align-items:center;gap:8px;font-size:12px">
+<span style="width:10px;height:10px;border-radius:3px;background:#f0c9a0;flex:none"></span>
+<span style="flex:1;color:#16202e;font-weight:500">Kitchen overheads</span>
+<span style="font-family:'IBM Plex Mono',monospace;color:#4a5464">₹9.40L</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-weight:600;width:44px;text-align:right;color:#16202e">21.8%</span>
+</div>
+<div style="font-size:11px;color:#6b7686;line-height:1.6;padding-top:8px;border-top:1px solid #eef1f4">Overheads cover gas, consumables and spoilage; not attributed to a single revenue bucket.</div>
+</div>
+</div>
+</div>
+</div>
+</sc-if>
+</section>
+
+<section data-avoid="" style="margin-bottom:40px">
+<div style="display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:14px">
+<div style="display:flex;align-items:baseline;gap:12px;flex:1;min-width:0">
+<h2 style="margin:0;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#1e3a5f">Section 1B · Costing &amp; Cost as % of Sales</h2>
+<div style="flex:1;height:1px;background:#e4e8ee"></div>
+</div>
+</div>
+<div style="border:1px solid #e4e8ee;border-radius:10px;overflow:hidden;background:#fff;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<div style="background:#eef2f7;border-bottom:1px solid #e4e8ee;padding:12px 16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px">
+<div>
+<h3 style="margin:0;font-size:13.5px;font-weight:700;color:#1e3a5f;text-transform:uppercase;letter-spacing:.05em">Cost Analysis &amp; Food &amp; Beverage Cost Breakdown</h3>
+<p style="margin:2px 0 0;font-size:11px;color:#4a5464">Category-wise procurement &amp; kitchen cost reconciliation against departmental net sales (Audited 24,850 Covers)</p>
+</div>
+<span style="display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid #c9d0d8;padding:4px 10px;border-radius:4px;font-size:11px;font-family:'IBM Plex Mono',monospace;color:#1e3a5f;font-weight:600;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<span style="width:6px;height:6px;border-radius:9999px;background:#1e3a5f"></span>Net F&amp;B Cost: 32.62%
+</span>
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;text-align:left">
+<thead>
+<tr style="border-bottom:1px solid #c9d0d8;font-size:11px;color:#16202e;background:#fff">
+<th style="padding:10px 12px 10px 16px;width:50%;font-weight:600">Cost Category / Line Item</th>
+<th style="padding:10px 16px;width:25%;text-align:right;font-weight:600">Direct Cost (₹)</th>
+<th style="padding:10px 16px 10px 12px;width:25%;text-align:right;font-weight:600">%age (Sales Share)</th>
+</tr>
+</thead>
+<tbody style="font-size:12px">
+<tr style="background:#f7f9fa;border-bottom:1px solid #e4e8ee">
+<td colspan="3" style="padding:6px 12px 6px 16px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6b7686">A. Bar &amp; Cellar Cost Breakdown</td>
+</tr>
+<tr style="border-bottom:1px solid #e4e8ee">
+<td style="padding:10px 12px 10px 24px;font-weight:500;color:#16202e">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:9999px;background:#5b83ad;display:inline-block"></span>BEVERAGE</span>
+</td>
+<td style="padding:10px 16px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹3,654</td>
+<td style="padding:10px 16px 10px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">26.89%</td>
+</tr>
+<tr style="border-bottom:1px solid #e4e8ee">
+<td style="padding:10px 12px 10px 24px;font-weight:500;color:#16202e">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:9999px;background:#2f5d8a;display:inline-block"></span>LIQUOR</span>
+</td>
+<td style="padding:10px 16px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹7,895</td>
+<td style="padding:10px 16px 10px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">28.38%</td>
+</tr>
+<tr style="border-bottom:1px solid #e4e8ee">
+<td style="padding:10px 12px 10px 24px;font-weight:500;color:#16202e">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:9999px;background:#a8c4de;display:inline-block"></span>PERISHABLES AND PROVISION</span>
+</td>
+<td style="padding:10px 16px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹5,000</td>
+<td style="padding:10px 16px 10px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">12.07%</td>
+</tr>
+<tr style="background:#eef1f4;font-weight:700;border-top:1px solid #c9d0d8;border-bottom:1px solid #e4e8ee">
+<td style="padding:12px 12px 12px 16px;font-size:12.5px;color:#1e3a5f;text-transform:uppercase;letter-spacing:.04em">TOTAL BAR COST</td>
+<td style="padding:12px 16px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#1e3a5f">₹16,549</td>
+<td style="padding:12px 16px 12px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#1e3a5f">39.96%</td>
+</tr>
+<tr style="background:#f7f9fa;border-bottom:1px solid #e4e8ee">
+<td colspan="3" style="padding:6px 12px 6px 16px;font-size:10.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:#6b7686">B. Kitchen &amp; Production Cost Breakdown</td>
+</tr>
+<tr style="border-bottom:1px solid #e4e8ee">
+<td style="padding:10px 12px 10px 24px;font-weight:500;color:#16202e">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:9999px;background:#1e3a5f;display:inline-block"></span>FOOD KITCHEN</span>
+</td>
+<td style="padding:10px 16px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹25,648</td>
+<td style="padding:10px 16px 10px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">31.06%</td>
+</tr>
+<tr style="border-bottom:1px solid #e4e8ee">
+<td style="padding:10px 12px 10px 24px;font-weight:500;color:#16202e">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="width:6px;height:6px;border-radius:9999px;background:#cbd5e1;display:inline-block"></span>STAFF FOOD</span>
+</td>
+<td style="padding:10px 16px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">₹7,000</td>
+<td style="padding:10px 16px 10px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#16202e">8.48%</td>
+</tr>
+<tr style="background:#eef1f4;font-weight:700;border-top:1px solid #c9d0d8;border-bottom:1px solid #e4e8ee">
+<td style="padding:12px 12px 12px 16px;font-size:12.5px;color:#1e3a5f;text-transform:uppercase;letter-spacing:.04em">TOTAL KITCHEN COST</td>
+<td style="padding:12px 16px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#1e3a5f">₹32,648</td>
+<td style="padding:12px 16px 12px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#1e3a5f">39.54%</td>
+</tr>
+<tr style="background:#eef2f7;border-top:2px solid #c9d0d8;border-bottom:1px solid #e4e8ee;font-weight:700">
+<td style="padding:12px 12px 12px 16px;font-size:12.5px;color:#1e3a5f;text-transform:uppercase;letter-spacing:.04em">TOTAL F&amp;B COST</td>
+<td style="padding:12px 16px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#1e3a5f">₹49,197</td>
+<td style="padding:12px 16px 12px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:#1e3a5f">39.68%</td>
+</tr>
+<tr style="border-bottom:1px solid #e4e8ee">
+<td style="padding:10px 12px 10px 24px;color:#6b7686;font-style:italic;font-size:11.5px">– NON COMMERCIAL COST (Adjustment)</td>
+<td style="padding:10px 16px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#6b7686">₹8,750</td>
+<td style="padding:10px 16px 10px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:#6b7686">7.06%</td>
+</tr>
+<tr style="border-top:2px solid #1e3a5f;background:#1e3a5f;color:#fff;font-weight:700">
+<td style="padding:14px 12px 14px 16px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:#fff">
+<span style="display:inline-flex;align-items:center;gap:8px"><span style="font-family:'Material Symbols Outlined';font-size:16px;line-height:1;color:#a8c4de">check_circle</span>TOTAL NET F&amp;B COST</span>
+</td>
+<td style="padding:14px 16px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:14px;color:#fff">₹40,447</td>
+<td style="padding:14px 16px 14px 12px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:14px;color:#a8c4de">32.62%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<section data-break="" style="margin-bottom:32px">
+<div style="display:flex;align-items:baseline;gap:12px;margin-bottom:14px">
+<h2 style="margin:0;font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#1e3a5f">Section 2 · Department Checklists &amp; Compliance Matrix</h2>
+<div style="flex:1;height:1px;background:#e4e8ee"></div>
+<span style="font-size:11px;color:#6b7686;font-weight:500;white-space:nowrap">4 departments · {{ cTotal }} checkpoints</span>
+</div>
+
+<sc-if value="{{ showSummaryRibbon }}" hint-placeholder-val="{{ true }}">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));border:1px solid #e4e8ee;border-radius:8px;overflow:hidden;background:#fff;margin-bottom:24px;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<div style="padding:12px;display:flex;align-items:center;justify-content:center;gap:6px;border-right:1px solid #e4e8ee">
+<span style="font-size:18px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#16202e">{{ cTotal }}</span>
+<span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#6b7686;font-weight:600">Checkpoints</span>
+</div>
+<div style="padding:12px;display:flex;align-items:center;justify-content:center;gap:6px;border-right:1px solid #e4e8ee">
+<span style="font-size:18px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#9f1d17">{{ cHigh }}</span>
+<span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#9f1d17;font-weight:700">High</span>
+</div>
+<div style="padding:12px;display:flex;align-items:center;justify-content:center;gap:6px;border-right:1px solid #e4e8ee">
+<span style="font-size:18px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#8a6a09">{{ cMedium }}</span>
+<span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#8a6a09;font-weight:700">Medium</span>
+</div>
+<div style="padding:12px;display:flex;align-items:center;justify-content:center;gap:6px;border-right:1px solid #e4e8ee">
+<span style="font-size:18px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#4a5464">{{ cLow }}</span>
+<span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#4a5464;font-weight:600">Low</span>
+</div>
+<div style="padding:12px;display:flex;align-items:center;justify-content:center;gap:6px">
+<span style="font-size:18px;font-weight:700;font-family:'IBM Plex Mono',monospace;color:#1e3a5f">{{ cPassed }}</span>
+<span style="font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#1e3a5f;font-weight:700">Passed</span>
+</div>
+</div>
+</sc-if>
+
+<div data-avoid="" data-screen-label="Security" style="border:1px solid #e4e8ee;border-radius:10px;overflow:hidden;background:#fff;margin-bottom:24px;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#eef2f7;border-bottom:1px solid #e4e8ee">
+<span style="font-family:'Material Symbols Outlined';font-size:17px;line-height:1;color:#1e3a5f">security</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6b7686">1.</span>
+<h3 style="margin:0;font-size:14px;font-weight:700;color:#1e3a5f;flex:1">Security</h3>
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;text-align:left">
+<thead>
+<tr style="border-bottom:1px solid #c9d0d8;font-size:10.5px;font-weight:600;color:#6b7686;background:#fff;text-transform:uppercase;letter-spacing:.06em">
+<th style="padding:10px 12px 10px 16px;width:65px;font-weight:600">Ref ID</th>
+<th style="padding:10px 12px;width:26%;min-width:220px;font-weight:600">Checkpoint &amp; Observation</th>
+<th style="padding:10px 12px;width:18%;min-width:170px;font-weight:600">Operational Impact</th>
+<th style="padding:10px;width:90px;text-align:center;font-weight:600">Risk Severity</th>
+<th style="padding:10px 12px;width:22%;min-width:190px;font-weight:600">Immediate Corrective Action</th>
+<th style="padding:10px;width:75px;text-align:center;font-weight:600">SLA</th>
+<th style="padding:10px 16px 10px 8px;width:70px;text-align:center;font-weight:600">Evidence</th>
+</tr>
+</thead>
+<tbody style="font-size:12px">
+<tr style="border-bottom:1px solid #e4e8ee;display:{{ rowMap.SEC01.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>SEC–01</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.SEC01.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">Key control: sign-in/out log for dry store &amp; liquor cage.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">Log abandoned mid-quarter; liquor cage key found unattended at the cashier desk.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<div style="padding:0;color:#4a5464;font-size:11px;line-height:1.5">
+<span style="display:flex;align-items:center;gap:4px;font-weight:600;font-size:10.5px;color:#9f1d17;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">lock_open</span> Pilferage &amp; Compliance Risk
+</span>
+High risk of liquor inventory pilferage, unauthorized cellar access, and compromised audit trails.
+</div>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.SEC01.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.SEC01.bg }};color:{{ sevMap.SEC01.color }};border:1px solid {{ sevMap.SEC01.border }}">{{ sevMap.SEC01.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.SEC01.value }}" onChange="{{ sevMap.SEC01.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.SEC01.border }};background:{{ sevMap.SEC01.bg }};color:{{ sevMap.SEC01.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#4a5464;font-size:11.5px;line-height:1.6">Reinstate the key register with named custody per shift and mandatory nightly close-out signature verification.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;color:#9f1d17;font-size:11px;white-space:nowrap">24 Hrs</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center">
+<div style="width:48px;height:48px;margin:0 auto;border-radius:4px;border:1px solid #e4e8ee;background:#f5f7f8;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#6b7686;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<span style="font-family:'Material Symbols Outlined';font-size:18px;line-height:1">photo_camera</span>
+<span style="font-size:8.5px;font-family:'IBM Plex Mono',monospace;margin-top:2px">Key-01</span>
+</div>
+</td>
+</tr>
+<tr style="background:#fafbfc;border-bottom:1px solid #e4e8ee;display:{{ rowMap.SEC02.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>SEC–02</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.SEC02.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">Material inward/outward register &amp; gate pass book.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">All returns traced to gate passes; no unrecorded outward movement in the audit sample.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#1e3a5f;display:flex;align-items:center;gap:4px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">check_circle</span> No operational vulnerability noted
+</span>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.SEC02.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.SEC02.bg }};color:{{ sevMap.SEC02.color }};border:1px solid {{ sevMap.SEC02.border }}">{{ sevMap.SEC02.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.SEC02.value }}" onChange="{{ sevMap.SEC02.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.SEC02.border }};background:{{ sevMap.SEC02.bg }};color:{{ sevMap.SEC02.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#6b7686;font-style:italic;font-size:11.5px">Maintain current dispatch &amp; gate pass cadence.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;color:#6b7686;font-size:11px">–</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center;color:#6b7686;font-family:'IBM Plex Mono',monospace;font-size:11px">–</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div data-avoid="" data-screen-label="Kitchen &amp; Food Safety" style="border:1px solid #e4e8ee;border-radius:10px;overflow:hidden;background:#fff;margin-bottom:24px;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#eef2f7;border-bottom:1px solid #e4e8ee">
+<span style="font-family:'Material Symbols Outlined';font-size:17px;line-height:1;color:#1e3a5f">kitchen</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6b7686">2.</span>
+<h3 style="margin:0;font-size:14px;font-weight:700;color:#1e3a5f;flex:1">Kitchen &amp; Food Safety</h3>
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;text-align:left">
+<thead>
+<tr style="border-bottom:1px solid #c9d0d8;font-size:10.5px;font-weight:600;color:#6b7686;background:#fff;text-transform:uppercase;letter-spacing:.06em">
+<th style="padding:10px 12px 10px 16px;width:65px;font-weight:600">Ref ID</th>
+<th style="padding:10px 12px;width:26%;min-width:220px;font-weight:600">Checkpoint &amp; Observation</th>
+<th style="padding:10px 12px;width:18%;min-width:170px;font-weight:600">Operational Impact</th>
+<th style="padding:10px;width:90px;text-align:center;font-weight:600">Risk Severity</th>
+<th style="padding:10px 12px;width:22%;min-width:190px;font-weight:600">Immediate Corrective Action</th>
+<th style="padding:10px;width:75px;text-align:center;font-weight:600">SLA</th>
+<th style="padding:10px 16px 10px 8px;width:70px;text-align:center;font-weight:600">Evidence</th>
+</tr>
+</thead>
+<tbody style="font-size:12px">
+<tr style="border-bottom:1px solid #e4e8ee;display:{{ rowMap.KIT01.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>KIT–01</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.KIT01.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">Temperature control: cold storage ≤ 4°C, freezers ≤ −18°C, logged daily.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">Prep-line fridge running with no set point or thermometer; an expired soy sauce bottle still on active station.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<div style="padding:0;color:#4a5464;font-size:11px;line-height:1.5">
+<span style="display:flex;align-items:center;gap:4px;font-weight:600;font-size:10.5px;color:#9f1d17;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">warning</span> Spoilage &amp; Pathogen Growth
+</span>
+Accelerated bacterial proliferation, serving compromised ingredients, and FSSAI statutory citation risk.
+</div>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.KIT01.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.KIT01.bg }};color:{{ sevMap.KIT01.color }};border:1px solid {{ sevMap.KIT01.border }}">{{ sevMap.KIT01.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.KIT01.value }}" onChange="{{ sevMap.KIT01.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.KIT01.border }};background:{{ sevMap.KIT01.bg }};color:{{ sevMap.KIT01.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#4a5464;font-size:11.5px;line-height:1.6">Immediately discard expired condiment. Calibrate prep unit below 4°C, install physical thermometer, and start dual daily logs.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;color:#9f1d17;font-size:11px;white-space:nowrap">24 Hrs</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center">
+<img alt="Digital industrial thermometer reading" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUYBuoJwOSOY0uZIL25dV8RVBWI7jxApKHxD3ISMnyzTg4x702LEX2EXvE4LZMuXjoZo6cGm4upAv2L5OYIGIEvOdjuGTvvQfAIJl1ha_rf7Yc9_R26b9bGxp6socm0j5Hz_O7VTUd94jgLwMy3gsA7b57UDqGNnkxRB9wlD0iBn3jHUK4K9rXe81HARbimFCGVmIr2q9u5c7LUg8msFyAHJzXcCGD_zrGtJ018eJ2xB4PpuieaH4Vww" style="width:48px;height:48px;object-fit:cover;border-radius:4px;border:1px solid #e4e8ee;background:#f5f7f8;box-shadow:0 1px 2px rgba(16,24,40,.05);filter:grayscale(1);opacity:.9;margin:0 auto;display:block" style-hover="filter:grayscale(0);opacity:1">
+</td>
+</tr>
+<tr style="background:#fafbfc;border-bottom:1px solid #e4e8ee;display:{{ rowMap.KIT02.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>KIT–02</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.KIT02.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">Raw vs. ready-to-eat segregation in frozen storage.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">Main freezer holds raw poultry directly against ready-to-eat frozen desserts, with no partition or sealed containment.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<div style="padding:0;color:#4a5464;font-size:11px;line-height:1.5">
+<span style="display:flex;align-items:center;gap:4px;font-weight:600;font-size:10.5px;color:#9f1d17;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">dangerous</span> Cross-Contamination Risk
+</span>
+Severe bacterial cross-contamination danger (salmonella/campylobacter) and direct risk of health-code shutdown.
+</div>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.KIT02.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.KIT02.bg }};color:{{ sevMap.KIT02.color }};border:1px solid {{ sevMap.KIT02.border }}">{{ sevMap.KIT02.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.KIT02.value }}" onChange="{{ sevMap.KIT02.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.KIT02.border }};background:{{ sevMap.KIT02.bg }};color:{{ sevMap.KIT02.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#4a5464;font-size:11.5px;line-height:1.6">Immediately physical-segregate into dedicated containment or partitioned raw vs. ready-to-eat storage chambers.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;color:#9f1d17;font-size:11px;white-space:nowrap">24 Hrs</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center">
+<div style="width:48px;height:48px;margin:0 auto;border-radius:4px;border:1px solid #e4e8ee;background:#f5f7f8;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#6b7686;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<span style="font-family:'Material Symbols Outlined';font-size:18px;line-height:1">ac_unit</span>
+<span style="font-size:8.5px;font-family:'IBM Plex Mono',monospace;margin-top:2px">Frz-Zone</span>
+</div>
+</td>
+</tr>
+<tr style="border-bottom:1px solid #e4e8ee;display:{{ rowMap.KIT03.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>KIT–03</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.KIT03.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">Labelling &amp; FIFO: prepped batches dated, oldest stock first.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">All opened containers date-labelled; oldest stock front of rack across both stores.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#1e3a5f;display:flex;align-items:center;gap:4px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">check_circle</span> FIFO rotation fully maintained
+</span>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.KIT03.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.KIT03.bg }};color:{{ sevMap.KIT03.color }};border:1px solid {{ sevMap.KIT03.border }}">{{ sevMap.KIT03.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.KIT03.value }}" onChange="{{ sevMap.KIT03.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.KIT03.border }};background:{{ sevMap.KIT03.bg }};color:{{ sevMap.KIT03.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#6b7686;font-style:italic;font-size:11.5px">Maintain standardized pre-prep dating system.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;color:#6b7686;font-size:11px">–</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center;color:#6b7686;font-family:'IBM Plex Mono',monospace;font-size:11px">–</td>
+</tr>
+<tr style="background:#fafbfc;border-bottom:1px solid #e4e8ee;display:{{ rowMap.KIT04.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>KIT–04</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.KIT04.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">Waste sheet: daily waste and spoilage log signed by Executive Chef.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">Log complete for all 92 days with sign-off; spoilage within the 1.2% tolerance.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#1e3a5f;display:flex;align-items:center;gap:4px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">check_circle</span> Spoilage within 1.2% threshold
+</span>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.KIT04.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.KIT04.bg }};color:{{ sevMap.KIT04.color }};border:1px solid {{ sevMap.KIT04.border }}">{{ sevMap.KIT04.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.KIT04.value }}" onChange="{{ sevMap.KIT04.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.KIT04.border }};background:{{ sevMap.KIT04.bg }};color:{{ sevMap.KIT04.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#6b7686;font-style:italic;font-size:11.5px">Maintain daily chef audit verification at close.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;color:#6b7686;font-size:11px">–</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center;color:#6b7686;font-family:'IBM Plex Mono',monospace;font-size:11px">–</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div data-avoid="" data-screen-label="Purchase &amp; Stores" style="border:1px solid #e4e8ee;border-radius:10px;overflow:hidden;background:#fff;margin-bottom:24px;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#eef2f7;border-bottom:1px solid #e4e8ee">
+<span style="font-family:'Material Symbols Outlined';font-size:17px;line-height:1;color:#1e3a5f">storefront</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6b7686">3.</span>
+<h3 style="margin:0;font-size:14px;font-weight:700;color:#1e3a5f;flex:1">Purchase &amp; Stores</h3>
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;text-align:left">
+<thead>
+<tr style="border-bottom:1px solid #c9d0d8;font-size:10.5px;font-weight:600;color:#6b7686;background:#fff;text-transform:uppercase;letter-spacing:.06em">
+<th style="padding:10px 12px 10px 16px;width:65px;font-weight:600">Ref ID</th>
+<th style="padding:10px 12px;width:26%;min-width:220px;font-weight:600">Checkpoint &amp; Observation</th>
+<th style="padding:10px 12px;width:18%;min-width:170px;font-weight:600">Operational Impact</th>
+<th style="padding:10px;width:90px;text-align:center;font-weight:600">Risk Severity</th>
+<th style="padding:10px 12px;width:22%;min-width:190px;font-weight:600">Immediate Corrective Action</th>
+<th style="padding:10px;width:75px;text-align:center;font-weight:600">SLA</th>
+<th style="padding:10px 16px 10px 8px;width:70px;text-align:center;font-weight:600">Evidence</th>
+</tr>
+</thead>
+<tbody style="font-size:12px">
+<tr style="border-bottom:1px solid #e4e8ee;display:{{ rowMap.STR01.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>STR–01</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.STR01.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">Goods receiving verified against weight at the gate.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">No weighing scale on site; vegetable consignments signed off on supplier's stated weight with no variance record.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<div style="padding:0;color:#4a5464;font-size:11px;line-height:1.5">
+<span style="display:flex;align-items:center;gap:4px;font-weight:600;font-size:10.5px;color:#8a6a09;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">trending_down</span> Financial Inventory Leakage
+</span>
+Unverified short-deliveries, unrecorded billing variances, and vendor lack of accountability inflating food costs.
+</div>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.STR01.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.STR01.bg }};color:{{ sevMap.STR01.color }};border:1px solid {{ sevMap.STR01.border }}">{{ sevMap.STR01.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.STR01.value }}" onChange="{{ sevMap.STR01.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.STR01.border }};background:{{ sevMap.STR01.bg }};color:{{ sevMap.STR01.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#4a5464;font-size:11.5px;line-height:1.6">Procure and install a calibrated commercial scale immediately. Enforce gate weigh-in log for all raw consignments.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:700;color:#16202e;font-size:11px;white-space:nowrap">48 Hrs</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center">
+<div style="width:48px;height:48px;margin:0 auto;border-radius:4px;border:1px solid #e4e8ee;background:#f5f7f8;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#6b7686;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<span style="font-family:'Material Symbols Outlined';font-size:18px;line-height:1">scale</span>
+<span style="font-size:8.5px;font-family:'IBM Plex Mono',monospace;margin-top:2px">Scale-01</span>
+</div>
+</td>
+</tr>
+<tr style="background:#fafbfc;border-bottom:1px solid #e4e8ee;display:{{ rowMap.STR02.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>STR–02</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.STR02.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">Daily breakage, spillage and open bottle shot logs maintained.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">Bar logs current; open-bottle shot counts reconciled with POS on every sampled day.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#1e3a5f;display:flex;align-items:center;gap:4px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">check_circle</span> Full POS reconciliation intact
+</span>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.STR02.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.STR02.bg }};color:{{ sevMap.STR02.color }};border:1px solid {{ sevMap.STR02.border }}">{{ sevMap.STR02.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.STR02.value }}" onChange="{{ sevMap.STR02.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.STR02.border }};background:{{ sevMap.STR02.bg }};color:{{ sevMap.STR02.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#6b7686;font-style:italic;font-size:11.5px">Preserve daily bar shot audit sign-off sheet.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;color:#6b7686;font-size:11px">–</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center;color:#6b7686;font-family:'IBM Plex Mono',monospace;font-size:11px">–</td>
+</tr>
+<tr style="border-bottom:1px solid #e4e8ee;display:{{ rowMap.STR03.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>STR–03</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.STR03.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">Physical spot check of top 10 high-value items matches ledger.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">All ten items within tolerance; largest variance 0.4% on imported cheese.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#1e3a5f;display:flex;align-items:center;gap:4px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">check_circle</span> Variance &lt; 0.5% (Well within SLA)
+</span>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.STR03.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.STR03.bg }};color:{{ sevMap.STR03.color }};border:1px solid {{ sevMap.STR03.border }}">{{ sevMap.STR03.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.STR03.value }}" onChange="{{ sevMap.STR03.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.STR03.border }};background:{{ sevMap.STR03.bg }};color:{{ sevMap.STR03.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#6b7686;font-style:italic;font-size:11.5px">Keep bi-weekly ledger cycle active.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;color:#6b7686;font-size:11px">–</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center;color:#6b7686;font-family:'IBM Plex Mono',monospace;font-size:11px">–</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div data-avoid="" data-screen-label="Operations (FOH)" style="border:1px solid #e4e8ee;border-radius:10px;overflow:hidden;background:#fff;margin-bottom:24px;box-shadow:0 1px 2px rgba(16,24,40,.05)">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 16px;background:#eef2f7;border-bottom:1px solid #e4e8ee">
+<span style="font-family:'Material Symbols Outlined';font-size:17px;line-height:1;color:#1e3a5f">table_restaurant</span>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;color:#6b7686">4.</span>
+<h3 style="margin:0;font-size:14px;font-weight:700;color:#1e3a5f;flex:1">Operations (FOH)</h3>
+</div>
+<div style="overflow-x:auto">
+<table style="width:100%;border-collapse:collapse;text-align:left">
+<thead>
+<tr style="border-bottom:1px solid #c9d0d8;font-size:10.5px;font-weight:600;color:#6b7686;background:#fff;text-transform:uppercase;letter-spacing:.06em">
+<th style="padding:10px 12px 10px 16px;width:65px;font-weight:600">Ref ID</th>
+<th style="padding:10px 12px;width:26%;min-width:220px;font-weight:600">Checkpoint &amp; Observation</th>
+<th style="padding:10px 12px;width:18%;min-width:170px;font-weight:600">Operational Impact</th>
+<th style="padding:10px;width:90px;text-align:center;font-weight:600">Risk Severity</th>
+<th style="padding:10px 12px;width:22%;min-width:190px;font-weight:600">Immediate Corrective Action</th>
+<th style="padding:10px;width:75px;text-align:center;font-weight:600">SLA</th>
+<th style="padding:10px 16px 10px 8px;width:70px;text-align:center;font-weight:600">Evidence</th>
+</tr>
+</thead>
+<tbody style="font-size:12px">
+<tr style="border-bottom:1px solid #e4e8ee;display:{{ rowMap.OPS01.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>OPS–01</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.OPS01.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">FOH hygiene &amp; setup: tables, cutlery, glassware, menus intact.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">Setup clean overall; floor tile grout at dry store entrance shows early erosion, creating debris traps.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<div style="padding:0;color:#4a5464;font-size:11px;line-height:1.5">
+<span style="display:flex;align-items:center;gap:4px;font-weight:600;font-size:10.5px;color:#6b7686;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">handyman</span> Dirt Trapping / Minor Hazard
+</span>
+Physical debris accumulation over time; minor tripping and deep-cleaning maintenance inefficiency.
+</div>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.OPS01.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.OPS01.bg }};color:{{ sevMap.OPS01.color }};border:1px solid {{ sevMap.OPS01.border }}">{{ sevMap.OPS01.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.OPS01.value }}" onChange="{{ sevMap.OPS01.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.OPS01.border }};background:{{ sevMap.OPS01.bg }};color:{{ sevMap.OPS01.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#4a5464;font-size:11.5px;line-height:1.6">Schedule preventative regrouting during upcoming quarterly maintenance shut window.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;font-weight:500;color:#4a5464;font-size:11px;white-space:nowrap">30 Days</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center">
+<img alt="Worn floor tile grout in kitchen" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAFn4ZxHkVAb2NZ9jw1SIDYc8zRCud9AL3MYeBqVApZYbbzMpUWAZwgSoK3rWSx_oDSOaa7Enu-4ZUBPiJqPX-U1rOxIwpefJ8ODVcXsHs4fZ05Ma4FVmtVtxPVpXZnCnVzfP1L1FrWJTW1vqRPubDvpW9oHWvjAVb-HCwydrbKc8xYlCUA0la5ehQYGmIe0KWIrwivEkM7p1bfkNV9X0ol-G4HIZLzLTKdvXn9p7hStVPwnf-Azb3gA" style="width:48px;height:48px;object-fit:cover;border-radius:4px;border:1px solid #e4e8ee;background:#f5f7f8;box-shadow:0 1px 2px rgba(16,24,40,.05);filter:grayscale(1);opacity:.9;margin:0 auto;display:block" style-hover="filter:grayscale(0);opacity:1">
+</td>
+</tr>
+<tr style="background:#fafbfc;border-bottom:1px solid #e4e8ee;display:{{ rowMap.OPS02.display }}">
+<td style="padding:12px 12px 12px 16px;vertical-align:top;font-family:'IBM Plex Mono',monospace;font-size:11px;color:#4a5464;font-weight:600"><div style="display:flex;align-items:center;gap:6px"><span>OPS–02</span><sc-if value="{{ editMode }}"><button type="button" data-noprint="" onClick="{{ rowMap.OPS02.onDelete }}" title="Delete checkpoint" style="border:1px solid #f0c9c6;background:#fdeceb;color:#9f1d17;border-radius:4px;width:20px;height:20px;line-height:1;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">×</button></sc-if></div></td>
+<td style="padding:12px;vertical-align:top;color:#16202e">
+<p style="margin:0 0 2px;font-weight:600;font-size:12.5px;color:#16202e">Staff grooming, PPE and hand-wash stations.</p>
+<p style="margin:0;color:#4a5464;font-size:11.5px;line-height:1.5">Gloves, hairnets and clean uniforms throughout; soap, sanitiser and towels stocked at all three stations.</p>
+</td>
+<td style="padding:12px;vertical-align:top">
+<span style="font-size:11px;font-family:'IBM Plex Mono',monospace;color:#1e3a5f;display:flex;align-items:center;gap:4px">
+<span style="font-family:'Material Symbols Outlined';font-size:13px;line-height:1">check_circle</span> Grooming &amp; hygiene verified compliant
+</span>
+</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center">
+<sc-if value="{{ sevMap.OPS02.view }}" hint-placeholder-val="{{ true }}"><span style="display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:3px 9px;border-radius:4px;white-space:nowrap;background:{{ sevMap.OPS02.bg }};color:{{ sevMap.OPS02.color }};border:1px solid {{ sevMap.OPS02.border }}">{{ sevMap.OPS02.label }}</span></sc-if>
+<sc-if value="{{ editMode }}"><select value="{{ sevMap.OPS02.value }}" onChange="{{ sevMap.OPS02.onChange }}" data-noprint="" style="font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-radius:4px;border:1px solid {{ sevMap.OPS02.border }};background:{{ sevMap.OPS02.bg }};color:{{ sevMap.OPS02.color }};cursor:pointer"><option value="High">High</option><option value="Medium">Medium</option><option value="Low">Low</option><option value="Passed">Passed</option></select></sc-if>
+</td>
+<td style="padding:12px;vertical-align:top;color:#6b7686;font-style:italic;font-size:11.5px">Maintain daily shift briefing grooming standards.</td>
+<td style="padding:12px 10px;vertical-align:top;text-align:center;font-family:'IBM Plex Mono',monospace;color:#6b7686;font-size:11px">–</td>
+<td style="padding:12px 16px 12px 8px;vertical-align:top;text-align:center;color:#6b7686;font-family:'IBM Plex Mono',monospace;font-size:11px">–</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<div data-noprint="" style="margin-top:32px;background:#1e3a5f;border-radius:10px;padding:24px 28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px">
+<div style="min-width:260px">
+<div style="font-size:15px;font-weight:700;color:#ffffff;letter-spacing:-.01em">Download the complete audit report</div>
+<div style="font-size:12px;color:#d6e2ee;margin-top:4px">Full Q2 FY26 deliverable — financial reconciliation, all 11 checkpoints, evidence annexures and controller sign-off.</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px">
+<button type="button" onClick="{{ doPrint }}" style="background:#a8c4de;color:#1e3a5f;border:none;padding:11px 20px;border-radius:8px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;cursor:pointer" style-hover="background:#aceeee"><span style="font-family: &quot;Material Symbols Outlined&quot;; font-size: 18px; line-height: 1;">download</span> Download full report (XLSX)
+</button>
+</div>
+</div>
+<div data-avoid="" style="border-top:1px solid #e4e8ee;margin-top:32px;padding-top:16px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;font-size:11.5px;color:#6b7686">
+<div>Prepared by <strong style="color:#16202e">Riya Sharma</strong>, F&amp;B Controller</div>
+<div>Severity: <strong style="color:#9f1d17">High</strong> · <strong style="color:#8a6a09">Medium</strong> · <strong style="color:#4a5464">Low</strong> · <strong style="color:#1e3a5f">Passed</strong></div>
+<div>Next review <strong style="color:#16202e">July 19, 2026</strong></div>
+</div>
+</main>
+
+<footer data-avoid="" style="background:#fff;border-top:1px solid #e4e8ee;padding:20px 24px;max-width:1420px;margin:0 auto;width:100%;box-sizing:border-box;font-size:12px;color:#6b7686;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px">
+<div style="display:flex;align-items:center;gap:8px">
+<span style="font-weight:700;color:#1e3a5f;letter-spacing:-.01em">Ek Quarter Hospitality</span>
+</div>
+</footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showCharts&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;},&quot;showSummaryRibbon&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Sections&quot;}}">
+class Component extends DCLogic {
+  KEY = 'fnb.reportV4.edits.v2';
+  SEVS = {
+    High:   {bg:'#9f1d17', color:'#ffffff', border:'#9f1d17'},
+    Medium: {bg:'#b45309', color:'#ffffff', border:'#b45309'},
+    Low:    {bg:'#f1f3f5', color:'#6b7280', border:'#dfe3e8'},
+    Passed: {bg:'#1e3a5f', color:'#ffffff', border:'#1e3a5f'}
+  };
+  DEFAULTS = {SEC01:'High',SEC02:'Passed',KIT01:'High',KIT02:'High',KIT03:'Passed',KIT04:'Passed',STR01:'Medium',STR02:'Passed',STR03:'Passed',OPS01:'Low',OPS02:'Passed'};
+  state = {editMode:false, savedFlash:false, sev:null, hidden:{}};
+
+  loadSaved() {
+    try { return JSON.parse(window.localStorage.getItem(this.KEY) || 'null') || {}; } catch (e) { return {}; }
+  }
+  componentDidMount() {
+    const saved = this.loadSaved();
+    this._savedTexts = (saved.v === 2 && saved.texts) ? saved.texts : null;
+    this.setState({sev: Object.assign({}, this.DEFAULTS, saved.sev || {}), hidden: saved.hidden || {}}, () => this.applyAmounts());
+    setTimeout(() => this.applyAmounts(), 60);
+  }
+  componentDidUpdate() { this.syncEditable(); }
+
+  amountNodes() {
+    const out = [];
+    document.querySelectorAll('td, th, p, span, div, li, h1, h2, h3, h4').forEach(el => {
+      if (el.children.length) return;
+      if (el.closest('[data-noprint], button, select, option')) return;
+      if (el.getAttribute('style') && /Material Symbols/.test(el.getAttribute('style'))) return;
+      const t = (el.textContent || '').trim();
+      if (!t || t.length > 400) return;
+      out.push(el);
+    });
+    return out;
+  }
+  nodePath(el) {
+    const parts = [];
+    let n = el;
+    while (n && n.parentElement && n.tagName !== 'BODY') {
+      parts.push(Array.prototype.indexOf.call(n.parentElement.children, n));
+      n = n.parentElement;
+    }
+    return parts.reverse().join('.');
+  }
+  applyAmounts() {
+    const t = this._savedTexts;
+    if (t) {
+      this.amountNodes().forEach(el => {
+        const key = this.nodePath(el);
+        if (Object.prototype.hasOwnProperty.call(t, key) && el.textContent.trim() !== t[key]) el.textContent = t[key];
+      });
+    }
+    this.syncEditable();
+  }
+  syncEditable() {
+    const on = this.state.editMode;
+    this.amountNodes().forEach(el => {
+      if (on) {
+        el.setAttribute('contenteditable', 'true');
+        el.style.outline = '1px dashed rgba(30,58,95,.25)';
+        el.style.outlineOffset = '1px';
+        el.style.borderRadius = '3px';
+      } else {
+        el.removeAttribute('contenteditable');
+        el.style.outline = '';
+        el.style.outlineOffset = '';
+      }
+    });
+  }
+  collectAmounts() {
+    const map = {};
+    this.amountNodes().forEach(el => { map[this.nodePath(el)] = (el.textContent || '').trim(); });
+    return map;
+  }
+
+  toggleEdit = () => {
+    if (this.state.editMode) {
+      const saved = this.loadSaved();
+      this._savedTexts = (saved.v === 2 && saved.texts) ? saved.texts : null;
+      this.setState({editMode:false, savedFlash:false, sev: Object.assign({}, this.DEFAULTS, saved.sev || {}), hidden: saved.hidden || {}}, () => this.applyAmounts());
+    } else {
+      this.setState({editMode:true, savedFlash:false}, () => this.syncEditable());
+    }
+  };
+  setSev = (k, v) => this.setState(s => ({sev: Object.assign({}, s.sev || this.DEFAULTS, {[k]: v}), savedFlash:false}));
+  deleteRow = (k) => this.setState(s => ({hidden: Object.assign({}, s.hidden, {[k]: true}), savedFlash:false}));
+  saveReport = () => {
+    const payload = {v: 2, sev: this.state.sev || this.DEFAULTS, hidden: this.state.hidden || {}, texts: this.collectAmounts()};
+    this._savedTexts = payload.texts;
+    try { window.localStorage.setItem(this.KEY, JSON.stringify(payload)); } catch (e) {}
+    this.setState({editMode:false, savedFlash:true}, () => this.syncEditable());
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({savedFlash:false}), 2600);
+  };
+
+  renderVals() {
+    const p = this.props || {};
+    const sev = this.state.sev || this.DEFAULTS;
+    const hidden = this.state.hidden || {};
+    const edit = this.state.editMode;
+    const sevMap = {}, rowMap = {};
+    Object.keys(this.DEFAULTS).forEach(k => {
+      const v = sev[k] || this.DEFAULTS[k];
+      const c = this.SEVS[v] || this.SEVS.Low;
+      sevMap[k] = {value:v, label:v, bg:c.bg, color:c.color, border:c.border, view: !edit, onChange: (e) => this.setSev(k, e.target.value)};
+      rowMap[k] = {display: hidden[k] ? 'none' : 'table-row', onDelete: () => this.deleteRow(k)};
+    });
+    const live = Object.keys(this.DEFAULTS).filter(k => !hidden[k]);
+    const count = (t) => live.filter(k => (sev[k] || this.DEFAULTS[k]) === t).length;
+    return {
+      showCharts: p.showCharts ?? true,
+      showSummaryRibbon: p.showSummaryRibbon ?? true,
+      doPrint: () => window.print(),
+      sevMap, rowMap, editMode: edit,
+      cTotal: live.length,
+      cHigh: count('High'), cMedium: count('Medium'), cLow: count('Low'), cPassed: count('Passed'),
+      toggleEdit: this.toggleEdit, saveReport: this.saveReport,
+      savedFlash: this.state.savedFlash,
+      editBtnLabel: edit ? 'Cancel editing' : 'Edit report',
+      editBtnBg: edit ? '#1e3a5f' : 'transparent',
+      editBtnColor: edit ? '#ffffff' : '#d6e2ee',
+      editBtnBorder: edit ? '#a8c4de' : 'rgba(143,197,184,.45)'
+    };
+  }
+}
+</script>
+</body>
+</html>

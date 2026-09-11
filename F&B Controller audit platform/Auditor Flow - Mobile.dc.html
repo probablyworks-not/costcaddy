@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  body{margin:0;background:#fafafa;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;color:#111;}
+  input,select,textarea,button{font-family:'Inter',sans-serif;}
+  input,select,textarea{outline:none;}
+  input:focus,select:focus,textarea:focus{border-color:#111 !important;}
+  a{color:#111;}
+  a:hover{color:#666;}
+  ::placeholder{color:#bbb;}
+  button{cursor:pointer;}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;background:#fafafa;">
+
+  <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 28px;border-bottom:1px solid #e6e6e6;flex-wrap:wrap;gap:12px;position:sticky;top:0;background:#fff;z-index:20;">
+    <div style="font-family:'Newsreader',serif;font-size:21px;font-weight:600;">F&amp;B Controller</div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:6px 12px;border-radius:20px;background:#f0f4f9;color:#1e3a5f;border:1px solid #b9c8dd;">Auditor · Mobile</div>
+    </div>
+  </div>
+
+  <div style="flex:1;display:flex;">
+
+  <!-- ===================== AUDITOR ===================== -->
+  <sc-if value="{{showAuditor}}" hint-placeholder-val="{{true}}">
+    <div style="flex:1;display:flex;justify-content:center;padding:{{auditorOuterPad}};background:#fafafa;">
+      <div style="width:100%;max-width:{{auditorMaxWidth}};background:#fff;border:1px solid #e6e6e6;border-radius:{{auditorRadius}};min-height:{{auditorMinHeight}};overflow:hidden;">
+
+        <sc-if value="{{aLogin}}">
+          <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:520px;padding:40px 32px;text-align:center;">
+            <div style="font-family:'Newsreader',serif;font-size:28px;font-weight:600;margin-bottom:6px;">F&amp;B Controller</div>
+            <div style="color:#888;font-size:14px;margin-bottom:36px;">Auditor sign in</div>
+            <div style="width:100%;max-width:280px;display:flex;flex-direction:column;gap:12px;text-align:left;">
+              <label style="font-size:12px;color:#888;">Email</label>
+              <input type="email" placeholder="riya.sharma@fnbcontroller.com" style="padding:11px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-top:-8px;"/>
+              <label style="font-size:12px;color:#888;">Password</label>
+              <input type="password" placeholder="••••••••" style="padding:11px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;margin-top:-8px;"/>
+              <button onClick="{{doLogin}}" style="margin-top:14px;padding:13px;background:#1e3a5f;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;">Log In</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{aPending}}">
+          <div style="padding:24px;">
+            <div style="font-family:'Newsreader',serif;font-size:22px;font-weight:600;">Pending Audits</div>
+            <div style="color:#888;font-size:13px;margin-top:2px;margin-bottom:22px;">Riya Sharma</div>
+            <div style="display:flex;flex-direction:column;gap:0;border-top:1px solid #eee;">
+              <sc-for list="{{pending}}" as="a" hint-placeholder-count="3">
+                <div onClick="{{a.onClick}}" style="padding:16px 4px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+                  <div>
+                    <div style="font-size:15px;font-weight:600;display:flex;align-items:center;gap:7px;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9"/><path d="M9 20v-6h6v6"/></svg><span>{{a.restaurant}}</span></div>
+                    <div style="font-size:13px;color:#888;margin-top:3px;">Due {{a.dueDateLabel}} · {{a.progress}} items</div>
+                    <sc-if value="{{a.overdue}}"><div style="font-size:11px;font-weight:700;letter-spacing:0.04em;margin-top:6px;color:#b91c1c;">● OVERDUE</div></sc-if>
+                  </div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;white-space:nowrap;background:{{a.chipBg}};color:{{a.chipColor}};border:{{a.chipBorder}};">{{a.chipLabel}}</div>
+                </div>
+              </sc-for>
+            </div>
+
+            <sc-if value="{{hasSubmittedHistory}}">
+              <div style="font-size:12px;color:#888;letter-spacing:0.04em;text-transform:uppercase;margin-top:30px;margin-bottom:10px;">Recently Submitted</div>
+              <div style="display:flex;flex-direction:column;border-top:1px solid #eee;">
+                <sc-for list="{{submittedHistory}}" as="a" hint-placeholder-count="1">
+                  <div onClick="{{a.onClick}}" style="padding:14px 4px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;">
+                    <div>
+                      <div style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9"/><path d="M9 20v-6h6v6"/></svg><span>{{a.restaurant}}</span></div>
+                      <div style="font-size:12px;color:#888;margin-top:2px;">Due {{a.dueDateLabel}}</div>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;background:{{a.chipBg}};color:{{a.chipColor}};border:{{a.chipBorder}};">{{a.chipLabel}}</div>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{aChecklist}}">
+          <div>
+            <div style="padding:18px 24px;border-bottom:1px solid #eee;display:flex;flex-direction:{{headerFlexDir}};gap:10px;justify-content:space-between;align-items:{{headerAlign}};">
+              <div>
+                <button onClick="{{backToPending}}" style="border:none;background:none;color:#888;font-size:13px;padding:0;margin-bottom:8px;">‹ Back to pending</button>
+                <div style="font-size:18px;font-weight:600;display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9"/><path d="M9 20v-6h6v6"/></svg><span>{{selRestaurant}}</span></div>
+                <div style="font-size:13px;color:#888;margin-top:2px;">Due {{selDue}}</div>
+              </div>
+              <div style="min-width:160px;">
+                <div style="font-size:12px;color:#888;margin-bottom:6px;text-align:right;">{{selDone}} of {{selTotal}} complete</div>
+                <div style="height:5px;background:#eee;border-radius:3px;overflow:hidden;">
+                  <div style="height:100%;background:#1e3a5f;width:{{selProgressPct}};"></div>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding:8px 24px 100px 24px;">
+              <div style="border:1px solid #e4e7ea;border-radius:10px;background:#fff;margin:14px 0 22px 0;overflow:hidden;">
+                <div style="padding:12px 14px;background:#f7f9fb;border-bottom:1px solid #e4e7ea;">
+                  <div style="font-size:13px;font-weight:700;">1 · Enter today's figures</div>
+                  <div style="font-size:12px;color:#8a93a0;margin-top:2px;">{{mProgress}} · calculated rows fill in automatically</div>
+                </div>
+                <sc-for list="{{mSections}}" as="ms" hint-placeholder-count="4">
+                  <div style="padding:12px 14px;border-bottom:1px solid #f1f3f5;display:flex;flex-direction:column;gap:10px;">
+                    <div style="font-size:11px;font-weight:700;letter-spacing:0.07em;text-transform:uppercase;color:#1e3a5f;">{{ms.name}}</div>
+                    <sc-for list="{{ms.rows}}" as="r" hint-placeholder-count="3">
+                      <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="flex:1;min-width:0;">
+                          <div style="font-size:13px;color:#16202e;">{{r.label}}</div>
+                          <div style="font-size:10px;font-weight:700;letter-spacing:0.05em;text-transform:uppercase;color:#9aa4b2;margin-top:2px;">{{r.unit}}</div>
+                        </div>
+                        <sc-if value="{{r.editable}}" hint-placeholder-val="{{true}}">
+                          <input value="{{r.value}}" onChange="{{r.onChange}}" placeholder="{{r.placeholder}}" style="width:118px;text-align:right;font-size:14px;padding:11px 10px;border:1px solid #ddd;border-radius:8px;"/>
+                        </sc-if>
+                        <sc-if value="{{r.calculated}}">
+                          <span style="width:118px;text-align:right;font-size:13px;font-weight:700;padding:11px 10px;border:1px dashed #d9dee4;border-radius:8px;background:#f6f8fa;">{{r.display}}</span>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-size:13px;font-weight:700;margin-bottom:2px;">2 · Department checklist</div>
+              <div style="font-size:12px;color:#8a93a0;margin-bottom:12px;">Mark each checkpoint and add the observation for the report</div>
+              <sc-for list="{{selGroups}}" as="g" hint-placeholder-count="4">
+              <div style="border:1px solid #e4e7ea;border-radius:10px;background:#fff;margin-bottom:12px;overflow:hidden;">
+              <div style="padding:11px 14px;background:#f7f9fb;border-bottom:1px solid #e4e7ea;display:flex;justify-content:space-between;align-items:center;gap:10px;">
+                <div style="display:flex;align-items:center;gap:9px;min-width:0;">
+                  <div style="width:22px;height:22px;border-radius:6px;background:#eef2f9;border:1px solid #dbe4f0;color:#1e3a5f;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">{{g.num}}</div>
+                  <div style="font-size:13px;font-weight:700;color:#16202e;">{{g.name}}</div>
+                </div>
+                <div style="font-size:11px;color:#8a93a0;white-space:nowrap;">{{g.progress}}</div>
+              </div>
+              <div style="padding:2px 14px 6px 14px;">
+              <sc-for list="{{g.items}}" as="it" hint-placeholder-count="3">
+                <div style="border-bottom:1px solid #eee;padding:14px 0;">
+                  <div onClick="{{it.onToggle}}" style="display:flex;justify-content:space-between;align-items:flex-start;cursor:pointer;gap:12px;">
+                    <div>
+                      <div style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;"><span>{{it.label}}</span><sc-if value="{{it.hasRemark}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></sc-if></div>
+                      <div style="font-size:12px;color:#999;margin-top:3px;">{{it.guidance}}</div>
+                    </div>
+                    <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;white-space:nowrap;background:{{it.chipBg}};color:{{it.chipColor}};border:{{it.chipBorder}};">{{it.chipLabel}}</div>
+                  </div>
+
+                  <sc-if value="{{it.isActive}}">
+                    <div style="margin-top:14px;display:flex;flex-direction:column;gap:12px;">
+                      <div style="display:flex;gap:8px;">
+                        <button onClick="{{it.onPass}}" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:13px;font-weight:{{it.passWeight}};">Pass</button>
+                        <button onClick="{{it.onFail}}" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:13px;font-weight:{{it.failWeight}};">Fail</button>
+                        <button onClick="{{it.onObservation}}" style="flex:1;padding:10px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:13px;font-weight:{{it.obsWeight}};">Observation</button>
+                      </div>
+                      <textarea placeholder="Add a remark…" value="{{it.remark}}" onChange="{{it.onRemarkChange}}" rows="2" style="padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;resize:vertical;width:100%;"></textarea>
+                      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+                        <button onClick="{{it.onAddPhoto}}" style="display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:12px;">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M4 8h3l2-3h6l2 3h3v12H4z"/><circle cx="12" cy="14" r="3.4"/></svg>
+                          Camera
+                        </button>
+                        <button onClick="{{it.onGallery}}" style="display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:12px;">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="1.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5-4 4-3-2-5 5"/></svg>
+                          Gallery
+                        </button>
+                        <label style="display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:12px;cursor:pointer;">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13H6z"/><path d="M9 13h6M9 17h6"/></svg>
+                          CSV / File
+                          <input type="file" accept=".csv,.xlsx,.xls,.pdf,image/*" onChange="{{it.onCsv}}" style="display:none;"/>
+                        </label>
+                        <button onClick="{{it.onPasteShot}}" onPaste="{{it.onPasteShot}}" style="display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px dashed #ccc;border-radius:6px;background:#fafafa;font-size:12px;">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="1.8"><rect x="7" y="4" width="10" height="4" rx="1"/><path d="M9 6H6v14h12V6h-3"/><path d="M9 13h6M9 16h4"/></svg>
+                          Paste screenshot
+                        </button>
+                      </div>
+                      <sc-if value="{{it.hasPhotos}}">
+                        <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                          <sc-for list="{{it.photoArr}}" as="p" hint-placeholder-count="0">
+                            <div style="display:flex;align-items:center;gap:9px;padding:6px 8px 6px 6px;border:1px solid #e8e8e8;border-radius:8px;background:#fff;">
+                              <sc-if value="{{p.isImage}}">
+                                <div style="width:34px;height:34px;border-radius:5px;background:linear-gradient(135deg,#eef2f7,#dde5ee);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#7d8fa3" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="1.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5-4 4-3-2-5 5"/></svg>
+                                </div>
+                              </sc-if>
+                              <sc-if value="{{p.isFile}}">
+                                <div style="width:34px;height:34px;border-radius:5px;background:#eef2f7;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2f5d8a" stroke-width="1.8"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13H6z"/><path d="M9 13h6M9 17h4"/></svg>
+                                </div>
+                              </sc-if>
+                              <div style="display:flex;flex-direction:column;gap:1px;min-width:0;">
+                                <div style="font-size:11px;font-weight:600;color:#222;max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{p.name}}</div>
+                                <div style="font-size:10px;color:#9a9a9a;">{{p.meta}}</div>
+                              </div>
+                              <button onClick="{{p.onRemove}}" style="border:none;background:none;color:#bbb;font-size:13px;line-height:1;padding:2px 3px;flex-shrink:0;">✕</button>
+                            </div>
+                          </sc-for>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-for>
+              </div>
+              </div>
+              </sc-for>
+            </div>
+
+            <div style="position:sticky;bottom:0;background:#fff;border-top:1px solid #eee;padding:14px 24px;">
+              <button onClick="{{doSubmit}}" disabled="{{submitDisabled}}" style="width:100%;padding:14px;border:none;border-radius:7px;font-size:14px;font-weight:600;background:{{submitBg}};color:{{submitColor}};">{{submitLabel}}</button>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{aReport}}">
+          <div style="padding:24px;">
+            <button onClick="{{backToPending}}" style="border:none;background:none;color:#888;font-size:13px;padding:0;margin-bottom:14px;">‹ Back to pending</button>
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;border-bottom:1px solid #eee;padding-bottom:16px;margin-bottom:16px;">
+              <div>
+                <div style="font-size:18px;font-weight:600;display:flex;align-items:center;gap:7px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9"/><path d="M9 20v-6h6v6"/></svg><span>{{selRestaurant}}</span></div>
+                <div style="font-size:13px;color:#888;margin-top:2px;">Due {{selDue}}</div>
+              </div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;background:{{selStatusChipBg}};color:{{selStatusChipColor}};border:{{selStatusChipBorder}};">{{selStatusLabel}}</div>
+            </div>
+            <sc-for list="{{selItems}}" as="it" hint-placeholder-count="6">
+              <div style="border-bottom:1px solid #eee;padding:14px 0;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+                  <div style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;"><span>{{it.label}}</span><sc-if value="{{it.hasRemark}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></sc-if></div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;white-space:nowrap;background:{{it.chipBg}};color:{{it.chipColor}};border:{{it.chipBorder}};">{{it.chipLabel}}</div>
+                </div>
+                <div style="font-size:13px;color:#555;margin-top:6px;">{{it.remarkDisplay}}</div>
+                <sc-if value="{{it.hasFinding}}">
+                  <div style="margin-top:10px;border:1px solid #eee;border-radius:7px;padding:12px 14px;background:#fafafa;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><div style="font-size:11px;color:#999;letter-spacing:0.05em;text-transform:uppercase;">{{it.refId}} · {{it.category}}</div><sc-if value="{{it.isEnhanced}}"><div style="font-size:9px;font-weight:700;letter-spacing:0.06em;padding:3px 7px;border-radius:20px;background:#f0f4f9;color:#1e3a5f;border:1px solid #b9c8dd;">AI-STRUCTURED</div></sc-if></div>
+                      <div style="font-size:10px;font-weight:700;letter-spacing:0.05em;padding:4px 8px;border-radius:20px;background:{{it.sevBg}};color:{{it.sevColor}};">{{it.severity}} SEVERITY</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;">
+                      <div><div style="color:#999;margin-bottom:2px;">Operational Impact</div><div style="color:#333;">{{it.impact}}</div></div>
+                      <div><div style="color:#999;margin-bottom:2px;">Corrective Action</div><div style="color:#333;">{{it.correctiveAction}}</div></div>
+                      <div><div style="color:#999;margin-bottom:2px;">SLA Timeline</div><div style="color:#333;">{{it.sla}}</div></div>
+                      <div><div style="color:#999;margin-bottom:2px;">Assigned Ownership</div><div style="color:#333;">{{it.ownership}}</div></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid #eee;"><div style="font-size:11px;font-weight:600;color:#333;">Status: {{it.resolutionStatus}}</div><div style="font-size:11px;color:#999;">{{it.proofLabel}}</div></div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{it.hasPhotos}}">
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">
+                    <sc-for list="{{it.photoArr}}" as="p" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;border:1px solid #ececec;border-radius:8px;background:#fff;">
+                  <sc-if value="{{p.isImage}}"><div style="width:32px;height:32px;border-radius:5px;background:linear-gradient(135deg,#eef2f7,#dde5ee);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7d8fa3" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="1.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5-4 4-3-2-5 5"/></svg></div></sc-if>
+                  <sc-if value="{{p.isFile}}"><div style="width:32px;height:32px;border-radius:5px;background:#eef2f7;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2f5d8a" stroke-width="1.8"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13H6z"/><path d="M9 13h6M9 17h4"/></svg></div></sc-if>
+                  <div style="display:flex;flex-direction:column;gap:1px;min-width:0;"><div style="font-size:11px;font-weight:600;color:#333;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{p.name}}</div><div style="font-size:10px;color:#9a9a9a;">{{p.meta}}</div></div>
+                </div></sc-for>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+      </div>
+    </div>
+  </sc-if>
+
+  <!-- ===================== SUPER ADMIN ===================== -->
+  <sc-if value="{{showSuper}}" hint-placeholder-val="{{false}}">
+    <div style="width:220px;border-right:1px solid #eee;padding:20px 0;flex-shrink:0;">
+      <div style="font-size:11px;color:#999;letter-spacing:0.06em;text-transform:uppercase;padding:0 20px;margin-bottom:10px;">Super Admin</div>
+      <sc-for list="{{superNav}}" as="n" hint-placeholder-count="6">
+        <div onClick="{{n.onClick}}" style="padding:10px 20px;font-size:14px;cursor:pointer;font-weight:{{n.weight}};background:{{n.bg}};border-left:2px solid {{n.borderColor}};">{{n.label}}</div>
+      </sc-for>
+    </div>
+    <div style="flex:1;padding:28px 40px;max-width:1100px;">
+
+      <sc-if value="{{sRestaurants}}">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;">
+          <div>
+            <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;">Restaurants</div>
+            <div style="color:#888;font-size:13px;margin-top:2px;">Create a restaurant, then run audits under it</div>
+          </div>
+          <button onClick="{{toggleNewRestaurant}}" style="padding:10px 16px;border:1px solid #111;border-radius:6px;background:#fff;font-size:13px;font-weight:600;">+ New Restaurant</button>
+        </div>
+        <sc-if value="{{showNewRestaurant}}">
+          <div style="border:1px solid #e4e4e4;border-radius:8px;padding:16px;margin-bottom:20px;background:#fafbfc;display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;">
+            <div style="flex:1;min-width:200px;">
+              <label style="font-size:12px;color:#888;">Restaurant name</label>
+              <input value="{{newRestaurantName}}" onChange="{{onNewRestaurantName}}" placeholder="e.g. Harbour House" style="width:100%;margin-top:6px;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;"/>
+            </div>
+            <div style="flex:1;min-width:160px;">
+              <label style="font-size:12px;color:#888;">Location</label>
+              <input value="{{newRestaurantCity}}" onChange="{{onNewRestaurantCity}}" placeholder="e.g. Bandra, Mumbai" style="width:100%;margin-top:6px;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;"/>
+            </div>
+            <button onClick="{{createRestaurant}}" style="padding:11px 18px;background:#1e3a5f;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;">Create</button>
+          </div>
+        </sc-if>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <sc-for list="{{restaurantRows}}" as="r" hint-placeholder-count="4">
+            <div onClick="{{r.onClick}}" style="border:1px solid #eee;border-radius:8px;padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9"/><path d="M9 20v-6h6v6"/></svg>
+                <div>
+                  <div style="font-size:15px;font-weight:600;">{{r.name}}</div>
+                  <div style="font-size:12px;color:#999;margin-top:2px;">{{r.city}}</div>
+                </div>
+              </div>
+              <div style="display:flex;gap:22px;align-items:center;">
+                <div style="text-align:right;"><div style="font-size:16px;font-weight:600;">{{r.activeCount}}</div><div style="font-size:11px;color:#999;">Active</div></div>
+                <div style="text-align:right;"><div style="font-size:16px;font-weight:600;">{{r.reviewCount}}</div><div style="font-size:11px;color:#999;">To review</div></div>
+                <div style="text-align:right;"><div style="font-size:16px;font-weight:600;">{{r.publishedCount}}</div><div style="font-size:11px;color:#999;">Published</div></div>
+                <div style="color:#bbb;font-size:16px;">›</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{sRestaurantDetail}}">
+        <button onClick="{{backToRestaurants}}" style="border:none;background:none;color:#888;font-size:13px;padding:0;margin-bottom:14px;">‹ All restaurants</button>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #eee;padding-bottom:18px;margin-bottom:22px;gap:12px;flex-wrap:wrap;">
+          <div>
+            <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;display:flex;align-items:center;gap:9px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9"/><path d="M9 20v-6h6v6"/></svg><span>{{rdName}}</span></div>
+            <div style="color:#888;font-size:13px;margin-top:3px;">{{rdCity}}</div>
+          </div>
+          <button onClick="{{toggleNewAudit}}" style="padding:11px 18px;background:#1e3a5f;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;">+ New Audit</button>
+        </div>
+
+        <sc-if value="{{naOpen}}">
+          <div style="border:1px solid #e4e4e4;border-radius:8px;padding:18px;margin-bottom:26px;background:#fafbfc;">
+            <div style="font-size:13px;font-weight:600;margin-bottom:14px;">Create audit</div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;">
+              <div style="flex:1.4;min-width:220px;">
+                <label style="font-size:12px;color:#888;">Audit template</label>
+                <select value="{{naTemplateId}}" onChange="{{onNaTemplate}}" style="width:100%;margin-top:6px;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+                  <sc-for list="{{templateOptions}}" as="t" hint-placeholder-count="2"><option value="{{t.id}}">{{t.name}}</option></sc-for>
+                </select>
+              </div>
+              <div style="flex:1;min-width:150px;">
+                <label style="font-size:12px;color:#888;">Due date</label>
+                <input type="date" value="{{naDueDate}}" onChange="{{onNaDueDate}}" style="width:100%;margin-top:6px;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;"/>
+              </div>
+              <div style="flex:1;min-width:150px;">
+                <label style="font-size:12px;color:#888;">Auditor (optional)</label>
+                <select value="{{naAuditor}}" onChange="{{onNaAuditor}}" style="width:100%;margin-top:6px;padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+                  <sc-for list="{{auditorOptions}}" as="au" hint-placeholder-count="3"><option value="{{au}}">{{au}}</option></sc-for>
+                </select>
+              </div>
+              <button onClick="{{createAudit}}" style="padding:11px 18px;background:#1e3a5f;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;">Create audit link</button>
+            </div>
+            <div style="font-size:12px;color:#999;margin-top:12px;">A shareable audit URL is generated on create — send it to the auditor, no login setup needed.</div>
+          </div>
+        </sc-if>
+
+        <div style="font-size:11px;color:#999;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">Active audits</div>
+        <sc-if value="{{rdHasActive}}" hint-placeholder-val="{{true}}">
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:30px;">
+            <sc-for list="{{rdActive}}" as="a" hint-placeholder-count="2">
+              <div style="border:1px solid #eee;border-radius:8px;padding:15px 16px;background:{{a.cardBg}};">
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                  <div>
+                    <div style="font-size:14px;font-weight:600;">{{a.templateName}}</div>
+                    <div style="font-size:12px;color:#888;margin-top:3px;">Auditor {{a.auditor}} · Due {{a.dueDateLabel}}</div>
+                  </div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;background:{{a.chipBg}};color:{{a.chipColor}};border:{{a.chipBorder}};">{{a.chipLabel}}</div>
+                </div>
+                <div style="display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap;">
+                  <div style="flex:1;min-width:220px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:#555;background:#fff;border:1px solid #e6e6e6;border-radius:6px;padding:9px 11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{a.url}}</div>
+                  <button onClick="{{a.onCopy}}" style="padding:9px 14px;border:1px solid #1e3a5f;background:{{a.copyBg}};color:{{a.copyColor}};border-radius:6px;font-size:12px;font-weight:600;">{{a.copyLabel}}</button>
+                  <a onClick="{{a.onOpen}}" style="font-size:12px;cursor:pointer;text-decoration:underline;color:#666;">View</a>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{rdNoActive}}"><div style="color:#aaa;font-size:13px;padding:6px 0 30px 0;">No active audits — create one to get a shareable link.</div></sc-if>
+
+        <div style="font-size:11px;color:#999;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">Submitted · awaiting review</div>
+        <sc-if value="{{rdHasSubmitted}}">
+          <div style="border-top:1px solid #eee;margin-bottom:30px;">
+            <sc-for list="{{rdSubmitted}}" as="a" hint-placeholder-count="1">
+              <div onClick="{{a.onReview}}" style="padding:14px 4px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;">{{a.templateName}}</div>
+                  <div style="font-size:12px;color:#888;margin-top:2px;">Submitted by {{a.auditor}} · {{a.submittedLabel}}</div>
+                </div>
+                <div style="font-size:13px;text-decoration:underline;">Review</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{rdNoSubmitted}}"><div style="color:#aaa;font-size:13px;padding:6px 0 30px 0;">Nothing submitted yet.</div></sc-if>
+
+        <div style="font-size:11px;color:#999;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">Audit history</div>
+        <sc-if value="{{rdHasHistory}}">
+          <div style="border-top:1px solid #eee;">
+            <sc-for list="{{rdHistory}}" as="a" hint-placeholder-count="2">
+              <div onClick="{{a.onOpen}}" style="padding:14px 4px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;">{{a.templateName}}</div>
+                  <div style="font-size:12px;color:#888;margin-top:2px;">Published {{a.publishedLabel}} · v{{a.version}} · {{a.auditor}}</div>
+                </div>
+                <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;background:{{a.chipBg}};color:{{a.chipColor}};border:{{a.chipBorder}};">{{a.chipLabel}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{rdNoHistory}}"><div style="color:#aaa;font-size:13px;padding:6px 0;">No published audits yet.</div></sc-if>
+      </sc-if>
+
+      <sc-if value="{{sTemplates}}">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+          <div>
+            <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;">Checklist Templates</div>
+            <div style="color:#888;font-size:13px;margin-top:2px;">Reusable across restaurants</div>
+          </div>
+          <button onClick="{{newTemplateBlank}}" style="padding:10px 16px;border:1px solid #111;border-radius:6px;background:#fff;font-size:13px;font-weight:600;">+ New Template</button>
+        </div>
+        <div style="display:flex;flex-direction:column;border-top:1px solid #eee;">
+          <sc-for list="{{templateRows}}" as="t" hint-placeholder-count="2">
+            <div onClick="{{t.onClick}}" style="padding:16px 4px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:14px;font-weight:600;">{{t.name}}</div>
+              <div style="font-size:13px;color:#888;">{{t.count}} items</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{sBuilder}}">
+        <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;margin-bottom:24px;">Checklist Builder</div>
+        <div style="max-width:640px;">
+          <label style="font-size:12px;color:#888;">Template name</label>
+          <input value="{{builderName}}" onChange="{{onBuilderNameChange}}" placeholder="e.g. Daily Operations Checklist" style="width:100%;margin-top:6px;margin-bottom:20px;padding:11px 12px;border:1px solid #ddd;border-radius:6px;font-size:14px;"/>
+          <sc-for list="{{builderRows}}" as="b" hint-placeholder-count="4">
+            <div style="display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;">
+              <div style="flex:1;display:flex;flex-direction:column;gap:6px;">
+                <input value="{{b.label}}" onChange="{{b.onLabelChange}}" placeholder="Item label" style="padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;font-weight:600;"/>
+                <input value="{{b.guidance}}" onChange="{{b.onGuidanceChange}}" placeholder="Guidance (optional)" style="padding:10px 12px;border:1px solid #ddd;border-radius:6px;font-size:13px;color:#555;"/>
+              </div>
+              <button onClick="{{b.onRemove}}" style="border:1px solid #ddd;background:#fff;border-radius:6px;width:36px;height:36px;font-size:15px;color:#888;">×</button>
+            </div>
+          </sc-for>
+          <button onClick="{{addBuilderItem}}" style="margin-top:6px;padding:10px 14px;border:1px dashed #ccc;background:#fff;border-radius:6px;font-size:13px;color:#555;">+ Add Item</button>
+          <div style="margin-top:24px;">
+            <button onClick="{{saveTemplate}}" style="padding:13px 20px;background:#1e3a5f;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;">Save Template</button>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{sReviewQueue}}">
+        <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;margin-bottom:2px;">Review Queue</div>
+        <div style="color:#888;font-size:13px;margin-bottom:24px;">Submitted audits awaiting review &amp; publish</div>
+        <sc-if value="{{hasReviewItems}}" hint-placeholder-val="{{true}}">
+          <div style="display:flex;flex-direction:column;border-top:1px solid #eee;">
+            <sc-for list="{{reviewRows}}" as="a" hint-placeholder-count="2">
+              <div onClick="{{a.onClick}}" style="padding:16px 4px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9"/><path d="M9 20v-6h6v6"/></svg><span>{{a.restaurant}}</span></div>
+                  <div style="font-size:12px;color:#888;margin-top:2px;">Submitted by {{a.auditor}} · {{a.dueDateLabel}}</div>
+                </div>
+                <div style="font-size:13px;text-decoration:underline;">Review</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{noReviewItems}}"><div style="color:#999;font-size:14px;padding:20px 0;">Nothing waiting for review.</div></sc-if>
+      </sc-if>
+
+      <sc-if value="{{sReview}}">
+        <button onClick="{{backToReviewQueue}}" style="border:none;background:none;color:#888;font-size:13px;padding:0;margin-bottom:14px;">‹ Back to review queue</button>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:14px;border-bottom:1px solid #eee;padding-bottom:18px;margin-bottom:18px;">
+          <div style="flex:1;min-width:260px;">
+            <div style="font-size:20px;font-weight:600;display:flex;align-items:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9"/><path d="M9 20v-6h6v6"/></svg><span>{{selRestaurant}}</span></div>
+            <div style="font-size:13px;color:#888;margin-top:2px;">Auditor: {{selAuditorName}} · Due {{selDue}}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+            <button onClick="{{enhanceAll}}" style="display:flex;align-items:center;gap:6px;padding:9px 14px;border:1px solid #1e3a5f;background:#1e3a5f;color:#fff;border-radius:6px;font-size:12px;font-weight:600;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/></svg>
+              Improve all remarks with AI
+            </button>
+            <sc-if value="{{hasExportFlash}}"><div style="font-size:12px;color:#1e3a5f;font-weight:600;">{{exportFlashLabel}}</div></sc-if>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:nowrap;">
+              <span style="font-size:12px;color:#999;">Export</span>
+              <button onClick="{{exportPdf}}" style="padding:9px 14px;border:1px solid #1e3a5f;background:#fff;color:#1e3a5f;border-radius:6px;font-size:12px;font-weight:600;">PDF</button>
+              <button onClick="{{exportCsv}}" style="padding:9px 14px;border:1px solid #1e3a5f;background:#fff;color:#1e3a5f;border-radius:6px;font-size:12px;font-weight:600;">CSV</button>
+              <button onClick="{{exportHtml}}" style="padding:9px 14px;border:1px solid #1e3a5f;background:#fff;color:#1e3a5f;border-radius:6px;font-size:12px;font-weight:600;">HTML</button>
+            </div>
+          </div>
+        </div>
+        <sc-for list="{{selItems}}" as="it" hint-placeholder-count="6">
+          <div style="border-bottom:1px solid #eee;padding:16px 0;">
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+              <div>
+                <div style="display:flex;gap:10px;align-items:flex-start;">
+                  <div style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;"><span>{{it.label}}</span><sc-if value="{{it.hasRemark}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></sc-if></div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;white-space:nowrap;background:{{it.chipBg}};color:{{it.chipColor}};border:{{it.chipBorder}};">{{it.chipLabel}}</div>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+                  <button onClick="{{it.onPass}}" style="padding:7px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:12px;font-weight:{{it.passWeight}};">Pass</button>
+                  <button onClick="{{it.onFail}}" style="padding:7px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:12px;font-weight:{{it.failWeight}};">Fail</button>
+                  <button onClick="{{it.onObservation}}" style="padding:7px 12px;border:1px solid #ddd;border-radius:6px;background:#fff;font-size:12px;font-weight:{{it.obsWeight}};">Observation</button>
+                </div>
+                <sc-if value="{{it.hasPhotos}}">
+                  <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
+                    <sc-for list="{{it.photoArr}}" as="p" hint-placeholder-count="0"><div style="display:flex;align-items:center;gap:8px;padding:5px 10px 5px 5px;border:1px solid #ececec;border-radius:8px;background:#fff;">
+                  <sc-if value="{{p.isImage}}"><div style="width:30px;height:30px;border-radius:5px;background:linear-gradient(135deg,#eef2f7,#dde5ee);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7d8fa3" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="1.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5-4 4-3-2-5 5"/></svg></div></sc-if>
+                  <sc-if value="{{p.isFile}}"><div style="width:30px;height:30px;border-radius:5px;background:#eef2f7;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#2f5d8a" stroke-width="1.8"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13H6z"/><path d="M9 13h6M9 17h4"/></svg></div></sc-if>
+                  <div style="display:flex;flex-direction:column;gap:1px;min-width:0;"><div style="font-size:11px;font-weight:600;color:#333;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{p.name}}</div><div style="font-size:10px;color:#9a9a9a;">{{p.meta}}</div></div>
+                </div></sc-for>
+                  </div>
+                </sc-if>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="font-size:11px;color:#999;letter-spacing:0.04em;text-transform:uppercase;">Auditor's remark</div>
+                <textarea value="{{it.remark}}" onChange="{{it.onRemarkChange}}" rows="3" placeholder="Edit remark…" style="padding:10px;border:1px solid #ddd;border-radius:6px;font-size:13px;resize:vertical;"></textarea>
+                <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                  <button onClick="{{it.onEnhance}}" style="display:flex;align-items:center;gap:6px;padding:8px 12px;border:1px solid #b9c8dd;border-radius:6px;background:#f6f9fc;color:#1e3a5f;font-size:12px;font-weight:600;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8"><path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9z"/><path d="M18 15l.8 2.2L21 18l-2.2.8L18 21l-.8-2.2L15 18l2.2-.8z"/></svg>
+                    {{it.enhanceLabel}}
+                  </button>
+                  <sc-if value="{{it.aiBusy}}"><div style="font-size:12px;color:#888;">Reading remark + {{it.evidenceCount}} proof file(s)…</div></sc-if>
+                  <sc-if value="{{it.isEnhanced}}"><a onClick="{{it.onRevert}}" style="font-size:12px;color:#888;cursor:pointer;text-decoration:underline;">Revert to original</a></sc-if>
+                </div>
+                <sc-if value="{{it.isEnhanced}}">
+                  <div style="font-size:11px;color:#999;">Original: “{{it.rawRemark}}”</div>
+                </sc-if>
+              </div>
+            </div>
+            <sc-if value="{{it.hasFinding}}">
+              <div style="margin-top:10px;border:1px solid #eee;border-radius:7px;padding:12px 14px;background:#fafafa;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><div style="font-size:11px;color:#999;letter-spacing:0.05em;text-transform:uppercase;">{{it.refId}} · {{it.category}}</div><sc-if value="{{it.isEnhanced}}"><div style="font-size:9px;font-weight:700;letter-spacing:0.06em;padding:3px 7px;border-radius:20px;background:#f0f4f9;color:#1e3a5f;border:1px solid #b9c8dd;">AI-STRUCTURED</div></sc-if></div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:0.05em;padding:4px 8px;border-radius:20px;background:{{it.sevBg}};color:{{it.sevColor}};">{{it.severity}} SEVERITY</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;">
+                  <div><div style="color:#999;margin-bottom:2px;">Operational Impact</div><div style="color:#333;">{{it.impact}}</div></div>
+                  <div><div style="color:#999;margin-bottom:2px;">Corrective Action</div><div style="color:#333;">{{it.correctiveAction}}</div></div>
+                  <div><div style="color:#999;margin-bottom:2px;">SLA Timeline</div><div style="color:#333;">{{it.sla}}</div></div>
+                  <div><div style="color:#999;margin-bottom:2px;">Assigned Ownership</div><div style="color:#333;">{{it.ownership}}</div></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid #eee;"><div style="font-size:11px;font-weight:600;color:#333;">Status: {{it.resolutionStatus}}</div><div style="font-size:11px;color:#999;">{{it.proofLabel}}</div></div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <sc-if value="{{sDetail}}">
+        <button onClick="{{backToDashboard}}" style="border:none;background:none;color:#888;font-size:13px;padding:0;margin-bottom:14px;">‹ Back to dashboard</button>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #eee;padding-bottom:18px;margin-bottom:18px;">
+          <div>
+            <div style="font-size:20px;font-weight:600;display:flex;align-items:center;gap:8px;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9"/><path d="M9 20v-6h6v6"/></svg><span>{{selRestaurant}}</span></div>
+            <div style="font-size:13px;color:#888;margin-top:2px;">Auditor: {{selAuditorName}} · Due {{selDue}}</div>
+          </div>
+          <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;background:{{selStatusChipBg}};color:{{selStatusChipColor}};border:{{selStatusChipBorder}};">{{selStatusLabel}}</div>
+        </div>
+        <sc-for list="{{selItems}}" as="it" hint-placeholder-count="6">
+          <div style="border-bottom:1px solid #eee;padding:14px 0;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+              <div>
+                <div style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;"><span>{{it.label}}</span><sc-if value="{{it.hasRemark}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></sc-if></div>
+                <div style="font-size:13px;color:#888;margin-top:4px;">{{it.remarkDisplay}}</div>
+              </div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;white-space:nowrap;background:{{it.chipBg}};color:{{it.chipColor}};border:{{it.chipBorder}};">{{it.chipLabel}}</div>
+            </div>
+            <sc-if value="{{it.hasFinding}}">
+              <div style="margin-top:10px;border:1px solid #eee;border-radius:7px;padding:12px 14px;background:#fafafa;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><div style="font-size:11px;color:#999;letter-spacing:0.05em;text-transform:uppercase;">{{it.refId}} · {{it.category}}</div><sc-if value="{{it.isEnhanced}}"><div style="font-size:9px;font-weight:700;letter-spacing:0.06em;padding:3px 7px;border-radius:20px;background:#f0f4f9;color:#1e3a5f;border:1px solid #b9c8dd;">AI-STRUCTURED</div></sc-if></div>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:0.05em;padding:4px 8px;border-radius:20px;background:{{it.sevBg}};color:{{it.sevColor}};">{{it.severity}} SEVERITY</div>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;">
+                  <div><div style="color:#999;margin-bottom:2px;">Operational Impact</div><div style="color:#333;">{{it.impact}}</div></div>
+                  <div><div style="color:#999;margin-bottom:2px;">Corrective Action</div><div style="color:#333;">{{it.correctiveAction}}</div></div>
+                  <div><div style="color:#999;margin-bottom:2px;">SLA Timeline</div><div style="color:#333;">{{it.sla}}</div></div>
+                  <div><div style="color:#999;margin-bottom:2px;">Assigned Ownership</div><div style="color:#333;">{{it.ownership}}</div></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid #eee;"><div style="font-size:11px;font-weight:600;color:#333;">Status: {{it.resolutionStatus}}</div><div style="font-size:11px;color:#999;">{{it.proofLabel}}</div></div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <sc-if value="{{sReports}}">
+        <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;margin-bottom:2px;">Operational Reports</div>
+        <div style="color:#888;font-size:13px;margin-bottom:20px;">Upload Excel/CSV, PDF, or image files — auto-parsed into structured insights</div>
+        <div style="border:1px dashed #c7d2df;border-radius:8px;padding:28px;text-align:center;margin-bottom:28px;background:#fafbfc;">
+          <div style="font-size:14px;font-weight:600;margin-bottom:4px;">Drag &amp; drop a report file here</div>
+          <div style="font-size:12px;color:#999;margin-bottom:16px;">Excel · CSV · PDF · Image (OCR)</div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+            <label style="padding:10px 18px;border:1px solid #1e3a5f;color:#1e3a5f;background:#fff;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;">
+              Upload CSV / File
+              <input type="file" accept=".csv,.xlsx,.xls,.pdf,image/*" onChange="{{simulateUpload}}" style="display:none;"/>
+            </label>
+            <button onClick="{{simulateUpload}}" disabled="{{poolEmpty}}" style="padding:10px 18px;border:1px solid #ddd;background:#fff;border-radius:6px;font-size:13px;font-weight:600;color:#555;">{{simulateLabel}}</button>
+          </div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <sc-for list="{{opRows}}" as="o" hint-placeholder-count="6">
+            <div style="border:1px solid #eee;border-radius:8px;">
+              <div onClick="{{o.onToggle}}" style="padding:16px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
+                <div>
+                  <div style="font-size:14px;font-weight:600;">{{o.type}}</div>
+                  <div style="font-size:12px;color:#888;margin-top:3px;">{{o.restaurant}} · {{o.period}} · {{o.format}}</div>
+                </div>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <sc-if value="{{o.flagged}}"><div style="font-size:10px;font-weight:700;letter-spacing:0.05em;padding:5px 9px;border:1px solid #111;border-radius:20px;">LOW CONFIDENCE</div></sc-if>
+                  <div style="font-size:10px;font-weight:700;letter-spacing:0.05em;padding:5px 9px;background:#f0f0f0;border-radius:20px;">PARSED</div>
+                </div>
+              </div>
+              <sc-if value="{{o.expanded}}">
+                <div style="padding:0 18px 18px 18px;border-top:1px solid #eee;">
+                  <div style="font-size:12px;color:#999;letter-spacing:0.04em;text-transform:uppercase;margin:14px 0 8px 0;">Parsed Preview</div>
+                  <div style="border:1px solid #eee;border-radius:6px;overflow:hidden;margin-bottom:16px;">
+                    <div style="display:grid;grid-template-columns:repeat({{o.colCount}},1fr);background:#fafafa;padding:8px 12px;font-size:11px;color:#888;">
+                      <sc-for list="{{o.cols}}" as="c" hint-placeholder-count="4"><div>{{c}}</div></sc-for>
+                    </div>
+                    <sc-for list="{{o.rows}}" as="r" hint-placeholder-count="3">
+                      <div style="display:grid;grid-template-columns:repeat({{o.colCount}},1fr);padding:9px 12px;font-size:13px;border-top:1px solid #f0f0f0;">
+                        <sc-for list="{{r.cells}}" as="cell" hint-placeholder-count="4"><div>{{cell}}</div></sc-for>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <div style="font-size:12px;color:#999;letter-spacing:0.04em;text-transform:uppercase;margin-bottom:8px;">Insights</div>
+                  <sc-for list="{{o.insights}}" as="ins" hint-placeholder-count="2">
+                    <div style="font-size:13px;padding:6px 0;border-top:1px solid #f5f5f5;">— {{ins}}</div>
+                  </sc-for>
+                  <div style="margin-top:14px;"><a style="font-size:12px;text-decoration:underline;cursor:pointer;">Download original file</a></div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+    </div>
+  </sc-if>
+
+  <!-- ===================== RESTAURANT ADMIN ===================== -->
+  <sc-if value="{{showRestaurant}}" hint-placeholder-val="{{false}}">
+    <div style="width:220px;border-right:1px solid #eee;padding:20px 0;flex-shrink:0;">
+      <div style="font-size:12px;color:#333;letter-spacing:0.02em;padding:0 20px;margin-bottom:14px;display:flex;align-items:center;gap:7px;font-weight:600;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="1.8" style="flex-shrink:0;"><path d="M3 9l1-5h16l1 5"/><path d="M4 9v10a1 1 0 001 1h14a1 1 0 001-1V9"/><path d="M9 20v-6h6v6"/></svg><span>Spice Route</span></div>
+      <div onClick="{{goReportsList}}" style="padding:10px 20px;font-size:14px;cursor:pointer;font-weight:{{navReportsWeight}};background:{{navReportsBg}};border-left:2px solid {{navReportsBorder}};">Published Reports</div>
+      <div onClick="{{goDeferred}}" style="padding:10px 20px;font-size:14px;cursor:pointer;font-weight:{{navDeferredWeight}};background:{{navDeferredBg}};border-left:2px solid {{navDeferredBorder}};color:#999;">Task Assignment</div>
+    </div>
+    <div style="flex:1;padding:28px 40px;max-width:1000px;">
+
+      <sc-if value="{{rList}}">
+        <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;margin-bottom:2px;">Published Reports</div>
+        <div style="color:#888;font-size:13px;margin-bottom:24px;">Only reports published for Spice Route</div>
+        <div style="display:flex;flex-direction:column;border-top:1px solid #eee;">
+          <sc-for list="{{publishedRows}}" as="a" hint-placeholder-count="2">
+            <div onClick="{{a.onClick}}" style="padding:16px 4px;border-bottom:1px solid #eee;cursor:pointer;display:flex;justify-content:space-between;align-items:center;">
+              <div>
+                <div style="font-size:14px;font-weight:600;">{{a.templateName}}</div>
+                <div style="font-size:12px;color:#888;margin-top:2px;">Published {{a.publishedLabel}} · Audited {{a.dueDateLabel}}</div>
+              </div>
+              <div style="font-size:13px;text-decoration:underline;">View</div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{rDetail}}">
+        <button onClick="{{goReportsList}}" style="border:none;background:none;color:#888;font-size:13px;padding:0;margin-bottom:14px;">‹ Back to reports</button>
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;border-bottom:1px solid #eee;padding-bottom:18px;margin-bottom:18px;">
+          <div>
+            <div style="font-size:20px;font-weight:600;">{{pubTemplateName}}</div>
+            <div style="font-size:13px;color:#888;margin-top:2px;">Outlet: {{pubRestaurant}} · Audit date {{pubAuditDate}}</div>
+            <div style="font-size:13px;color:#888;margin-top:2px;">Published {{pubPublishedLabel}} · v{{pubVersion}} · Auditor: {{pubAuditor}}</div>
+          </div>
+          <div style="position:relative;">
+            <button onClick="{{doExport}}" style="padding:10px 16px;border:1px solid #111;background:#fff;border-radius:6px;font-size:13px;font-weight:600;">Export PDF</button>
+            <sc-if value="{{exportFlash}}"><div style="position:absolute;top:-26px;right:0;font-size:11px;color:#111;">Exported ✓</div></sc-if>
+          </div>
+        </div>
+        <sc-if value="{{pubHasFindings}}" hint-placeholder-val="{{true}}">
+          <div style="font-size:11px;color:#999;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;">Observation Report</div>
+          <div style="overflow-x:auto;border:1px solid #dfe4ea;border-radius:8px;margin-bottom:32px;">
+            <div style="min-width:1120px;">
+              <div style="display:grid;grid-template-columns:64px 1.05fr 2.3fr 0.75fr 1.5fr 2.3fr 0.95fr 1.15fr 0.7fr;background:#1d2537;color:#fff;font-size:11px;font-weight:700;letter-spacing:0.02em;">
+                <div style="padding:9px 10px;">Ref ID</div>
+                <div style="padding:9px 10px;">Core Category</div>
+                <div style="padding:9px 10px;">Specific Findings / Observations</div>
+                <div style="padding:9px 10px;">Risk Severity</div>
+                <div style="padding:9px 10px;">Operational Impact</div>
+                <div style="padding:9px 10px;">Immediate Corrective Action Required</div>
+                <div style="padding:9px 10px;">SLA Timeline</div>
+                <div style="padding:9px 10px;">Assigned Ownership</div>
+                <div style="padding:9px 10px;">Status</div>
+              </div>
+              <sc-for list="{{pubFindings}}" as="f" hint-placeholder-count="3">
+                <div style="display:grid;grid-template-columns:64px 1.05fr 2.3fr 0.75fr 1.5fr 2.3fr 0.95fr 1.15fr 0.7fr;border-top:1px solid #e6e9ee;font-size:11.5px;color:#333;background:{{f.rowBg}};">
+                  <div style="padding:11px 10px;font-weight:600;text-align:center;">{{f.refId}}</div>
+                  <div style="padding:11px 10px;text-align:center;">{{f.category}}</div>
+                  <div style="padding:11px 10px;text-wrap:pretty;">{{f.remarkDisplay}}</div>
+                  <div style="padding:11px 10px;text-align:center;font-weight:700;background:{{f.sevBg}};color:{{f.sevColor}};">{{f.severity}}</div>
+                  <div style="padding:11px 10px;text-wrap:pretty;">{{f.impact}}</div>
+                  <div style="padding:11px 10px;text-wrap:pretty;">{{f.correctiveAction}}</div>
+                  <div style="padding:11px 10px;text-align:center;">{{f.sla}}</div>
+                  <div style="padding:11px 10px;text-align:center;">{{f.ownership}}</div>
+                  <div style="padding:11px 10px;text-align:center;font-weight:700;color:#1d2537;">{{f.resolutionStatus}}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+        <div style="font-size:11px;color:#999;letter-spacing:0.06em;text-transform:uppercase;margin-bottom:4px;">Checkpoint detail &amp; evidence</div>
+        <sc-for list="{{pubItems}}" as="it" hint-placeholder-count="6">
+          <div style="border-bottom:1px solid #eee;padding:14px 0;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;">
+              <div style="font-size:14px;font-weight:600;display:flex;align-items:center;gap:6px;"><span>{{it.label}}</span><sc-if value="{{it.hasRemark}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1e3a5f" stroke-width="3"><path d="M4 12l5 5L20 6"/></svg></sc-if></div>
+              <div style="font-size:10px;font-weight:700;letter-spacing:0.06em;padding:5px 9px;border-radius:20px;white-space:nowrap;background:{{it.chipBg}};color:{{it.chipColor}};border:{{it.chipBorder}};">{{it.chipLabel}}</div>
+            </div>
+            <div style="font-size:13px;color:#555;margin-top:6px;">{{it.remarkDisplay}}</div>
+                <sc-if value="{{it.hasFinding}}">
+                  <div style="margin-top:10px;border:1px solid #eee;border-radius:7px;padding:12px 14px;background:#fafafa;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;"><div style="font-size:11px;color:#999;letter-spacing:0.05em;text-transform:uppercase;">{{it.refId}} · {{it.category}}</div><sc-if value="{{it.isEnhanced}}"><div style="font-size:9px;font-weight:700;letter-spacing:0.06em;padding:3px 7px;border-radius:20px;background:#f0f4f9;color:#1e3a5f;border:1px solid #b9c8dd;">AI-STRUCTURED</div></sc-if></div>
+                      <div style="font-size:10px;font-weight:700;letter-spacing:0.05em;padding:4px 8px;border-radius:20px;background:{{it.sevBg}};color:{{it.sevColor}};">{{it.severity}} SEVERITY</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;">
+                      <div><div style="color:#999;margin-bottom:2px;">Operational Impact</div><div style="color:#333;">{{it.impact}}</div></div>
+                      <div><div style="color:#999;margin-bottom:2px;">Corrective Action</div><div style="color:#333;">{{it.correctiveAction}}</div></div>
+                      <div><div style="color:#999;margin-bottom:2px;">SLA Timeline</div><div style="color:#333;">{{it.sla}}</div></div>
+                      <div><div style="color:#999;margin-bottom:2px;">Assigned Ownership</div><div style="color:#333;">{{it.ownership}}</div></div>
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:10px;padding-top:9px;border-top:1px solid #eee;"><div style="font-size:11px;font-weight:600;color:#333;">Status: {{it.resolutionStatus}}</div><div style="font-size:11px;color:#999;">{{it.proofLabel}}</div></div>
+                  </div>
+                </sc-if>
+            <sc-if value="{{it.hasPhotos}}">
+              <div style="margin-top:12px;">
+                <div style="font-size:10.5px;color:#9a9a9a;letter-spacing:0.05em;text-transform:uppercase;margin-bottom:7px;">Photo evidence · {{it.proofLabel}}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:12px;">
+                  <sc-for list="{{it.photoArr}}" as="p" hint-placeholder-count="0"><div style="width:150px;">
+                    <div style="height:104px;border:1px solid #e4e8ee;border-radius:7px;background:linear-gradient(135deg,#eef2f7,#dbe3ec);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;">
+                      <sc-if value="{{p.isImage}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8496aa" stroke-width="1.6"><rect x="3" y="4" width="18" height="16" rx="1.5"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 16l-5-5-4 4-3-2-5 5"/></svg></sc-if>
+                      <sc-if value="{{p.isFile}}"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2f5d8a" stroke-width="1.6"><path d="M14 3v5h5"/><path d="M6 3h8l5 5v13H6z"/><path d="M9 13h6M9 17h4"/></svg></sc-if>
+                      <div style="font-size:10px;color:#8496aa;">{{p.meta}}</div>
+                    </div>
+                    <div style="font-size:10.5px;color:#666;margin-top:5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">{{p.name}}</div>
+                  </div></sc-for>
+                </div>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </sc-if>
+
+      <sc-if value="{{rDeferred}}">
+        <div style="font-family:'Newsreader',serif;font-size:24px;font-weight:600;margin-bottom:2px;">Task Assignment</div>
+        <div style="border:1px solid #ddd;border-radius:8px;padding:16px 18px;margin:18px 0 26px 0;font-size:13px;color:#555;">Coming soon — deferred to a later phase. You'll be able to create roles, assign corrective tasks to Food &amp; Procurement managers, and track status here.</div>
+        <div style="opacity:0.45;pointer-events:none;">
+          <div style="display:flex;flex-direction:column;border-top:1px solid #eee;">
+            <div style="padding:14px 4px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:14px;font-weight:600;">Food Manager</div>
+              <button style="padding:8px 14px;border:1px solid #ddd;background:#fff;border-radius:6px;font-size:12px;">Assign Task</button>
+            </div>
+            <div style="padding:14px 4px;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center;">
+              <div style="font-size:14px;font-weight:600;">Procurement Manager</div>
+              <button style="padding:8px 14px;border:1px solid #ddd;background:#fff;border-radius:6px;font-size:12px;">Assign Task</button>
+            </div>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+  </sc-if>
+
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const TODAY = '2026-07-21';
+const RESTAURANTS = ['Unit 7A Restaurant & Bar', 'Coastal Kitchen', 'The Grand Bistro', 'Spice Route'];
+const AUDITORS = ['Riya Sharma', 'Aman Verma', 'Kabir Singh'];
+const RESTAURANT_RECORDS = [
+  {id:'r1', name:'Unit 7A Restaurant & Bar', city:'Lower Parel, Mumbai'},
+  {id:'r2', name:'Coastal Kitchen', city:'Panjim, Goa'},
+  {id:'r3', name:'The Grand Bistro', city:'Indiranagar, Bengaluru'},
+  {id:'r4', name:'Spice Route', city:'Connaught Place, Delhi'},
+];
+
+const T1_ITEMS = [
+  {dept:'Revenue Control', label:'Verify NC (Non-Chargeable) Report', guidance:'Cross-check comps against approved list'},
+  {dept:'Revenue Control', label:'Cancellation Orders Review', guidance:'Check cancellation reasons match POS log'},
+  {dept:'Revenue Control', label:'Bill Modification Check', guidance:'Verify edited bills have manager sign-off'},
+  {dept:'Revenue Control', label:'Discount Report Review', guidance:'Flag discounts beyond policy threshold'},
+  {dept:'Purchase & Stores', label:'Stock Reconciliation', guidance:'Compare opening/closing stock to purchase log'},
+  {dept:'Kitchen & Food Safety', label:'Food Storage & Hygiene', guidance:'Photograph cold storage, check temps logged'},
+  {dept:'Operations (FOH)', label:'Service Charge Verification', guidance:'Confirm service charge not waived without approval'},
+  {dept:'Purchase & Stores', label:'Vendor Invoice Spot Check', guidance:'Match 3 invoices to purchase statement'},
+];
+const T2_ITEMS = [
+  {dept:'Kitchen & Food Safety', label:'Cold Storage Temperature Check', guidance:'Record fridge/freezer temps, photograph display'},
+  {dept:'Kitchen & Food Safety', label:'Food Labelling & Dating', guidance:'Verify FIFO labels on stored items'},
+  {dept:'Security', label:'Pest Control Compliance', guidance:'Check pest control log signed within 30 days'},
+  {dept:'Kitchen & Food Safety', label:'Staff Hygiene Check', guidance:'Verify staff wearing gloves/hairnets in kitchen'},
+  {dept:'Security', label:'Fire Safety Equipment', guidance:'Check extinguisher tags and expiry'},
+  {dept:'Operations (FOH)', label:'Waste Disposal Practices', guidance:'Verify segregated waste bins in use'},
+];
+
+const DEFAULT_METRIC_CATS = [
+  {id:'vol',name:'Volume',rows:[['m_pax','No Of Pax','count']],total:'Total No Of Pax'},
+  {id:'sal',name:'Sales',rows:[['m_food','Food Sales','currency'],['m_liq','Liquor Sales','currency'],['m_bev','Beverage Sales','currency']],total:'Net Sales at Restaurant'},
+  {id:'tax',name:'Taxes',rows:[['m_sc','Service Charge','currency'],['m_sgst','SGST','currency'],['m_cgst','CGST','currency'],['m_vat','VAT','currency']],total:'Total Taxes'},
+  {id:'bar',name:'Bar Cost',rows:[['m_bbev','Beverage','currency'],['m_bliq','Liquor','currency'],['m_bper','Perishables and Provision','currency']],total:'Total Bar Cost'},
+  {id:'kit',name:'Kitchen Cost',rows:[['m_kfood','Food Kitchen','currency'],['m_kstaff','Staff Food','currency']],total:'Total Kitchen Cost'}
+];
+const FOOD_SAFETY_METRICS = [
+  {id:'vol',name:'Volume',rows:[['m_pax','No Of Pax','count']],total:'Total No Of Pax'},
+  {id:'kit',name:'Kitchen Cost',rows:[['m_kfood','Food Kitchen','currency'],['m_kstaff','Staff Food','currency']],total:'Total Kitchen Cost'}
+];
+
+const DEPT_PREFIX = (name)=>((String(name||'').replace(/[^A-Za-z ]/g,'').trim().split(/\s+/).join('')||'DEP').slice(0,3)+'XXX').slice(0,3).toUpperCase();
+
+const TEMPLATES = [
+  {id:'t1', name:'Daily Operations Checklist', items:T1_ITEMS, metrics:DEFAULT_METRIC_CATS},
+  {id:'t2', name:'Food Safety & Compliance', items:T2_ITEMS, metrics:FOOD_SAFETY_METRICS},
+];
+
+function mkItems(auditId, defs, statuses) {
+  const counters = {};
+  return defs.map((d,i) => {
+    const st = (statuses && statuses[i]) || {};
+    const dept = d.dept || 'General';
+    counters[dept] = (counters[dept]||0)+1;
+    return {
+      id: auditId+'-i'+i, label:d.label, guidance:d.guidance,
+      dept, code: DEPT_PREFIX(dept)+'-'+String(counters[dept]).padStart(2,'0'),
+      status: st.status || 'pending', remark: st.remark || '', photos: st.photos || 0,
+      files: st.files || Array.from({length: st.photos || 0}, (_,k)=>({kind:'image', name:'IMG_'+(2041+i*17+k*3)+'.jpg', meta:'Camera · '+(1.2+k*0.4).toFixed(1)+' MB'})),
+      severity: st.severity || null, impact: st.impact || '', correctiveAction: st.correctiveAction || '',
+      sla: st.sla || '', ownership: st.ownership || '', resolutionStatus: st.resolutionStatus || '',
+    };
+  });
+}
+
+const AUDITS = [
+  {id:'a1', restaurant:'Unit 7A Restaurant & Bar', auditor:'Riya Sharma', templateId:'t1', dueDate:'2026-07-14', status:'submitted', submittedAt:'2026-07-14', items: mkItems('a1', T1_ITEMS, [
+    {status:'pass', remark:'All comps match approved list, no discrepancies.', photos:1},
+    {status:'pass', remark:'Reasons logged correctly for all 4 cancellations.', photos:0},
+    {status:'fail', remark:'2 of 6 edited bills missing manager sign-off.', photos:2, severity:'High', impact:'Unauthorized bill edits create revenue leakage risk and weaken audit trail integrity.', correctiveAction:'Enforce mandatory manager sign-off on all bill edits before closure; retrain billing staff on the exception workflow.', sla:'Within 48 Hours', ownership:'Restaurant Manager / Billing Team', resolutionStatus:'Pending'},
+    {status:'observation', remark:'One discount at 22%, above the 20% threshold — flagged for follow-up.', photos:1, severity:'Medium', impact:'Discounts above policy threshold reduce net margin if left unchecked across outlets.', correctiveAction:'Review the flagged bill with the manager on duty and confirm approval was obtained; recalibrate the discount alert threshold.', sla:'Within 5 Business Days', ownership:'Restaurant Manager', resolutionStatus:'Pending'},
+    {status:'pass', remark:'Closing stock matches purchase log within tolerance.', photos:0},
+    {status:'pass', remark:'Cold storage at 3°C, dating in order.', photos:3},
+    {status:'pass', remark:'No unauthorised waivers found.', photos:0},
+    {status:'observation', remark:'One invoice missing vendor GST number.', photos:1, severity:'Medium', impact:'Missing GST details can block input tax credit and complicate vendor reconciliation.', correctiveAction:'Request a corrected invoice from the vendor with GST number; hold future payments until resolved.', sla:'Within 5 Business Days', ownership:'Procurement Team', resolutionStatus:'Pending'},
+  ])},
+  {id:'a2', restaurant:'Coastal Kitchen', auditor:'Riya Sharma', templateId:'t1', dueDate:'2026-07-24', status:'assigned', items: mkItems('a2', T1_ITEMS)},
+  {id:'a3', restaurant:'The Grand Bistro', auditor:'Aman Verma', templateId:'t2', dueDate:'2026-07-19', status:'in-progress', items: mkItems('a3', T2_ITEMS, [
+    {status:'pass', remark:'Fridge 2°C, freezer -18°C, both logged.', photos:2},
+    {status:'observation', remark:'Two items past FIFO date but not discarded yet.', photos:1, severity:'High', impact:'Expired or unlabelled stock risks serving compromised ingredients to guests.', correctiveAction:'Discard unlabelled items immediately; retrain kitchen staff on FIFO labelling and enforce daily spot checks.', sla:'Immediate (24 Hours)', ownership:'Sous Chef / Kitchen Team', resolutionStatus:'Pending'},
+    {status:'pass', remark:'Log signed 12 days ago.', photos:0},
+  ])},
+  {id:'a4', restaurant:'Spice Route', auditor:'Kabir Singh', templateId:'t1', dueDate:'2026-07-10', status:'published', publishedAt:'2026-07-12', version:1, items: mkItems('a4', T1_ITEMS, [
+    {status:'pass', remark:'Comps within policy.', photos:0},
+    {status:'pass', remark:'All reasons logged.', photos:0},
+    {status:'pass', remark:'Sign-off present on all edits.', photos:1},
+    {status:'observation', remark:'One discount slightly above threshold, noted.', photos:0, severity:'Medium', impact:'Slightly elevated discount rate on one bill; low overall margin impact.', correctiveAction:'Noted and approved by manager on duty; monitor next audit cycle.', sla:'Reviewed', ownership:'Restaurant Manager', resolutionStatus:'Resolved'},
+    {status:'pass', remark:'Stock reconciled.', photos:0},
+    {status:'pass', remark:'Storage compliant.', photos:2},
+    {status:'pass', remark:'No waivers found.', photos:0},
+    {status:'pass', remark:'Invoices matched.', photos:0},
+  ])},
+  {id:'a5', restaurant:'Unit 7A Restaurant & Bar', auditor:'Riya Sharma', templateId:'t1', dueDate:'2026-07-19', status:'in-progress', items: mkItems('a5', T1_ITEMS, [
+    {status:'pass', remark:'Comps within policy.', photos:0},
+    {status:'fail', remark:'Two cancellations lack reason codes.', photos:1, severity:'High', impact:'Missing reason codes obscure root causes and prevent SOP corrective tracking.', correctiveAction:'Enforce mandatory reason-code entry at POS for every cancellation; audit weekly compliance.', sla:'Within 48 Hours', ownership:'Restaurant Manager', resolutionStatus:'Pending'},
+    {status:'pass', remark:'Sign-offs present.', photos:0},
+    {status:'observation', remark:'Discount pattern to monitor next cycle.', photos:0, severity:'Medium', impact:'Recurring discount pattern warrants monitoring for policy drift.', correctiveAction:'Flag pattern to Super Admin for trend review next cycle.', sla:'Within 5 Business Days', ownership:'Restaurant Manager', resolutionStatus:'Pending'},
+  ])},
+  {id:'a6', restaurant:'The Grand Bistro', auditor:'Riya Sharma', templateId:'t2', dueDate:'2026-07-30', status:'assigned', items: mkItems('a6', T2_ITEMS)},
+  {id:'a7', restaurant:'Spice Route', auditor:'Kabir Singh', templateId:'t2', dueDate:'2026-06-18', status:'published', publishedAt:'2026-06-22', version:1, items: mkItems('a7', T2_ITEMS, [
+    {status:'pass', remark:'Temps within range, photographed.', photos:1},
+    {status:'pass', remark:'Labels in order.', photos:0},
+    {status:'pass', remark:'Signed 5 days ago.', photos:0},
+    {status:'pass', remark:'Gloves and hairnets worn throughout.', photos:1},
+    {status:'pass', remark:'Tags current.', photos:0},
+    {status:'observation', remark:'One bin unsegregated near service exit.', photos:1, severity:'Medium', impact:'Unsegregated waste risks a compliance breach with municipal waste norms.', correctiveAction:'Install labelled bins near the service exit; retrain stewarding staff on segregation policy.', sla:'Within 5 Business Days', ownership:'Stewarding Head', resolutionStatus:'Resolved'},
+  ])},
+];
+
+const OPREPORTS_SEED = [
+  {id:'o1', type:'Bill Edit & Modification', restaurant:'Unit 7A Restaurant & Bar', period:'Jul 1–15, 2026', format:'Excel', flagged:false,
+    cols:['Bill #','Item Change','Reason','Amount'],
+    rows:[{cells:['B-1042','Service charge removed','Guest complaint','₹420']},{cells:['B-1055','Item removed','Kitchen error','₹610']},{cells:['B-1061','Discount applied','Swiggy Dineout','₹210']}],
+    insights:['Service charge removed on 3 bills totaling ₹1,240','Swiggy Dineout discount applied to 12 bills this period']},
+  {id:'o2', type:'Non-chargeable', restaurant:'Spice Route', period:'Jul 2026', format:'Excel', flagged:false,
+    cols:['Item','Recipient','Reason','Value'],
+    rows:[{cells:['Staff Meal Set','Kitchen Staff','Staff meal','₹1,800']},{cells:['Mocktail x2','DJ Booth','Complimentary','₹340']},{cells:['Starter Platter','Govt Official','Compliance visit','₹950']}],
+    insights:['Comp value ₹8,600 this period, 14% of comps to staff meals','Govt-official comps trending above prior month']},
+  {id:'o3', type:'Item Purchase Statement', restaurant:'Coastal Kitchen', period:'Jun 2026', format:'Image', flagged:true,
+    cols:['Item','Vendor','Qty','Amount'],
+    rows:[{cells:['Tomato','Fresh Farms','120 kg','₹9,600']},{cells:['Paneer','Coastal Dairy','60 kg','₹18,000']},{cells:['Chicken','Sea Suppliers','200 kg','₹52,000']}],
+    insights:['Tomato price up 18% vs last month','Vendor switch on dairy — cost down 6%']},
+  {id:'o4', type:'Stock Statement', restaurant:'The Grand Bistro', period:'Jul 18, 2026', format:'Excel', flagged:false,
+    cols:['Item','Opening','Closing','Variance'],
+    rows:[{cells:['House Whisky','48 btl','31 btl','-2.1%']},{cells:['Olive Oil','22 L','15 L','+0.4%']},{cells:['Rice','80 kg','54 kg','-0.8%']}],
+    insights:['Shrinkage of 2.1% on bar inventory vs expected consumption']},
+  {id:'o5', type:'Item Cancellation', restaurant:'Unit 7A Restaurant & Bar', period:'Jul 2026', format:'CSV', flagged:false,
+    cols:['Item','Reason','Time','Value'],
+    rows:[{cells:['Grilled Salmon','Kitchen delay','8:14 PM','₹890']},{cells:['Mojito','Wrong order','7:02 PM','₹380']},{cells:['Pasta','Guest changed mind','9:20 PM','₹520']}],
+    insights:['9 cancellations this period, 5 due to "kitchen delay"']},
+  {id:'o6', type:'Discounts', restaurant:'Spice Route', period:'Jul 2026', format:'PDF', flagged:true,
+    cols:['Bill #','Discount %','Reason'],
+    rows:[{cells:['B-2201','22%','Loyalty']},{cells:['B-2214','—','—']}],
+    insights:['Scan quality low — 2 of 9 rows need manual review']},
+];
+const OPPOOL = [
+  {id:'o7', type:'Bill Edit & Modification', restaurant:'Spice Route', period:'Jul 2026', format:'PDF', flagged:false,
+    cols:['Bill #','Item Change','Reason','Amount'],
+    rows:[{cells:['B-3310','Service charge removed','Manager override','₹300']},{cells:['B-3325','Item added','Guest request','₹150']}],
+    insights:['Service charge removed on 1 bill this cycle']},
+  {id:'o8', type:'Discounts', restaurant:'Coastal Kitchen', period:'Jul 2026', format:'Excel', flagged:false,
+    cols:['Bill #','Discount %','Reason'],
+    rows:[{cells:['B-4410','15%','Regular guest']},{cells:['B-4432','25%','Manager approval']}],
+    insights:['One discount at 25% exceeds the 20% policy threshold']},
+];
+
+class Component extends DCLogic {
+  state = {
+    role:'auditor', device:'mobile',
+    auditorScreen:'login', superScreen:'restaurants', restaurantScreen:'reports',
+    restaurants:RESTAURANT_RECORDS, selectedRestaurantId:null,
+    showNewRestaurant:false, newRestaurantName:'', newRestaurantCity:'',
+    naOpen:false, naTemplateId:TEMPLATES[0].id, naDueDate:'', naAuditor:AUDITORS[0], copiedAuditId:null, aiBusyIds:[],
+    selectedAuditId:null, selectedPublishedId:null, activeItemId:null, expandedOpId:null,
+    audits:AUDITS, templates:TEMPLATES, opReports:OPREPORTS_SEED, opPool:OPPOOL,
+    newAuditName:'', newAuditRestaurant:RESTAURANTS[0], newAuditMode:'new', newAuditTemplateId:TEMPLATES[0].id,
+    builderName:'', builderItems:[], builderTemplateId:null, builderFromCreate:false,
+    assignAuditorName:AUDITORS[0], assignRestaurant:RESTAURANTS[0], assignDueDate:'', assignTemplateId:TEMPLATES[0].id,
+    exportFlash:false,
+  };
+
+  goAuditor=()=>this.setState({role:'auditor'});
+  goSuper=()=>this.setState({role:'super'});
+  goRestaurant=()=>this.setState({role:'restaurant'});
+  setMobile=()=>this.setState({device:'mobile'});
+  setLaptop=()=>this.setState({device:'laptop'});
+
+  doLogin=()=>this.setState({auditorScreen:'pending'});
+  openAudit=(id)=>this.setState({selectedAuditId:id, auditorScreen:'checklist', activeItemId:null});
+  viewReport=(id)=>this.setState({selectedAuditId:id, auditorScreen:'report'});
+  backToPending=()=>this.setState({auditorScreen:'pending'});
+  toggleItem=(id)=>this.setState(s=>({activeItemId: s.activeItemId===id ? null : id}));
+
+  setItemStatus=(auditId,itemId,status)=>this.setState(s=>({audits:s.audits.map(a=>a.id!==auditId?a:{...a,items:a.items.map(it=>it.id!==itemId?it:{...it,status})})}));
+  updateRemark=(auditId,itemId,val)=>this.setState(s=>({audits:s.audits.map(a=>a.id!==auditId?a:{...a,items:a.items.map(it=>it.id!==itemId?it:{...it,remark:val})})}));
+  newFile=(kind,n)=>{
+    if (kind==='csv') return {kind:'csv', name:'pos_export_0714.csv', meta:'312 rows · 48 KB'};
+    if (kind==='paste') return {kind:'image', name:'Pasted screenshot '+(n+1), meta:'Clipboard · 1440×900'};
+    if (kind==='gallery') return {kind:'image', name:'photo_0714_'+(n+1)+'.jpg', meta:'Gallery · 1.8 MB'};
+    return {kind:'image', name:'IMG_'+(3100+n)+'.jpg', meta:'Camera · 2.4 MB'};
+  };
+  addPhoto=(auditId,itemId,kind)=>this.setState(s=>({audits:s.audits.map(a=>a.id!==auditId?a:{...a,items:a.items.map(it=>{
+    if(it.id!==itemId) return it;
+    const files=[...(it.files||[]), this.newFile(kind||'camera',(it.files||[]).length)];
+    return {...it, files, photos:files.length};
+  })})}));
+  removeFile=(auditId,itemId,idx)=>this.setState(s=>({audits:s.audits.map(a=>a.id!==auditId?a:{...a,items:a.items.map(it=>{
+    if(it.id!==itemId) return it;
+    const files=(it.files||[]).filter((_,k)=>k!==idx);
+    return {...it, files, photos:files.length};
+  })})}));
+
+  doSubmit=()=>{
+    const id=this.state.selectedAuditId;
+    this.setState(s=>({audits:s.audits.map(a=>a.id!==id?a:{...a,status:'submitted',submittedAt:TODAY}), auditorScreen:'report'}));
+  };
+
+  goSuperScreen=(scr)=>this.setState({superScreen:scr});
+  toggleNewRestaurant=()=>this.setState(s=>({showNewRestaurant:!s.showNewRestaurant}));
+  onNewRestaurantName=(e)=>this.setState({newRestaurantName:e.target.value});
+  onNewRestaurantCity=(e)=>this.setState({newRestaurantCity:e.target.value});
+  createRestaurant=()=>this.setState(s=>{
+    const name=(s.newRestaurantName||'').trim();
+    if(!name) return null;
+    return {restaurants:[...s.restaurants,{id:'r'+Date.now(), name, city:(s.newRestaurantCity||'').trim()||'—'}], newRestaurantName:'', newRestaurantCity:'', showNewRestaurant:false};
+  });
+  openRestaurant=(id)=>this.setState({selectedRestaurantId:id, superScreen:'restaurantDetail', naOpen:false, copiedAuditId:null});
+  backToRestaurants=()=>this.setState({superScreen:'restaurants'});
+  toggleNewAudit=()=>this.setState(s=>({naOpen:!s.naOpen}));
+  onNaTemplate=(e)=>this.setState({naTemplateId:e.target.value});
+  onNaDueDate=(e)=>this.setState({naDueDate:e.target.value});
+  onNaAuditor=(e)=>this.setState({naAuditor:e.target.value});
+  auditUrl=(a)=>'https://audit.fnbcontroller.com/a/'+(a.token||a.id);
+  createAudit=()=>this.setState(s=>{
+    const r=s.restaurants.find(x=>x.id===s.selectedRestaurantId);
+    if(!r) return null;
+    const t=s.templates.find(x=>x.id===s.naTemplateId)||s.templates[0];
+    const id='a'+Date.now();
+    const token=Math.random().toString(36).slice(2,10);
+    const items=mkItems(id, t.items);
+    return {audits:[...s.audits,{id,token,restaurant:r.name,auditor:s.naAuditor,templateId:t.id,dueDate:s.naDueDate||TODAY,status:'assigned',items}], naOpen:false, naDueDate:'', copiedAuditId:id};
+  });
+  copyAuditUrl=(a)=>{
+    try { navigator.clipboard.writeText(this.auditUrl(a)); } catch(e) {}
+    this.setState({copiedAuditId:a.id});
+    setTimeout(()=>this.setState(s=>s.copiedAuditId===a.id?{copiedAuditId:null}:null),1800);
+  };
+  openAdminDetail=(id)=>this.setState({selectedAuditId:id, superScreen:'detail'});
+  openReview=(id)=>this.setState({selectedAuditId:id, superScreen:'review'});
+  backToReviewQueue=()=>this.setState({superScreen:'reviewQueue'});
+  backToDashboard=()=>this.setState({superScreen:'restaurantDetail'});
+  doPublish=()=>{
+    const id=this.state.selectedAuditId;
+    this.setState(s=>({audits:s.audits.map(a=>a.id!==id?a:{...a,status:'published',publishedAt:TODAY,version:(a.version||0)+1}), superScreen:'reviewQueue'}));
+  };
+
+  onNewAuditNameChange=(e)=>this.setState({newAuditName:e.target.value});
+  onNewAuditRestaurantChange=(e)=>this.setState({newAuditRestaurant:e.target.value});
+  onNewAuditTemplateChange=(e)=>this.setState({newAuditTemplateId:e.target.value});
+  setModeNew=()=>this.setState({newAuditMode:'new'});
+  setModeReuse=()=>this.setState({newAuditMode:'reuse'});
+  continueCreate=()=>{
+    const {newAuditMode,newAuditTemplateId,newAuditRestaurant,newAuditName}=this.state;
+    if(newAuditMode==='new'){
+      this.setState({superScreen:'builder', builderName:newAuditName||'Untitled Checklist', builderItems:[{label:'',guidance:''}], builderTemplateId:null, builderFromCreate:true, assignRestaurant:newAuditRestaurant});
+    } else {
+      this.setState({superScreen:'assign', assignTemplateId:newAuditTemplateId, assignRestaurant:newAuditRestaurant});
+    }
+  };
+
+  openTemplateInBuilder=(tid)=>{
+    const t=this.state.templates.find(x=>x.id===tid);
+    this.setState({superScreen:'builder', builderName:t.name, builderItems:t.items.map(i=>({...i})), builderTemplateId:tid, builderFromCreate:false});
+  };
+  newTemplateBlank=()=>this.setState({superScreen:'builder', builderName:'', builderItems:[{label:'',guidance:''}], builderTemplateId:null, builderFromCreate:false});
+  onBuilderNameChange=(e)=>this.setState({builderName:e.target.value});
+  updateBuilderField=(idx,field,val)=>this.setState(s=>({builderItems:s.builderItems.map((it,i)=>i!==idx?it:{...it,[field]:val})}));
+  addBuilderItem=()=>this.setState(s=>({builderItems:[...s.builderItems,{label:'',guidance:''}]}));
+  removeBuilderItem=(idx)=>this.setState(s=>({builderItems:s.builderItems.filter((_,i)=>i!==idx)}));
+  saveTemplate=()=>{
+    const {builderTemplateId,builderName,builderItems,builderFromCreate,templates}=this.state;
+    const clean=builderItems.filter(i=>i.label.trim());
+    let newTemplates, tid;
+    if(builderTemplateId){
+      newTemplates=templates.map(t=>t.id!==builderTemplateId?t:{...t,name:builderName,items:clean});
+      tid=builderTemplateId;
+    } else {
+      tid='t'+Date.now();
+      newTemplates=[...templates,{id:tid,name:builderName||'Untitled Checklist',items:clean}];
+    }
+    if(builderFromCreate){
+      this.setState({templates:newTemplates, superScreen:'restaurantDetail', naTemplateId:tid, naOpen:true});
+    } else {
+      this.setState({templates:newTemplates, superScreen:'templates'});
+    }
+  };
+
+  onAssignAuditorChange=(e)=>this.setState({assignAuditorName:e.target.value});
+  onAssignRestaurantChange=(e)=>this.setState({assignRestaurant:e.target.value});
+  onAssignDueDateChange=(e)=>this.setState({assignDueDate:e.target.value});
+  assignAudit=()=>{
+    const {assignAuditorName,assignRestaurant,assignDueDate,assignTemplateId,templates,audits}=this.state;
+    const t=templates.find(x=>x.id===assignTemplateId)||templates[0];
+    const id='a'+Date.now();
+    const items=mkItems(id, t.items);
+    const newAudit={id,restaurant:assignRestaurant,auditor:assignAuditorName,templateId:t.id,dueDate:assignDueDate||TODAY,status:'assigned',items};
+    this.setState({audits:[...audits,newAudit], superScreen:'dashboard', assignDueDate:''});
+  };
+
+  simulateUpload=()=>this.setState(s=>{
+    if(s.opPool.length===0) return null;
+    const [next,...rest]=s.opPool;
+    return {opReports:[next,...s.opReports], opPool:rest};
+  });
+  toggleOpReport=(id)=>this.setState(s=>({expandedOpId: s.expandedOpId===id ? null : id}));
+
+  goReportsList=()=>this.setState({restaurantScreen:'reports'});
+  goDeferred=()=>this.setState({restaurantScreen:'deferred'});
+  openRestaurantDetail=(id)=>this.setState({selectedPublishedId:id, restaurantScreen:'detail'});
+  CATEGORY_RULES=[
+    {k:['temperature','cold','fridge','freezer','chiller'], cat:'Temperature & Expiry', sev:'High',
+      impact:'Accelerated food spoilage, pathogen multiplication, and risk of serving compromised ingredients to patrons.',
+      action:'Calibrate the unit to safe operating limits (below 4°C), mount a visible physical thermometer, and initiate mandatory twice-daily temperature monitoring logs.',
+      sla:'Immediate (24 Hours)', own:'Sous Chef / Kitchen Team'},
+    {k:['raw','cross','contamin','storage','stored'], cat:'Food Safety Risk', sev:'Critical',
+      impact:'High risk of foodborne illness, pathogen cross-contamination, and regulatory closure.',
+      action:'Segregate the inventory immediately — separate raw meats from ready-to-eat and dairy products using dedicated units or clearly partitioned zones with strict raw vs. cooked storage rules.',
+      sla:'Immediate (24 Hours)', own:'Kitchen Supervisor / Chef'},
+    {k:['label','fifo','expiry','expired','date'], cat:'Inventory Control', sev:'High',
+      impact:'Expired or unlabelled stock enters production, creating consumer safety exposure and untracked wastage.',
+      action:'Discard flagged stock on sight, reinstate date-labelling at receiving, and run a daily FIFO sweep signed off by the store keeper.',
+      sla:'Within 24 Hours', own:'Store Keeper / Head Chef'},
+    {k:['hygiene','clean','grease','grooming','glove','hairnet','wipe'], cat:'Hygiene Standards', sev:'High',
+      impact:'Bacterial breeding grounds, physical contamination of processed food, and standard operating failure.',
+      action:'Implement a strict daily deep-sanitation checklist, degrease small appliances after every operational shift, and replace soiled cloth wipes with sanitised microfibre or disposables.',
+      sla:'Within 24 Hours', own:'Stewarding Head / Kitchen Crew'},
+    {k:['waste','bin','disposal','pest'], cat:'Statutory Compliance', sev:'Medium',
+      impact:'Non-compliance with municipal waste norms and elevated pest-attraction risk at the service perimeter.',
+      action:'Install labelled segregated bins at the service exit and retrain stewarding staff on the segregation policy.',
+      sla:'Within 5 Business Days', own:'Stewarding Head'},
+    {k:['fire','extinguish','safety equipment','exit'], cat:'Statutory Compliance', sev:'Critical',
+      impact:'Life-safety exposure and direct breach of fire-licence conditions.',
+      action:'Service or replace the flagged equipment through the licensed vendor and re-tag with current inspection dates.',
+      sla:'Immediate (24 Hours)', own:'Facility Manager'},
+    {k:['bill','sign-off','edit','void'], cat:'Revenue Control', sev:'High',
+      impact:'Unauthorised bill edits create revenue leakage risk and weaken audit trail integrity.',
+      action:'Enforce mandatory manager sign-off on every bill edit before closure and retrain billing staff on the exception workflow.',
+      sla:'Within 48 Hours', own:'Restaurant Manager / Billing Team'},
+    {k:['discount','comp','waiver','non-chargeable'], cat:'Revenue Control', sev:'Medium',
+      impact:'Discounts and comps above policy threshold erode net margin if left unchecked across outlets.',
+      action:'Review the flagged bills with the manager on duty, confirm approvals were obtained, and recalibrate the POS discount alert threshold.',
+      sla:'Within 5 Business Days', own:'Restaurant Manager'},
+    {k:['cancel','reason code'], cat:'Revenue Control', sev:'High',
+      impact:'Missing reason codes obscure root causes and prevent SOP corrective tracking.',
+      action:'Make reason codes mandatory at cancellation in the POS and review the cancellation log daily at shift close.',
+      sla:'Within 48 Hours', own:'Restaurant Manager'},
+    {k:['stock','purchase','invoice','vendor','gst','weigh'], cat:'Inventory Control', sev:'Medium',
+      impact:'Financial leakage, loss of variance tracking, and supplier unaccountability.',
+      action:'Procure and calibrate a commercial weighing scale, and enforce a mandatory item verification and weight-check log for all incoming raw material before vendor deliveries are accepted.',
+      sla:'Within 48 Hours', own:'Store Keeper / Head Chef'},
+  ];
+  classify=(text)=>{
+    const t=(text||'').toLowerCase();
+    return this.CATEGORY_RULES.find(r=>r.k.some(k=>t.includes(k))) ||
+      {cat:'Operational Control', sev:'Medium',
+        impact:'Deviation from the documented SOP, reducing operational consistency across shifts.',
+        action:'Brief the shift team on the SOP clause, correct the deviation, and verify at the next audit cycle.',
+        sla:'Within 5 Business Days', own:'Restaurant Manager'};
+  };
+  polish=(item, evidence)=>{
+    const raw=(item.remark||'').trim().replace(/\s+/g,' ').replace(/[.。]+$/,'');
+    if(!raw) return 'No remark recorded by the auditor for this checkpoint.';
+    const body=raw.charAt(0).toUpperCase()+raw.slice(1);
+    const proof = evidence>0 ? ` Condition verified on-site and corroborated by ${evidence} attached proof file${evidence>1?'s':''}.` : '';
+    if(item.status==='pass') return `${item.label} — ${body}. Checkpoint meets the documented standard.${proof}`;
+    return `${item.label}: ${body}, observed during the walkthrough.${proof}`;
+  };
+  enhanceItem=(auditId,itemId)=>{
+    this.setState(s=>({aiBusyIds:[...(s.aiBusyIds||[]), itemId]}));
+    setTimeout(()=>this.setState(s=>({
+      aiBusyIds:(s.aiBusyIds||[]).filter(x=>x!==itemId),
+      audits:s.audits.map(a=>a.id!==auditId?a:{...a, items:a.items.map((it,idx)=>{
+        if(it.id!==itemId) return it;
+        const r=this.classify(it.label+' '+it.remark);
+        const ev=(it.files||[]).length;
+        return {...it,
+          rawRemark: it.rawRemark || it.remark,
+          remark: this.polish(it, ev),
+          aiEnhanced:true,
+          refId: it.refId || 'EQ-'+String(idx+1).padStart(2,'0'),
+          category: r.cat,
+          severity: it.status==='pass' ? null : (it.severity || r.sev),
+          impact: it.status==='pass' ? '' : (it.impact || r.impact),
+          correctiveAction: it.status==='pass' ? '' : (it.correctiveAction || r.action),
+          sla: it.status==='pass' ? '' : (it.sla || r.sla),
+          ownership: it.status==='pass' ? '' : (it.ownership || r.own),
+          resolutionStatus: it.status==='pass' ? '' : (it.resolutionStatus || 'Pending'),
+        };
+      })})
+    })), 650);
+  };
+  revertItem=(auditId,itemId)=>this.setState(s=>({audits:s.audits.map(a=>a.id!==auditId?a:{...a,items:a.items.map(it=>it.id!==itemId?it:{...it, remark: it.rawRemark||it.remark, aiEnhanced:false})})}));
+  enhanceAll=()=>{
+    const a=this.state.audits.find(x=>x.id===this.state.selectedAuditId);
+    if(!a) return;
+    a.items.filter(it=>!it.aiEnhanced && (it.remark||'').trim()).forEach((it,n)=>setTimeout(()=>this.enhanceItem(a.id,it.id), n*120));
+  };
+
+  exportReport=(fmt)=>{
+    this.setState({exportFlash:fmt});
+    setTimeout(()=>this.setState({exportFlash:false}),1800);
+  };
+  doExport=()=>{
+    this.setState({exportFlash:true});
+    setTimeout(()=>this.setState({exportFlash:false}),1500);
+  };
+
+  formatDate=(iso)=>{
+    if(!iso) return '—';
+    const [y,m,d]=iso.split('-').map(Number);
+    const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${M[m-1]} ${d}, ${y}`;
+  };
+
+  sevColor=(sev)=>{
+    switch(sev){
+      case 'Critical': return {bg:'#fef2f2',color:'#b91c1c'};
+      case 'High': return {bg:'#fff7ed',color:'#c2410c'};
+      case 'Medium': return {bg:'#fefce8',color:'#a16207'};
+      default: return {bg:'#f5f5f5',color:'#666'};
+    }
+  };
+  chip=(status)=>{
+    switch(status){
+      case 'pass': return {bg:'#eef4fa',color:'#1e3a5f',border:'1px solid #c3d6ea',label:'PASS'};
+      case 'fail': return {bg:'#fef2f2',color:'#b91c1c',border:'1px solid #fecaca',label:'FAIL'};
+      case 'observation': return {bg:'#fffbeb',color:'#b45309',border:'1px solid #fde68a',label:'OBSERVATION'};
+      default: return {bg:'#fff',color:'#999',border:'1px dashed #ccc',label:'PENDING'};
+    }
+  };
+  auditChip=(status)=>{
+    switch(status){
+      case 'assigned': return {bg:'#fff',color:'#666',border:'1px solid #ddd',label:'ASSIGNED'};
+      case 'in-progress': return {bg:'#fffbeb',color:'#b45309',border:'1px solid #fde68a',label:'IN PROGRESS'};
+      case 'submitted': return {bg:'#eef2f9',color:'#1e3a5f',border:'1px solid #b9c8dd',label:'SUBMITTED'};
+      case 'published': return {bg:'#1e3a5f',color:'#fff',border:'1px solid #1e3a5f',label:'PUBLISHED'};
+      default: return {bg:'#fff',color:'#999',border:'1px solid #ddd',label:status};
+    }
+  };
+
+  templateMetrics=(audit)=>{
+    const t=(this.state.templates||[]).find(x=>x.id===(audit&&audit.templateId));
+    return (t&&t.metrics&&t.metrics.length)?t.metrics:DEFAULT_METRIC_CATS;
+  };
+  onMetricInput=(id,e)=>{const v=e.target.value; this.setState(s=>({metricVals:{...(s.metricVals||{}),[id]:v}}));};
+  mNum=(id)=>{const v=parseFloat(String((this.state.metricVals||{})[id]||'').replace(/[^0-9.\-]/g,'')); return isFinite(v)?v:0;};
+  mFmt=(v,unit)=>!v?'—':(unit==='count'?Math.round(v).toLocaleString('en-IN'):'₹ '+Math.round(v).toLocaleString('en-IN'));
+  metricSection=(audit)=>{
+    const UNITS={currency:'Currency (₹)',count:'Count / Pax'};
+    const PH={currency:'₹ 0',count:'0 pax'};
+    let filled=0,total=0;
+    const sections=this.templateMetrics(audit).map(sec=>{
+      let sum=0;
+      const rows=sec.rows.map(([id,label,unit])=>{
+        const val=(this.state.metricVals||{})[id]||'';
+        if(String(val).trim()) filled++;
+        total++;
+        sum+=this.mNum(id);
+        return {id,label,unit:UNITS[unit],value:val,placeholder:PH[unit],editable:true,calculated:false,display:'',onChange:(e)=>this.onMetricInput(id,e)};
+      });
+      rows.push({id:sec.id+'_t',label:sec.total,unit:'Calculated',editable:false,calculated:true,value:'',placeholder:'',display:this.mFmt(sum,sec.rows[0][2]),onChange:()=>{}});
+      return {id:sec.id,name:sec.name,rows};
+    });
+    return {mSections:sections, mProgress:filled+' / '+total+' entered'};
+  };
+
+  decorateItems=(auditId,items)=> items.map((it,idx)=>{
+    const c=this.chip(it.status);
+    const ev=(it.files||[]).length;
+    return {
+      ...it,
+      refId: it.refId || 'EQ-'+String(idx+1).padStart(2,'0'),
+      category: it.category || this.classify(it.label).cat,
+      isEnhanced: !!it.aiEnhanced,
+      aiBusy: (this.state.aiBusyIds||[]).includes(it.id),
+      enhanceLabel: (this.state.aiBusyIds||[]).includes(it.id) ? 'Improving…' : (it.aiEnhanced ? 'Re-run AI' : 'Improve with AI'),
+      rawRemark: it.rawRemark || it.remark,
+      evidenceCount: ev,
+      proofLabel: ev>0 ? ev+' proof file'+(ev>1?'s':'')+' attached' : 'No proof attached',
+      onEnhance: ()=>this.enhanceItem(auditId,it.id),
+      onRevert: ()=>this.revertItem(auditId,it.id),
+      chipBg:c.bg, chipColor:c.color, chipBorder:c.border, chipLabel:c.label,
+      guidance: (it.code? it.code+' · ':'')+(it.guidance||''),
+      photoArr: (it.files||[]).map((f,k)=>({...f, isImage:f.kind==='image', isFile:f.kind!=='image', onRemove:()=>this.removeFile(auditId,it.id,k)})),
+      hasPhotos: (it.files||[]).length>0,
+      hasRemark: !!(it.remark && it.remark.trim()),
+      remarkDisplay: it.remark ? it.remark : '—',
+      hasFinding: !!it.severity,
+      sevBg: it.severity ? this.sevColor(it.severity).bg : '',
+      sevColor: it.severity ? this.sevColor(it.severity).color : '',
+      isActive: this.state.activeItemId===it.id,
+      onToggle: ()=>this.toggleItem(it.id),
+      onPass: ()=>this.setItemStatus(auditId,it.id,'pass'),
+      onFail: ()=>this.setItemStatus(auditId,it.id,'fail'),
+      onObservation: ()=>this.setItemStatus(auditId,it.id,'observation'),
+      onRemarkChange: (e)=>this.updateRemark(auditId,it.id,e.target.value),
+      onAddPhoto: ()=>this.addPhoto(auditId,it.id,'camera'),
+      onGallery: ()=>this.addPhoto(auditId,it.id,'gallery'),
+      onCsv: ()=>this.addPhoto(auditId,it.id,'csv'),
+      onPasteShot: ()=>this.addPhoto(auditId,it.id,'paste'),
+      passWeight: it.status==='pass' ? '700' : '500',
+      failWeight: it.status==='fail' ? '700' : '500',
+      obsWeight: it.status==='observation' ? '700' : '500',
+    };
+  });
+
+  renderVals(){
+    const s=this.state;
+    const isMobile = s.device==='mobile';
+
+    const activeBtn = {background:'#1e3a5f',color:'#fff',border:'none',padding:'9px 16px',fontSize:'13px',fontWeight:'600'};
+    const inactiveBtn = {background:'#fff',color:'#333',border:'none',padding:'9px 16px',fontSize:'13px',fontWeight:'500'};
+    const styleStr=(o)=>Object.entries(o).map(([k,v])=>`${k.replace(/[A-Z]/g,m=>'-'+m.toLowerCase())}:${v}`).join(';');
+
+    const getTemplate=(id)=>s.templates.find(t=>t.id===id);
+    const templateName=(id)=>{const t=getTemplate(id); return t?t.name:'—';};
+
+    const AUDITOR_NAME='Riya Sharma';
+    const myAudits=s.audits.filter(a=>a.auditor===AUDITOR_NAME);
+    const pending=myAudits.filter(a=>a.status==='assigned'||a.status==='in-progress')
+      .slice().sort((a,b)=>a.dueDate<b.dueDate?-1:1)
+      .map(a=>{
+        const c=this.auditChip(a.status);
+        const done=a.items.filter(i=>i.status!=='pending').length;
+        return {...a, chipBg:c.bg,chipColor:c.color,chipBorder:c.border,chipLabel:c.label, overdue:a.dueDate<TODAY, progress:`${done}/${a.items.length}`, dueDateLabel:this.formatDate(a.dueDate), onClick:()=>this.openAudit(a.id)};
+      });
+    const submittedHistory=myAudits.filter(a=>a.status==='submitted'||a.status==='published').map(a=>{
+      const c=this.auditChip(a.status);
+      return {...a, chipBg:c.bg,chipColor:c.color,chipBorder:c.border,chipLabel:c.label, dueDateLabel:this.formatDate(a.dueDate), onClick:()=>this.viewReport(a.id)};
+    });
+
+    const selectedAudit=s.audits.find(a=>a.id===s.selectedAuditId);
+    let checklistVals={};
+    if(selectedAudit){
+      const items=this.decorateItems(selectedAudit.id, selectedAudit.items);
+      const done=items.filter(i=>i.status!=='pending').length;
+      const total=items.length;
+      const statusChip=this.auditChip(selectedAudit.status);
+      const gmap=[];
+      items.forEach(it=>{
+        const key=it.dept||'General';
+        let g=gmap.find(x=>x.name===key);
+        if(!g){g={id:'g'+gmap.length, name:key, items:[]}; gmap.push(g);}
+        g.items.push(it);
+      });
+      const selGroups=gmap.map((g,i)=>{
+        const gd=g.items.filter(x=>x.status&&x.status!=='pending').length;
+        return {...g, num:(i+1)+'.', prefix:DEPT_PREFIX(g.name), progress:gd+' / '+g.items.length+' marked'};
+      });
+      checklistVals={
+        selGroups,
+        selItems:items, selRestaurant:selectedAudit.restaurant, selDue:this.formatDate(selectedAudit.dueDate),
+        selDone:done, selTotal:total, selProgressPct:(total?Math.round(done/total*100):0)+'%',
+        submitDisabled: done!==total, submitLabel: done===total?'Submit for Review':`Complete ${total-done} more item${total-done===1?'':'s'}`,
+        submitBg: done===total?'#111':'#eee', submitColor: done===total?'#fff':'#999',
+        selStatusLabel: statusChip.label, selStatusChipBg:statusChip.bg, selStatusChipColor:statusChip.color, selStatusChipBorder:statusChip.border,
+        selAuditorName: selectedAudit.auditor,
+      };
+    }
+
+    const restaurantRows = s.restaurants.map(r=>{
+      const mine=s.audits.filter(a=>a.restaurant===r.name);
+      return {...r,
+        activeCount: mine.filter(a=>a.status==='assigned'||a.status==='in-progress').length,
+        reviewCount: mine.filter(a=>a.status==='submitted').length,
+        publishedCount: mine.filter(a=>a.status==='published').length,
+        onClick: ()=>this.openRestaurant(r.id)};
+    });
+
+    const selRest = s.restaurants.find(r=>r.id===s.selectedRestaurantId);
+    let rdVals={rdActive:[], rdSubmitted:[], rdHistory:[]};
+    if(selRest){
+      const mine=s.audits.filter(a=>a.restaurant===selRest.name);
+      const dec=(a)=>{const c=this.auditChip(a.status); return {...a, chipBg:c.bg,chipColor:c.color,chipBorder:c.border,chipLabel:c.label, templateName:templateName(a.templateId), dueDateLabel:this.formatDate(a.dueDate), submittedLabel:this.formatDate(a.submittedAt), publishedLabel:this.formatDate(a.publishedAt), version:a.version||1};};
+      const active=mine.filter(a=>a.status==='assigned'||a.status==='in-progress')
+        .slice().sort((a,b)=>a.dueDate<b.dueDate?-1:1).map(a=>{
+          const copied=s.copiedAuditId===a.id;
+          return {...dec(a), url:this.auditUrl(a), cardBg: copied?'#f6f9fc':'#fff',
+            copyLabel: copied?'Copied ✓':'Copy link', copyBg: copied?'#1e3a5f':'#fff', copyColor: copied?'#fff':'#1e3a5f',
+            onCopy: ()=>this.copyAuditUrl(a), onOpen: ()=>this.openAdminDetail(a.id)};
+        });
+      const submitted=mine.filter(a=>a.status==='submitted').map(a=>({...dec(a), onReview:()=>this.openReview(a.id)}));
+      const history=mine.filter(a=>a.status==='published')
+        .slice().sort((a,b)=>(a.publishedAt||'')<(b.publishedAt||'')?1:-1)
+        .map(a=>({...dec(a), onOpen:()=>this.openAdminDetail(a.id)}));
+      rdVals={
+        rdName:selRest.name, rdCity:selRest.city,
+        rdActive:active, rdHasActive:active.length>0, rdNoActive:active.length===0,
+        rdSubmitted:submitted, rdHasSubmitted:submitted.length>0, rdNoSubmitted:submitted.length===0,
+        rdHistory:history, rdHasHistory:history.length>0, rdNoHistory:history.length===0,
+      };
+    }
+
+    const reviewRows = s.audits.filter(a=>a.status==='submitted').map(a=>({...a, dueDateLabel:this.formatDate(a.dueDate), onClick:()=>this.openReview(a.id)}));
+
+    const builderRows = s.builderItems.map((b,idx)=>({
+      ...b, idx,
+      onLabelChange:(e)=>this.updateBuilderField(idx,'label',e.target.value),
+      onGuidanceChange:(e)=>this.updateBuilderField(idx,'guidance',e.target.value),
+      onRemove:()=>this.removeBuilderItem(idx),
+    }));
+
+    const templateRows = s.templates.map(t=>({...t, count:t.items.length, onClick:()=>this.openTemplateInBuilder(t.id)}));
+
+    const opRows = s.opReports.map(o=>({...o, expanded:s.expandedOpId===o.id, colCount:o.cols.length, onToggle:()=>this.toggleOpReport(o.id)}));
+
+    const publishedAudits = s.audits.filter(a=>a.restaurant==='Spice Route' && a.status==='published').slice().sort((a,b)=>a.dueDate<b.dueDate?1:-1);
+    const publishedRows = publishedAudits.map(a=>({...a, templateName:templateName(a.templateId), publishedLabel:this.formatDate(a.publishedAt), dueDateLabel:this.formatDate(a.dueDate), onClick:()=>this.openRestaurantDetail(a.id)}));
+    const pubAudit = s.audits.find(a=>a.id===s.selectedPublishedId);
+    let pubVals={};
+    if(pubAudit){
+      pubVals={
+        pubTemplateName: templateName(pubAudit.templateId), pubPublishedLabel:this.formatDate(pubAudit.publishedAt),
+        pubVersion: pubAudit.version||1, pubAuditor: pubAudit.auditor,
+        pubItems: this.decorateItems(pubAudit.id, pubAudit.items),
+        pubFindings: this.decorateItems(pubAudit.id, pubAudit.items).filter(i=>i.hasFinding).map((i,n)=>({...i, rowBg: n%2 ? '#f7f9fb' : '#fff', resolutionStatus: i.resolutionStatus||'Pending'})),
+        pubHasFindings: pubAudit.items.some(i=>!!i.severity),
+        pubRestaurant: pubAudit.restaurant, pubAuditDate: this.formatDate(pubAudit.dueDate),
+      };
+    }
+
+    return {
+      showAuditor: s.role==='auditor', showSuper: s.role==='super', showRestaurant: s.role==='restaurant',
+      auditorBtnStyle: styleStr(s.role==='auditor'?activeBtn:inactiveBtn),
+      superBtnStyle: styleStr(s.role==='super'?activeBtn:inactiveBtn),
+      restaurantBtnStyle: styleStr(s.role==='restaurant'?activeBtn:inactiveBtn),
+      mobileBtnStyle: styleStr(isMobile?activeBtn:inactiveBtn),
+      laptopBtnStyle: styleStr(!isMobile?activeBtn:inactiveBtn),
+      goAuditor:this.goAuditor, goSuper:this.goSuper, goRestaurant:this.goRestaurant,
+      setMobile:this.setMobile, setLaptop:this.setLaptop,
+
+      auditorOuterPad: isMobile ? '28px 16px' : '36px',
+      auditorMaxWidth: isMobile ? '390px' : '760px',
+      auditorRadius: isMobile ? '20px' : '10px',
+      auditorMinHeight: isMobile ? '700px' : '600px',
+      headerFlexDir: isMobile ? 'column' : 'row',
+      headerAlign: isMobile ? 'stretch' : 'center',
+
+      aLogin: s.auditorScreen==='login', aPending: s.auditorScreen==='pending',
+      aChecklist: s.auditorScreen==='checklist' && !!selectedAudit, aReport: s.auditorScreen==='report' && !!selectedAudit,
+      doLogin:this.doLogin, backToPending:this.backToPending, doSubmit:this.doSubmit,
+      pending, submittedHistory, hasSubmittedHistory: submittedHistory.length>0,
+      ...checklistVals,
+      ...this.metricSection(selectedAudit),
+
+      superNav: [
+        {label:'Restaurants', key:'restaurants', onClick:()=>this.goSuperScreen('restaurants')},
+        {label:'Templates', key:'templates', onClick:()=>this.goSuperScreen('templates')},
+        {label:'Review Queue', key:'reviewQueue', onClick:()=>this.goSuperScreen('reviewQueue')},
+      ].map(n=>({...n, weight: s.superScreen===n.key?'700':'500', bg: s.superScreen===n.key?'#f0f4f9':'transparent', borderColor: s.superScreen===n.key?'#1e3a5f':'transparent'})),
+
+      sRestaurants: s.superScreen==='restaurants', sRestaurantDetail: s.superScreen==='restaurantDetail' && !!selRest,
+      restaurantRows, ...rdVals,
+      showNewRestaurant:s.showNewRestaurant, toggleNewRestaurant:this.toggleNewRestaurant,
+      newRestaurantName:s.newRestaurantName, onNewRestaurantName:this.onNewRestaurantName,
+      newRestaurantCity:s.newRestaurantCity, onNewRestaurantCity:this.onNewRestaurantCity,
+      createRestaurant:this.createRestaurant, backToRestaurants:this.backToRestaurants,
+      naOpen:s.naOpen, toggleNewAudit:this.toggleNewAudit, naTemplateId:s.naTemplateId, onNaTemplate:this.onNaTemplate,
+      naDueDate:s.naDueDate, onNaDueDate:this.onNaDueDate, naAuditor:s.naAuditor, onNaAuditor:this.onNaAuditor,
+      createAudit:this.createAudit,
+
+      sTemplates: s.superScreen==='templates',
+      sBuilder: s.superScreen==='builder', sReviewQueue: s.superScreen==='reviewQueue',
+      sReview: s.superScreen==='review' && !!selectedAudit, sDetail: s.superScreen==='detail' && !!selectedAudit, sReports: s.superScreen==='reports',
+      reviewRows, hasReviewItems: reviewRows.length>0, noReviewItems: reviewRows.length===0,
+      backToReviewQueue:this.backToReviewQueue, backToDashboard:this.backToDashboard, doPublish:this.doPublish,
+      hasExportFlash: !!s.exportFlash, exportFlashLabel: s.exportFlash ? s.exportFlash+' export ready ✓' : '',
+      exportPdf:()=>this.exportReport('PDF'), exportCsv:()=>this.exportReport('CSV'), exportHtml:()=>this.exportReport('HTML'),
+      enhanceAll:this.enhanceAll,
+
+      restaurantOptions:RESTAURANTS, auditorOptions:AUDITORS, templateOptions:s.templates,
+      templateRows, newTemplateBlank:this.newTemplateBlank,
+      builderName:s.builderName, onBuilderNameChange:this.onBuilderNameChange, builderRows,
+      addBuilderItem:this.addBuilderItem, saveTemplate:this.saveTemplate,
+
+      poolEmpty: s.opPool.length===0, simulateLabel: s.opPool.length===0 ? 'All sample uploads added' : 'Simulate Upload',
+      simulateUpload:this.simulateUpload, opRows,
+
+      navReportsWeight: s.restaurantScreen==='reports'||s.restaurantScreen==='detail' ? '700':'500',
+      navReportsBg: s.restaurantScreen==='reports'||s.restaurantScreen==='detail' ? '#f0f4f9':'transparent',
+      navReportsBorder: s.restaurantScreen==='reports'||s.restaurantScreen==='detail' ? '#1e3a5f':'transparent',
+      navDeferredWeight: s.restaurantScreen==='deferred'?'700':'500',
+      navDeferredBg: s.restaurantScreen==='deferred'?'#f0f4f9':'transparent',
+      navDeferredBorder: s.restaurantScreen==='deferred'?'#1e3a5f':'transparent',
+      goReportsList:this.goReportsList, goDeferred:this.goDeferred,
+      rList: s.restaurantScreen==='reports', rDetail: s.restaurantScreen==='detail' && !!pubAudit, rDeferred: s.restaurantScreen==='deferred',
+      publishedRows, doExport:this.doExport, exportFlash:s.exportFlash,
+      ...pubVals,
+    };
+  }
+}
+</script>
+</body>
+</html>

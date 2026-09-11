@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Inter',sans-serif;-webkit-font-smoothing:antialiased;color:#16202e}
+  a{color:#1e3a5f}
+  a:hover{color:#4a5464}
+  h1,h2,h3{font-family:'Newsreader',serif;font-weight:600;margin:0}
+  p,li,div{text-wrap:pretty}
+  ul{padding-left:17px;margin:0}
+  li{margin-bottom:4px;line-height:1.5}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:11px;background:#f1f3f6;padding:1px 4px;border-radius:3px}
+</style>
+</helmet>
+
+<x-import component-from-global-scope="doc-page" from="./doc-page.js" size="letter" margin="0.6in" hint-size="100%,100%">
+
+<h1 style="font-size:30px;line-height:1.12;margin-bottom:8px;color:#1e3a5f">F&amp;B Controller — Flow, Screens &amp; User Stories</h1>
+<div style="font-size:12.5px;color:#6b7686;border-bottom:1px solid #dfe4ea;padding-bottom:14px;margin-bottom:20px;line-height:1.6">Single source of truth for development, to be read alongside the designs: <strong style="color:#16202e">Super Admin Flow</strong>, <strong style="color:#16202e">Auditor Flow — Mobile / Laptop</strong>, <strong style="color:#16202e">Template Builder</strong>, <strong style="color:#16202e">Audit report v4</strong>. Where this document and a design disagree, the design wins on layout and this document wins on behaviour.</div>
+
+<h2 style="font-size:19px;margin-bottom:8px">1 · The three roles</h2>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:18px">
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 13px;background:#fff">
+<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#1e3a5f;font-weight:700;margin-bottom:5px">Super Admin · laptop</div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450">Creates restaurants, auditor logins and templates. Assigns an audit. Reviews what came back and publishes the report.</div>
+</div>
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 13px;background:#fff">
+<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#1f7a5c;font-weight:700;margin-bottom:5px">Auditor · phone or laptop</div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450">Signs in, opens the audit assigned to them, types the metrics, marks every checklist point with a remark and photos, submits once.</div>
+</div>
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 13px;background:#fff">
+<div style="font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:#b45309;font-weight:700;margin-bottom:5px">Outlet · reader only</div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450">Receives the published report as a link. No login in this build.</div>
+</div>
+</div>
+
+<h2 style="font-size:19px;margin-bottom:8px">2 · The whole journey, in order</h2>
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;background:#fbfbfc;padding:14px 16px;margin-bottom:10px">
+<div style="font-size:12.5px;line-height:1.9;color:#3a4450">
+<strong style="color:#16202e">Setup, once.</strong> Super admin signs in → adds a restaurant → adds auditors and gives each a password → builds a template (metrics + department checklists).<br/>
+<strong style="color:#16202e">Every audit.</strong> Opens the restaurant → New audit → picks the template and the auditor → the audit is created and appears in that auditor's app.<br/>
+<strong style="color:#16202e">In the outlet.</strong> Auditor signs in → opens the audit → <em>Metrics</em> tab: types the figures, totals calculate themselves → <em>Checklist</em> tab: marks every point Pass / Fail / N-A with a remark and photos → Submit.<br/>
+<strong style="color:#16202e">Back at the desk.</strong> Super admin opens the submission in the review queue → reads it as captured → attaches the operational reports → Generate report → checks and edits the findings → Publish.<br/>
+<strong style="color:#16202e">Out.</strong> Report v4 is shared as a link, printed or exported. Corrections are published as a new version.
+</div>
+</div>
+<div style="font-size:12px;color:#6b7686;line-height:1.55;margin-bottom:20px">Scheduling, due dates and chasing happen offline between the firm and the outlet. The product only records who is doing which audit.</div>
+
+<h2 style="font-size:19px;margin-bottom:8px">3 · User flow diagram</h2>
+<div style="font-size:12.5px;line-height:1.6;color:#6b7686;margin-bottom:12px">Four workflows. Boxes are steps a person takes; a branch means a choice.</div>
+
+<div data-avoid="" style="border:1px solid #d9dde3;border-radius:10px;background:#f6f7f8;background-image:radial-gradient(#d3d8de 1px,transparent 1px);background-size:14px 14px;padding:16px 18px 18px;margin-bottom:12px">
+<div style="font-size:14px;font-weight:600;font-family:'Newsreader',serif;margin-bottom:14px">Admin workflow 1 — creating restaurants and audits</div>
+<div style="display:flex;align-items:stretch;gap:0;margin-bottom:12px">
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Create restaurant</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Select audit template</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Assign the auditor and create the audit</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Audit appears in that auditor's app; link can be copied and shared</div>
+</div>
+<div style="display:flex;align-items:center;gap:8px;margin:0 0 8px 12px;font-size:11px;color:#6b7280;font-style:italic">↳ no suitable template yet? branch from “Select audit template”:</div>
+<div style="display:flex;align-items:stretch;gap:0;padding-left:28px">
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Create audit template</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Add metric categories and metrics</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Add departments and checklist points</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Save template, return to the audit</div>
+</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #d9dde3;border-radius:10px;background:#f6f7f8;background-image:radial-gradient(#d3d8de 1px,transparent 1px);background-size:14px 14px;padding:16px 18px 18px;margin-bottom:12px">
+<div style="font-size:14px;font-weight:600;font-family:'Newsreader',serif;margin-bottom:14px">Admin workflow 2 — auditor accounts</div>
+<div style="display:flex;align-items:stretch;gap:0">
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Open Auditors</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Add auditor: name, email, phone, outlets</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Set their password and save</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Share credentials; later, show or change the password in the row</div>
+</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #d9dde3;border-radius:10px;background:#f6f7f8;background-image:radial-gradient(#d3d8de 1px,transparent 1px);background-size:14px 14px;padding:16px 18px 18px;margin-bottom:12px">
+<div style="font-size:14px;font-weight:600;font-family:'Newsreader',serif;margin-bottom:14px">Auditor workflow — conducting the audit</div>
+<div style="display:flex;align-items:stretch;gap:0;margin-bottom:10px">
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Sign in</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Open the assigned audit</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Step 1 · enter the metrics; totals calculate</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Step 2 · mark each checklist point</div>
+</div>
+<div style="display:flex;align-items:stretch;gap:0;padding-left:28px">
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Pass / Fail / Observation / N-A + remark + photos</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Submit — blocked until nothing is missing</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Confirm; audit becomes read-only</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Goes to the admin's review queue</div>
+</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #d9dde3;border-radius:10px;background:#f6f7f8;background-image:radial-gradient(#d3d8de 1px,transparent 1px);background-size:14px 14px;padding:16px 18px 18px;margin-bottom:20px">
+<div style="font-size:14px;font-weight:600;font-family:'Newsreader',serif;margin-bottom:14px">Admin workflow 3 — review, report and publish</div>
+<div style="display:flex;align-items:stretch;gap:0;margin-bottom:10px">
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Open the submitted audit</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Read statuses, remarks and photos as captured</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Attach the operational reports</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:14px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Generate report</div>
+</div>
+<div style="display:flex;align-items:stretch;gap:0;padding-left:28px">
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Check and edit findings, severity and figures</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Publish — version and date stamped</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Share the link, print, or export PDF / XLSX</div>
+<div style="width:34px;flex:0 0 34px;display:flex;align-items:center;justify-content:center;color:#6b7280;font-size:15px">→</div>
+<div style="flex:1;min-width:0;border:1px solid #9aa1a9;border-radius:8px;background:#fff;padding:13px 10px;font-size:11.5px;line-height:1.4;text-align:center;display:flex;align-items:center;justify-content:center">Correction later publishes as v2 with a note</div>
+</div>
+</div>
+
+<h2 style="font-size:19px;margin-bottom:8px">4 · Screens, and what each one does</h2>
+<div style="font-size:12.5px;line-height:1.6;color:#6b7686;margin-bottom:12px">One box per screen: what is on it, what the user can do, and what must not happen. Screen IDs are stable — quote them in tickets.</div>
+
+<div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#1e3a5f;font-weight:700;margin-bottom:8px">4.1 · Super admin screens</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1e3a5f;background:#eef2f7;border-radius:4px;padding:2px 6px">SA-1</span><span style="font-size:13.5px;font-weight:700">Admin sign-in</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> email, password, "keep me signed in", sign-in button.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>Signing in lands on <strong>Restaurants</strong>.</li>
+<li>A wrong password shows one inline message and keeps the typed email.</li>
+<li>No "forgot password" — passwords are handled by the admin inside the product.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1e3a5f;background:#eef2f7;border-radius:4px;padding:2px 6px">SA-2</span><span style="font-size:13.5px;font-weight:700">Restaurants (home)</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> left nav (Restaurants · Auditors · Templates), a list of restaurants with name and city, and an "Add restaurant" button.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>"Add restaurant" opens a small inline panel: name (required) and city. Save adds the row straight away; cancel keeps nothing.</li>
+<li>Clicking a restaurant opens its detail screen (SA-3).</li>
+<li>Empty state invites adding the first restaurant instead of showing an empty table.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1e3a5f;background:#eef2f7;border-radius:4px;padding:2px 6px">SA-3</span><span style="font-size:13.5px;font-weight:700">Restaurant detail — Audits &amp; Reports</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> restaurant name, a back link, two tabs — <strong>Audits</strong> and <strong>Reports</strong> — and a "New audit" button.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li><strong>Audits tab</strong> lists audits in three groups: active (with the auditor's name and a shareable link), submitted and awaiting review (each row has a Review action), and audit history.</li>
+<li><strong>Reports tab</strong> lists published reports grouped by month; a row opens the report document.</li>
+<li>Each row goes straight to the one place that makes sense for its state — the admin never has to work out where to click.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1e3a5f;background:#eef2f7;border-radius:4px;padding:2px 6px">SA-4</span><span style="font-size:13.5px;font-weight:700">New audit panel</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> an inline panel on the Audits tab — audit name, the restaurant (already filled in), a choice of "use an existing template" or "build a new one", the template picker, and the auditor picker.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>Choosing "build a new one" jumps to the Template Builder and comes back here with the new template already selected.</li>
+<li>Create makes the audit and it appears in that auditor's app. No due date is asked for.</li>
+<li>The audit takes a <em>copy</em> of the template as it is today, so editing the template later never changes an audit already running.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1e3a5f;background:#eef2f7;border-radius:4px;padding:2px 6px">SA-5</span><span style="font-size:13.5px;font-weight:700">Auditors</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> "Add or remove auditors, issue passwords, control outlet access". A list of auditors — name, email, phone, status, outlets — and an "Add Auditor" button. A row expands in place.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li><strong>Add Auditor</strong> asks for full name, work email (this is the login ID), phone, which outlets they cover, and a password the admin types or generates. Validation, one message at a time: name required, email must be valid, email must not already exist, password must be set.</li>
+<li><strong>Inside the expanded row:</strong> the current password is shown masked with <strong>Show / Hide</strong> and <strong>Copy</strong>; below it a field to type a new password and save. Saving replaces the password immediately and the row reflects it.</li>
+<li>Also in the row: change outlet access, suspend or reactivate, end all sessions, and remove (asks to confirm).</li>
+<li>Removing an auditor never deletes their submitted audits — those keep their name.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1e3a5f;background:#eef2f7;border-radius:4px;padding:2px 6px">SA-6</span><span style="font-size:13.5px;font-weight:700">Templates library</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> "Checklist Templates — reusable across restaurants", a list of templates, and "New Template".</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>Each row shows the template name and an "Edit template" action that opens the builder (SA-7).</li>
+<li>"New Template" opens an empty builder.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1e3a5f;background:#eef2f7;border-radius:4px;padding:2px 6px">SA-7</span><span style="font-size:13.5px;font-weight:700">Template Builder</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:8px">The most important setup screen. Header reads <em>"Metrics the auditor enters, then department-wise checklist points"</em>. Top of the page: <strong>template name</strong> and an optional <strong>description</strong>. Below that, two parts.</div>
+
+<div style="border-left:3px solid #1e3a5f;background:#f7f9fb;padding:10px 12px;margin-bottom:9px">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:5px">Part 1 · Metrics — the numbers the auditor will type</div>
+<div style="font-size:12px;line-height:1.55;color:#3a4450;margin-bottom:6px">Metrics live inside <strong>categories</strong>. Each category is a card with an icon, a name, a one-line description, a metric count and its own <strong>"Add metric to &lt;category&gt;"</strong> button. The shipped set of categories is Volume, Sales, Discounts, Taxes and Costs — but the admin can add, rename and delete categories freely.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li><strong>A metric row</strong> = a name field + a type dropdown + a delete icon. Types: Currency (₹ / $), Number, Count / Pax, Percentage (%), Calculated / Auto-sum.</li>
+<li><strong>Calculated rows</strong> are shown greyed inside the category with a badge (CALCULATED, RECONCILED SUB-TOTAL) and the note "Auto-sum · no input" — the auditor never types these. Example: Volume has <em>No of Pax</em> as input and <em>Total No Of Pax</em> as calculated; Sales has Food / Liquor / Beverage as inputs and <em>Net Sales at Restaurant</em> as the reconciled sub-total.</li>
+<li>Deleting a metric removes just that row. Deleting a category removes it with its metrics and asks once.</li>
+<li>A category can hold <strong>sub-groups</strong> (for example a cost split by kitchen and bar); a sub-group has its own name, metrics and its own calculated total.</li>
+<li>"Add category" sits at the bottom of Part 1 as a dashed full-width button.</li>
+</ul>
+</div>
+
+<div style="border-left:3px solid #1f7a5c;background:#f6faf8;padding:10px 12px;margin-bottom:8px">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:5px">Part 2 · Department-wise checklist points</div>
+<div style="font-size:12px;line-height:1.55;color:#3a4450;margin-bottom:6px">One card per <strong>department</strong>, numbered in order. Each card header has the department name (editable in place), a checkpoint count, an <strong>"Add point"</strong> action and a delete icon.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li><strong>A checkpoint row</strong> = an auto-generated reference code + the question or inspection check + a delete icon. The code comes from the department prefix and the row position, e.g. <code>SEC-01</code>, <code>KIT-03</code> — it renumbers if rows are removed.</li>
+<li>The point text is the exact question the auditor reads in the field. An optional description line can be added underneath as guidance.</li>
+<li>Order on this screen is the order the auditor sees, and the order the report prints.</li>
+<li>"Add department" sits at the bottom as a dashed full-width button.</li>
+</ul>
+</div>
+
+<ul style="font-size:12px;color:#4a5464">
+<li>Everything on this screen edits in place — no separate dialogs, no separate pages.</li>
+<li><strong>Save template</strong> returns to the library, or back to the New audit panel if the builder was opened from there.</li>
+<li>The builder has preview tabs showing the same template as the super admin sees it and as the auditor's entry form, so the admin can check their work before saving.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:18px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1e3a5f;background:#eef2f7;border-radius:4px;padding:2px 6px">SA-8</span><span style="font-size:13.5px;font-weight:700">Review a submitted audit</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> the submission exactly as the auditor left it — the metrics they entered, every checkpoint with its status, their remark word for word, and their photos. Plus a panel for attaching the operational reports (POS, purchase, payroll exports) and a <strong>Generate report</strong> button.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>The admin can correct a status or a remark here, and can open any photo full size.</li>
+<li>Operational report rows show what the file covers and whether it was read successfully; a section with no data is marked "needs data" rather than left blank.</li>
+<li><strong>Generate report</strong> turns each Fail and Observation into a finding with a reference ID, category, severity, operational impact, corrective action and owner, and compiles the financial sections from the metrics. The admin can edit any of it afterwards.</li>
+<li>Publishing stamps a version and a date. A correction after publishing creates the next version with a revision note; earlier versions stay available.</li>
+</ul>
+</div>
+
+<div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#1f7a5c;font-weight:700;margin-bottom:8px">4.2 · Auditor screens (phone, same on laptop)</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1f7a5c;background:#edf5f1;border-radius:4px;padding:2px 6px">AU-1</span><span style="font-size:13.5px;font-weight:700">Auditor sign-in</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> email, password, Log In.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>They use the email and password the super admin issued. Nothing to set up, no password change step.</li>
+<li>The session stays signed in — a phone restart or a dead zone never signs them out mid-audit.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1f7a5c;background:#edf5f1;border-radius:4px;padding:2px 6px">AU-2</span><span style="font-size:13.5px;font-weight:700">My audits</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> the audits assigned to them — restaurant, template name, progress — and a "Recently submitted" section below.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>Tapping a card opens the audit. Tapping a recently submitted one opens it read-only.</li>
+<li>Newest first. Nothing about dates or being late.</li>
+<li>Empty state: "No audits assigned".</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1f7a5c;background:#edf5f1;border-radius:4px;padding:2px 6px">AU-3</span><span style="font-size:13.5px;font-weight:700">Conduct audit — step 1, Metrics</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> "1 · Enter today's figures — totals marked calculated fill in automatically". The categories from the template, in order, each with its metric rows: label, unit, and a right-aligned number field.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>Numeric keypad. Calculated rows are greyed and show their running value — never typed.</li>
+<li>Each figure updates the totals as it is entered, so a mistyped number is obvious on the spot.</li>
+<li>Everything saves as it is typed; leaving the screen loses nothing.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1f7a5c;background:#edf5f1;border-radius:4px;padding:2px 6px">AU-4</span><span style="font-size:13.5px;font-weight:700">Conduct audit — step 2, Department checklist</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> "2 · Department checklist — mark each checkpoint and add the observation for the report". One collapsible card per department showing "n / m marked". Inside, each checkpoint row shows its reference code and question.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>Tapping a row opens it. Buttons: <strong>Pass</strong>, <strong>Fail</strong>, <strong>Observation</strong>, <strong>N/A</strong> — one choice, at least 44px tall.</li>
+<li>Below the buttons: a remark box, and photo actions (camera, gallery, paste screenshot on laptop). Several photos per point, each removable.</li>
+<li>Fail and Observation need a remark; N/A needs a reason picked from a short list. Pass can be left bare.</li>
+<li>The collapsed row then shows the status and the start of the remark, so progress is readable at a glance.</li>
+<li>Any answer can be changed until submit. Changing a status never deletes photos already taken.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1f7a5c;background:#edf5f1;border-radius:4px;padding:2px 6px">AU-5</span><span style="font-size:13.5px;font-weight:700">Submit</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> a Submit button pinned to the bottom of the audit.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>Disabled until every checkpoint is marked and every required remark, reason and photo is there. The button says what is missing, in a count.</li>
+<li>Tapping the notice jumps to the first point that needs attention.</li>
+<li>Submitting is confirmed once, then the audit becomes read-only for the auditor and moves to the admin's review queue.</li>
+<li>If the phone is offline the submission is held and sent by itself — nothing is re-entered.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:20px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#1f7a5c;background:#edf5f1;border-radius:4px;padding:2px 6px">AU-6</span><span style="font-size:13.5px;font-weight:700">My submitted audit</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:6px"><strong>On screen:</strong> the audit as submitted, read-only, and once published a link to the report.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li>The auditor can read severity and corrective actions but cannot change them — judgement is the reviewer's job.</li>
+</ul>
+</div>
+
+<div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#b45309;font-weight:700;margin-bottom:8px">4.3 · Audit report v4</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:10px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#b45309;background:#faf3e6;border-radius:4px;padding:2px 6px">RP-1</span><span style="font-size:13.5px;font-weight:700">What the report is made of</span></div>
+<div style="font-size:12.5px;line-height:1.55;color:#3a4450;margin-bottom:7px">Four sections, in this order. Nothing in the report is typed twice — every number and sentence traces back to something captured earlier.</div>
+<ul style="font-size:12px;color:#4a5464">
+<li><strong>Section 1 — key financial and unit economic metrics.</strong> Built from the auditor's metrics plus the attached operational reports. Per-cover figures divide by the pax the auditor entered.</li>
+<li><strong>Section 1B — costing and cost as a percentage of sales.</strong> Cost lines against their revenue group, so kitchen cost sits against kitchen sales.</li>
+<li><strong>Section 2 — department checklists.</strong> Every checkpoint with its reference code and status, grouped by department in template order. N/A points are shown separately and left out of the compliance percentages.</li>
+<li><strong>Section 3 — findings register.</strong> One row per Fail and Observation: reference ID, core category, the finding in the auditor's words, risk severity, operational impact, corrective action and owner.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:12px 14px;background:#fff;margin-bottom:20px">
+<div style="display:flex;align-items:baseline;gap:8px;margin-bottom:6px"><span style="font-family:ui-monospace,Menlo,monospace;font-size:10.5px;font-weight:600;color:#b45309;background:#faf3e6;border-radius:4px;padding:2px 6px">RP-2</span><span style="font-size:13.5px;font-weight:700">How it behaves</span></div>
+<ul style="font-size:12px;color:#4a5464">
+<li>Before publishing, the admin can edit any severity, figure or sentence, and hide a row that does not belong.</li>
+<li>A section with no data says so plainly instead of showing a zero.</li>
+<li>Prints and exports to PDF and XLSX with no extra setup; the on-screen and printed layouts match.</li>
+<li>Once published it is frozen. A correction is published as v2 with a revision note.</li>
+</ul>
+</div>
+
+<h2 style="font-size:19px;margin-bottom:4px">5 · User stories</h2>
+<div style="font-size:12.5px;line-height:1.6;color:#6b7686;margin-bottom:12px">Each story names the screen it lives on. "Done when" is the acceptance test.</div>
+
+<div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#1e3a5f;font-weight:700;margin-bottom:8px">Super admin</div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:16px">
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-1 · Add a restaurant <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-2</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that audits can be run under it.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> a name and city added inline appear in the list immediately, and an empty name is refused.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-2 · Create an auditor login <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-5</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that a new joiner can work the same day.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> name, email, phone, outlets and a password create an account; a duplicate email is refused with one clear message; the row appears straight away.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-3 · See and change an auditor's password <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-5</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that I can read it back to someone locked out, without a support queue.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> the current password is masked by default, Show reveals it, Copy copies it, and saving a new one replaces it and shows the new value.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-4 · Control who can audit what <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-5</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that the assignment picker offers the right people.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> outlet access, suspend, reactivate and remove all work from the expanded row, and removing an auditor leaves their submitted audits intact.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-5 · Build the metric set <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-7</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that the auditor is asked for exactly the numbers this client's report needs.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> I can add a category, add metrics to it, set each metric's type, mark a row as calculated, reorder, and delete — all in place, and the auditor's form changes to match.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-6 · Build the department checklists <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-7</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that the walk follows the departments in the right order.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> I can add a department, rename it, add points with their question and guidance, delete a point, and delete a department — and reference codes renumber themselves.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-7 · Assign an audit <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-4</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that the right person walks into the right outlet with the right checklist.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> picking a template and an auditor creates the audit, it appears in that auditor's list, and it holds a copy of the template so later edits don't disturb it.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-8 · Build a template mid-assignment <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-4 → SA-7</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that a first audit for a new client isn't a two-trip job.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> choosing "build a new one" opens the builder and saving returns to the New audit panel with that template selected.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-9 · Read a submission as captured <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-8</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that I judge the outlet, not the auditor's typing.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> statuses, remarks and photos appear exactly as submitted, photos open full size, and I can correct a status or remark.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-10 · Attach the operational reports <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-8</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that the financial sections are built on the client's own exports.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> a file can be attached and replaced, each shows what it covers and whether it read successfully, and a section with no data is marked "needs data" rather than left blank.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-11 · Generate the report <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">SA-8 → RP-1</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that a page of findings takes a button, not an evening.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> every Fail and Observation becomes a finding with reference ID, category, severity, impact, corrective action and owner, and the financial sections fill from the metrics.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">S-12 · Correct and publish <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">RP-2</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that my name goes on something I actually agree with.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> any generated field can be edited or hidden before publishing, publishing stamps a version and date, the report becomes read-only, and a correction publishes as v2 with a revision note.</div>
+</div>
+
+</div>
+
+<div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#1f7a5c;font-weight:700;margin-bottom:8px">Auditor</div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:18px">
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-1 · Sign in and stay in <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-1</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that a dead zone or a restart never costs me my place.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> the issued email and password sign me straight in, a wrong password keeps my email and shows one message, and I am never signed out mid-audit.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-2 · See what is mine <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-2</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that I know where to go next without calling the office.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> each card shows restaurant, template and progress, newest first, with recently submitted audits below and a clear empty state.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-3 · Type the figures fast <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-3</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that a page of numbers takes minutes.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> a numeric keypad appears, each field shows its unit, and letters are refused without a dialog.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-4 · Never type a total <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-3</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that I catch a mistyped figure while I am still in the outlet.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> calculated rows are read-only, greyed, badged, and update as I type the inputs they depend on.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-5 · Work department by department <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-4</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that I finish the kitchen before I walk to the store.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> departments collapse and expand, each header shows how many points are marked, and the order matches the template.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-6 · Mark a point in one tap <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-4</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that forty checkpoints do not become forty forms.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> a row expands in place, Pass / Fail / Observation / N/A are one exclusive choice at 44px, and the collapsed row then shows the status and the start of my remark.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-7 · Explain and prove it <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-4</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that the report reads my words, not a guess at what a red mark meant.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> I can write a remark of any length and attach several photos per point, each removable, and my wording reaches the report unedited.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-8 · Say why something doesn't apply <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-4</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that a bar check in an outlet with no bar isn't counted against it.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> N/A requires a reason, and N/A points are excluded from compliance percentages and listed separately in the report.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-9 · Leave and come back <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-3 · AU-4</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that a phone call or a flat battery costs me nothing.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> every entry saves as it is made, everything is restored on reopening even offline, and Back never asks me to discard anything.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-10 · Be stopped from submitting half a job <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-5</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that nothing comes back to me after I have left the outlet.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> Submit is disabled with a count of what is missing, and tapping it jumps to the first point needing attention.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-11 · Submit once, clearly <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-5</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that I know the visit is closed and what I handed over.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> a confirmation names the outlet and the counts, the audit then goes read-only, and an offline submission sends itself later without re-entry.</div>
+</div>
+
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;padding:10px 12px;background:#fff">
+<div style="font-size:12.5px;font-weight:700;margin-bottom:4px">A-12 · Work at a laptop too <span style="font-weight:400;color:#8a8f98;font-family:ui-monospace,Menlo,monospace;font-size:10.5px">AU-3 · AU-4</span></div>
+<div style="font-size:12px;line-height:1.5;color:#3a4450;margin-bottom:4px">So that typing up emailed exports isn't a phone chore.</div>
+<div style="font-size:11.5px;line-height:1.5;color:#4a5464"><strong>Done when</strong> the same flow and data work at desktop width, with wider rows, a photo grid, drag-and-drop and paste.</div>
+</div>
+
+</div>
+
+<h2 style="font-size:19px;margin-bottom:8px">6 · Rules that hold everywhere</h2>
+<div data-avoid="" style="border:1px solid #e2e5ea;border-radius:8px;background:#fbfbfc;padding:13px 15px;margin-bottom:12px">
+<ul style="font-size:12.5px;color:#3a4450">
+<li><strong>The audit owns its own copy of the template.</strong> Editing a template never changes an audit that is already running or already submitted.</li>
+<li><strong>The auditor records fact; the reviewer judges.</strong> Severity, operational impact, corrective action and owner are never set in the field.</li>
+<li><strong>Remarks are quoted, not rewritten.</strong> The auditor's words reach the report as they were typed.</li>
+<li><strong>Nothing is lost.</strong> Every entry saves as it is made and survives being offline. Submitted work is read-only for the auditor; published reports are frozen for everyone.</li>
+<li><strong>N/A is not a failure and not a blank.</strong> It needs a reason, is excluded from percentages and is listed separately.</li>
+<li><strong>One message at a time.</strong> Validation names the first problem and focuses it, rather than listing everything at once.</li>
+<li><strong>Calculated is never typed.</strong> Any figure the system can derive is read-only wherever it appears.</li>
+</ul>
+</div>
+
+<div data-avoid="" style="border:1px solid #f0cfcd;border-radius:8px;background:#fdf6f5;padding:12px 15px;margin-bottom:10px">
+<div style="font-size:13px;font-weight:700;color:#9f1d17;margin-bottom:5px">Not in this build</div>
+<div style="font-size:12.5px;line-height:1.55;color:#7f4a45">Outlet-side accounts and task assignment — outlet users, corrective actions pushed to named owners, findings closed from the outlet side. A placeholder screen holds its place in the nav. Also out: due dates, reminders and overdue tracking (handled offline), severity set in the field, recurring audit schedules, and in-app chat.</div>
+</div>
+
+</x-import>
+</x-dc>
+</body>
+</html>
