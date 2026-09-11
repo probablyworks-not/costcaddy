@@ -6,6 +6,13 @@ and DESIGN Part B). One dated line per shipped thing.
 ## Foundations — 2026
 
 ### 2026-09-11
+- F5 done: Supabase Storage in `lib/storage/` — one private bucket (`audit-files`, `public: false`)
+  for photos, PDFs and uploads; `uploadFile`/`createSignedUrl`/`deleteFile` wrap the Storage API
+  behind the `service_role` (`sb_secret_…`) key, server-only; `ensureBucketExists` is idempotent
+  and runnable via `npm run storage:setup`; `auditItemFilePath`/`reportFilePath` give every object
+  an org-scoped path. Verified against the live Supabase project: upload, a signed URL that reads
+  the exact bytes back, an unsigned request to the same object refused (400), and the signed URL
+  itself dead after delete.
 - F4 done: own-auth in `lib/auth/` — argon2 password hashing (`password.ts`, admin-generated
   passwords, shown once, never stored plaintext); signed-cookie sessions (`session.ts`,
   `cookies.ts`) backed by the `sessions` table, cookie value is a random session id plus an
