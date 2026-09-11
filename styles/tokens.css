@@ -1,0 +1,124 @@
+/*
+ * Design tokens — ported verbatim from docs/DESIGN.md Part A / DESIGN-SYSTEM.md,
+ * which extract exact values from the .dc.html design files' inline styles.
+ * Never inline a hex/size/spacing that isn't a token here (CLAUDE.md convention).
+ *
+ * Two surfaces, two type systems — App UI (unprefixed / --font-ui-*) and Report
+ * (--r-* / --font-report-*). Do not merge them.
+ */
+
+:root {
+  /* Brand / navy */
+  --navy-900: #16202e;
+  --navy-700: #1e3a5f;
+  --navy-500: #2f5d8a;
+  --navy-050: #eef2f7;
+  --navy-025: #f0f4f9;
+  --navy-chip: #eef2f9;
+  --navy-border: #b9c8dd;
+  --navy-border-soft-1: #dbe4f0;
+  --navy-border-soft-2: #d6e2ee;
+  --navy-border-soft-3: #a8c4de;
+
+  /* Neutrals — App UI */
+  --bg: #fafafa;
+  --surface: #ffffff;
+  --surface-alt-1: #f7f9fb;
+  --surface-alt-2: #fafbfc;
+  --surface-calculated: #f6f8fa;
+  --ink: #111111;
+  --ink-2: #333333;
+  --ink-3: #555555;
+  --muted: #888888;
+  --muted-2: #999999;
+  --placeholder: #bbbbbb;
+  --hint: #8a93a0;
+  --divider: #eeeeee;
+  --border: #dddddd;
+  --border-strong: #e6e6e6;
+  --border-card: #e4e7ea;
+  --border-dashed: #d9dee4;
+
+  /* Neutrals — Report */
+  --r-bg: #f5f7f8;
+  --r-ink: #16202e;
+  --r-ink-2: #4a5464;
+  --r-muted: #6b7686;
+  --r-border: #e4e8ee;
+  --r-border-2: #c9d0d8;
+  --r-surface-alt-1: #f8fafc;
+  --r-surface-alt-2: #fafbfc;
+
+  /* Status & severity */
+  --status-fail-fg-app: #b91c1c;
+  --status-fail-fg-report: #9f1d17;
+  --status-fail-bg: #fdeceb;
+  --status-fail-border: #f0c9c6;
+  --status-observation-fg: #8a6a09;
+  --status-pass-fg: #1f6f62;
+  --status-pass-dot: #4a9c8c;
+  --status-pass-bg-deep: #0d3b34;
+  --status-financial-fg: #8c4a2f;
+  --status-neutral-fg-1: #6b7480;
+  --status-neutral-fg-2: #9aa4b2;
+  --status-neutral-bg: #f0f0f0;
+  --status-neutral-border: #dcdfe4;
+
+  /* Typography — App UI */
+  --font-ui-body: "Inter", sans-serif;
+  --font-ui-title: "Newsreader", serif;
+  --font-ui-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Typography — Report */
+  --font-report-body: "Inter Tight", "Hanken Grotesk", system-ui, sans-serif;
+  --font-report-mono: "IBM Plex Mono", monospace;
+  --font-report-icons: "Material Symbols Outlined";
+
+  /* Type scale (px) */
+  --text-wordmark: 21px;
+  --text-login-title: 28px;
+  --text-screen-title: 22px;
+  --text-panel-title: 18px;
+  --text-row-title: 15px;
+  --text-card-header: 13px;
+  --text-body: 13px;
+  --text-meta: 12px;
+  --text-meta-sm: 11.5px;
+  --text-eyebrow: 10px;
+  --text-chip: 10px;
+  --text-report-kpi: 21px;
+
+  /* Line height */
+  --leading-tight: 1.4;
+  --leading-prose: 1.6;
+
+  /* Radii */
+  --radius-tag: 3px;
+  --radius-control: 6px;
+  --radius-card: 8px;
+  --radius-panel: 10px;
+  --radius-large: 12px;
+  --radius-pill: 9999px;
+
+  /* Spacing rhythm */
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 10px;
+  --space-6: 12px;
+  --space-7: 14px;
+  --space-8: 16px;
+  --space-9: 18px;
+  --space-10: 22px;
+  --space-11: 24px;
+  --space-12: 28px;
+
+  /* Page padding */
+  --page-padding-desktop: 24px;
+  --page-padding-mobile: 16px;
+
+  /* Shadows — almost none; depth is borders, not shadow */
+  --shadow-report-header: 0 2px 6px rgba(13, 59, 52, 0.25);
+  --shadow-card: 0 1px 2px rgba(16, 24, 40, 0.05);
+}

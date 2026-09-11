@@ -9,7 +9,7 @@ Legend: ☐ todo · ◐ in progress · ☑ done (clear on next rollup)
 ## Foundations
 - ☑ Repo, strict TS, lint, CI; fill Run/build/test into CLAUDE.md · F1 (CI deferred — no
   remote yet; add with F6 deploy pipeline)
-- ☐ Token layer + 12 primitives, App UI and Report kept separate · F2
+- ☑ Token layer + 12 primitives, App UI and Report kept separate · F2
 - ☐ Drizzle schema + migration 1: org_id everywhere, brand→outlet, FK ids · F3
 - ☐ Own-auth: users, sessions, argon2, RBAC, end all sessions · F4
 - ☐ Supabase Storage bucket + signed URLs · F5
@@ -39,5 +39,5 @@ Legend: ☐ todo · ◐ in progress · ☑ done (clear on next rollup)
 - ☐ Publish: version stamp, PDF via Playwright, XLSX; split from share link · C5
 - ☐ Outlet reader portal — token access, per-client branding · C6
 
-F1 done — F2 (token layer) is the next package. Completed docs work rolled to
+F1, F2 done — F3 (schema and migration 1) is the next package. Completed docs work rolled to
 `docs/archive/2026-09-tasks.md`.

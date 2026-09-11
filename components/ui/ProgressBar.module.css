@@ -1,0 +1,11 @@
+.track {
+  height: 5px;
+  background: var(--divider);
+  border-radius: var(--radius-tag);
+  overflow: hidden;
+}
+
+.fill {
+  height: 100%;
+  background: var(--navy-700);
+}

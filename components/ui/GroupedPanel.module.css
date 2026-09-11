@@ -1,0 +1,42 @@
+.panel {
+  border: 1px solid var(--border-card);
+  border-radius: var(--radius-panel);
+  background: var(--surface);
+  overflow: hidden;
+}
+
+.header {
+  background: var(--surface-alt-1);
+  border-bottom: 1px solid var(--border-card);
+  padding: var(--space-6) var(--space-8);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-6);
+}
+
+.titleGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.title {
+  font-size: var(--text-card-header);
+  font-weight: 700;
+}
+
+.hint {
+  font-size: var(--text-meta);
+  color: var(--hint);
+}
+
+.progress {
+  font-size: var(--text-meta);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.body {
+  padding: var(--space-8);
+}

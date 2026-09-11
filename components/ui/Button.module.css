@@ -1,0 +1,31 @@
+.button {
+  border: none;
+  border-radius: var(--radius-control);
+  padding: 13px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-ui-body);
+  cursor: pointer;
+}
+
+.primary {
+  background: var(--navy-700);
+  color: #fff;
+}
+
+.primary:disabled {
+  background: var(--status-neutral-bg);
+  color: var(--muted);
+  cursor: not-allowed;
+}
+
+.secondary {
+  background: transparent;
+  color: var(--muted);
+  padding: 13px 0;
+}
+
+.secondary:disabled {
+  color: var(--placeholder);
+  cursor: not-allowed;
+}

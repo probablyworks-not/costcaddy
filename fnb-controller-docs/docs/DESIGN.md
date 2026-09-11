@@ -32,6 +32,7 @@ deliberately different type treatments — do not merge them.**
 | `--navy-500` | `#2f5d8a` | Links / secondary accents |
 | `--navy-050` | `#eef2f7` | Navy tint fill (icon chips, active nav bg) |
 | `--navy-025` | `#f0f4f9` | Lightest tint (role badges) |
+| `--navy-chip` | `#eef2f9` | Department chip fill (added during F2 — distinct from `--navy-025`, confirmed against the chip markup in all three flow files) |
 | `--navy-border` | `#b9c8dd` | Border on navy chips |
 | `--navy-border-soft` | `#dbe4f0` / `#d6e2ee` / `#a8c4de` | Progressive card/table borders |
 
@@ -40,10 +41,12 @@ deliberately different type treatments — do not merge them.**
 |---|---|---|
 | `--bg` | `#fafafa` | Page background |
 | `--surface` | `#ffffff` | Cards, panels, sticky header |
-| `--surface-alt` | `#f7f9fb` / `#fafbfc` | Card header bands, calculated fills |
+| `--surface-alt` | `#f7f9fb` / `#fafbfc` | Card header bands |
+| `--surface-calculated` | `#f6f8fa` | Calculated field fill (added during F2 — distinct from `--surface-alt`, confirmed against `Auditor Flow - Mobile/Laptop.dc.html` line ~125) |
 | `--ink` / `--ink-2` / `--ink-3` | `#111` / `#333` / `#555` | Headings / body / secondary |
 | `--muted` / `--muted-2` | `#888` / `#999` | Labels, meta / lowest-priority meta |
 | `--placeholder` | `#bbb` | Input placeholders |
+| `--hint` | `#8a93a0` | Grouped-panel header hint text (added during F2 — `Super Admin Flow.dc.html` grouped-panel headers) |
 | `--divider` | `#eee` | List-row dividers (the workhorse) |
 | `--border` / `--border-strong` | `#ddd` / `#e6e6e6` | Input borders / header rules |
 | `--border-card` | `#e4e7ea` | Grouped-card outlines |

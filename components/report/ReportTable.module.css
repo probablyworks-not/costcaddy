@@ -1,0 +1,73 @@
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-family: var(--font-report-body);
+}
+
+.headRow {
+  border-bottom: 1px solid var(--r-border-2);
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--r-ink);
+  background: #fff;
+}
+
+.th {
+  padding: 10px 12px;
+  font-weight: 600;
+}
+
+.th:first-child {
+  padding-left: 16px;
+}
+
+.th:last-child {
+  padding-right: 16px;
+}
+
+.thRight {
+  text-align: right;
+}
+
+.thEmphasis {
+  background: var(--r-surface-alt-1);
+}
+
+.row {
+  border-bottom: 1px solid var(--r-border);
+  font-size: 12px;
+}
+
+.rowZebra {
+  background: var(--r-surface-alt-2);
+}
+
+.td {
+  padding: 12px;
+}
+
+.td:first-child {
+  padding-left: 16px;
+}
+
+.td:last-child {
+  padding-right: 16px;
+}
+
+.tdRight {
+  text-align: right;
+  font-family: var(--font-report-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.tdEmphasis {
+  background: var(--r-surface-alt-1);
+}
+
+.categoryDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  display: inline-block;
+}

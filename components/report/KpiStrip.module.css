@@ -1,0 +1,62 @@
+.strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  border: 1px solid var(--r-border);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: #fff;
+  box-shadow: var(--shadow-card);
+}
+
+.cell {
+  padding: var(--space-8);
+  border-right: 1px solid var(--r-border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-family: var(--font-report-body);
+}
+
+.cell:last-child {
+  border-right: none;
+}
+
+.label {
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--r-muted);
+  font-weight: 600;
+}
+
+.value {
+  font-size: var(--text-report-kpi);
+  font-weight: 700;
+  font-family: var(--font-report-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--navy-700);
+}
+
+.sub {
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--r-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.subLabel {
+  font-size: 10px;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--r-muted);
+}
+
+.subValue {
+  font-family: var(--font-report-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--navy-700);
+}

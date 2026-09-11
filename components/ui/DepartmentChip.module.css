@@ -1,0 +1,14 @@
+.chip {
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-control);
+  background: var(--navy-chip);
+  border: 1px solid var(--navy-border-soft-1);
+  color: var(--navy-700);
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}

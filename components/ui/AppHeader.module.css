@@ -1,0 +1,25 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--space-7) var(--space-12);
+  border-bottom: 1px solid var(--border-strong);
+  flex-wrap: wrap;
+  gap: var(--space-6);
+  position: sticky;
+  top: 0;
+  background: var(--surface);
+  z-index: 20;
+}
+
+.wordmark {
+  font-family: var(--font-ui-title);
+  font-size: var(--text-wordmark);
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}

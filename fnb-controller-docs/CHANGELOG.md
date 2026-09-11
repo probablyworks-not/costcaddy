@@ -6,6 +6,16 @@ and DESIGN Part B). One dated line per shipped thing.
 ## Foundations — 2026
 
 ### 2026-09-11
+- F2 done: `styles/tokens.css` ports DESIGN.md Part A to CSS custom properties (App UI unprefixed,
+  Report `--r-`/`--font-report-*`, kept as two separate type systems); real fonts wired in
+  `app/layout.tsx` (Inter + Newsreader via `next/font`, Inter Tight + IBM Plex Mono for the report
+  surface, Material Symbols Outlined via stylesheet link); the 12 core components built in
+  `components/ui/` and `components/report/` (sticky header, role badge, primary/secondary button,
+  text input, calculated field, grouped panel, department chip, list row, progress bar, overdue
+  marker, report table + KPI strip, App UI icon + report MaterialIcon). Two tokens genuinely new to
+  Part A added and documented: `--surface-calculated` (`#f6f8fa`) and `--hint` (`#8a93a0`), plus
+  `--navy-chip` (`#eef2f9`, distinct from `--navy-025`). Verified with a screenshot of all 12
+  primitives rendered against real tokens — zero console errors.
 - F1 done: repo initialised, Next.js (App Router) + strict TypeScript scaffolded at the project root,
   ESLint clean (design sources and docs excluded from lint), `CLAUDE.md` Run/build/test filled in with
   real `dev`/`build`/`start`/`lint` commands. CI deferred to F6 — no remote yet.
