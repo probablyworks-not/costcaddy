@@ -11,10 +11,10 @@ the design changes; this describes current state, not history (the *why* and sup
 ---
 
 ## 1. What this is, technically
-A cloud SaaS platform for one F&B audit firm, delivered as **two interfaces over a single
-RBAC-governed Postgres database**:
-- **Auditor Portal** — internal, mobile-friendly capture-and-publish core.
-- **Client Portal** — white-labelled, read-only, branded per client.
+A cloud SaaS platform for one F&B audit firm, delivered as the **Auditor Portal** — internal,
+mobile-friendly capture-and-publish core, over a single RBAC-governed Postgres database. A
+white-labelled, read-only **Client Portal** (per-client branding, token access) is designed but out of
+current scope; see `EXECUTION.md` R12 and `ROADMAP.md`.
 
 The firm serves **multiple restaurant brands and outlets under one account**: a brand → outlet
 hierarchy sits under a single `org_id`, modelled from the first migration.
@@ -22,8 +22,8 @@ hierarchy sits under a single `org_id`, modelled from the first migration.
 Two delivery stages:
 - **Stage A (Phases 1–2)** — the audit portal: templates, assignment, field capture (metrics +
   checklist + photos + corrective actions), submit-once immutable, admin review, AI-assisted report,
-  versioned PDF, surfaced in the read-only Client Portal. Conventional online web app + deterministic
-  report engine.
+  versioned PDF delivered directly by the admin. Conventional online web app + deterministic report
+  engine.
 - **Stage B (Phase 3)** — the financial analytics & insight engine: upload client Excel → map →
   recipe costing, COGS variance, PO/invoice reconciliation, POS analysis → dashboards with
   LLM-narrated (never LLM-computed) insight. Isolated behind a contract with an async worker.
@@ -38,11 +38,11 @@ Two delivery stages:
 | PWA | Installable shell via **Serwist / `next-pwa`** (optional) | Home-screen icon + app feel **only**. No offline data layer. |
 | Database | **PostgreSQL on Supabase** | Relational, versioned, financial data. Managed Postgres + bundled object storage. Standard Postgres → portable off Supabase later. |
 | ORM / migrations | **Drizzle** | SQL-first, type-safe, explicit migrations; DB-generated types so code can't drift from schema. |
-| Auth | **Own it** — `users` table, **argon2** hashes, **signed-cookie sessions** (Lucia or Auth.js Credentials) | Admin-issues-and-resets model + reader-only outlet don't fit self-service auth. **Not** Supabase Auth — our own code on the same Postgres. Outlet report access is an unguessable token on the report row, no account. |
+| Auth | **Own it** — `users` table, **argon2** hashes, **signed-cookie sessions** (Lucia or Auth.js Credentials) | Admin-issues-and-resets model doesn't fit self-service auth. **Not** Supabase Auth — our own code on the same Postgres. No outlet-facing auth for now — there is no outlet portal (`EXECUTION.md` R12). |
 | Storage | **Supabase Storage** (S3-compatible, signed URLs) | Holds auditor photos, generated report PDFs, imported operational files. Cloudflare R2 is the fallback only if this ever gets high-traffic/file-heavy. |
-| PDF export | **Playwright** (headless Chromium) against the print CSS | Report is already print-first (`data-avoid` / `data-break`). Version-stamped output. |
-| XLSX export | **exceljs** | Report section tables → spreadsheet. |
+| PDF export | **Playwright** (headless Chromium) against the print CSS | Report is already print-first (`data-avoid` / `data-break`). Version-stamped output. The only export format shipped — no XLSX for now (`EXECUTION.md` R12). |
 | Hosting | **Cloudflare or Vercel** (free tier at this scale) | Next.js app here; Supabase holds Postgres + Storage. Portable for eventual client handover. |
+| LLM layer | **Anthropic SDK (TS)**, `claude-opus-5` | Introduced in **B6** (submit-time remark polish, ADR-0004) — earlier than originally planned; Stage B's analytics narration (below) reuses the same SDK/client, not a second integration. No job queue yet: B6 uses Next's `after()` to run the polish post-response rather than Stage B's Graphile Worker/pg-boss, since Stage A has no worker host. |
 
 **Why TypeScript end-to-end (not a Python backend):** the frontend is TS regardless; a single language
 gives shared types across the wire (no Pydantic-vs-TS drift on deep, versioned shapes), a near-mechanical
@@ -132,8 +132,15 @@ AuditItem      { id, code, cat, catCode, label, guidance, freeform,
                  impact?, correctiveAction?, sla?, ownership?,
                  resolutionStatus?: 'Pending'|'Resolved', // corrective-action tracking (D14)
                  refId?, category? }                      // set by report generation
+OperationalFile { id, auditId, type, period, name, format, storagePath,
+                  parseStatus: 'parsed'|'unreadable', coverageSummary? }  // attached in review (C1)
 Report         { auditId, version, findings[], attachments[], token, publishedAt }
 ```
+
+**Operational files are per-audit, not a global inbox.** The design's `sReports` screen draws a single
+firm-wide upload list keyed loosely to restaurant/period strings; C1 instead attaches each file to the
+specific audit under review, since C2's financial engine needs `(auditSnapshot, operationalImports)` for
+*that* audit, not a firm-wide pool. See `docs/DESIGN.md` Part B **UX-012**.
 **The Super Admin design file is the canonical source for this shape** — the auditor files carry an older,
 incompatible metric model (`DEFAULT_METRIC_CATS`) and a different checklist seed; neither is built.
 See **ADR-0003** and `EXECUTION.md` R1/R2. `deferred` is a Client Portal screen, not an audit status.
@@ -166,15 +173,48 @@ stacked steps + right-aligned progress). Layout differs; behaviour and data are 
 (findings from every Fail/Observation; financial sections from captured metrics; the LLM narrates only and
 **never computes numbers**, D12) → edit findings → **Publish** (versioned + frozen; a separate action from
 copying the share link) → render report v4 → **PDF via Playwright, version-stamped**
-(`v1 · 21 Jul 2026`) + XLSX via exceljs → surfaced read-only in the Client Portal.
+(`v1 · 21 Jul 2026`) — the only export format — delivered directly by the admin (no Client Portal for
+now; `EXECUTION.md` R12).
 
-- **Financial engine** is a pure, tested `(auditSnapshot, operationalImports) → reportDraft` module.
-  Formulas (report's own note): *sales − discount = net sales; + taxes + service charge = gross;
-  taxes/service-charge allocated pro-rata on net sales; APC on covers.* Operational-file import sits
-  behind a per-client adapter interface (formats vary). **"No data → 'needs data', never zero."**
-- **Report v4** has its own type system (Inter Tight + IBM Plex Mono `tabular-nums`, Material Symbols),
-  is print-first, and ships `showCharts` / `showSummaryRibbon` toggles (+ a stubbed-off `showEvidence`
-  for future photo embedding, D4). Currency is Indian short-scale via one centralised formatter.
+- **Financial engine** is `lib/report/financialDraft.ts`'s `buildFinancialReportDraft` — a pure, tested
+  `(defs, values, operationalFiles) → reportDraft` module built on top of F7's `computeMetrics`, never
+  reimplementing its cascade. Formulas (report's own note): *sales − discount = net sales; + taxes +
+  service charge = gross; taxes/service-charge allocated pro-rata on net sales; APC on covers.* Every
+  figure is a `ReportFigure` (`ok`/`needs-data`) so **"no data → 'needs data', never zero"** is a type,
+  not a convention to remember. The revenue matrix has two groups — Kitchen and Bar — matching F7's own
+  `revGroup: 'bar'|'kitchen'` model, not the report mock's three-way Food/Bar/Liquor split (`DESIGN.md`
+  Part B **UX-014**). Operational-file import sits behind a per-client adapter interface (formats vary,
+  not yet designed) — C2 only carries each attached file's type/period/parse-status through untouched.
+- **Findings generation** is `lib/report/classify.ts`'s `classifyFinding` — the mock's `CATEGORY_RULES`/
+  `classify` ported verbatim (10 keyword rules over label+remark, Operational Control/Medium fallback).
+  A "Generate report" action (`generateReport`) classifies every Fail/Observation with no severity yet —
+  idempotent, so Regenerate never overwrites a reviewer's edit — and stamps `audits.reportGeneratedAt`.
+  `refId` is always the item's own template code (e.g. `KIT-03`), never a generated `EQ-01` sequence
+  (`DESIGN.md` Part B **UX-015**) — every real audit item already has one from the template snapshot
+  (A5), so there's nothing for a fallback scheme to cover. Pass/N-A items are never classified; a status
+  correction (C1) that moves an item away from Fail/Observation clears any existing finding so "Pass
+  carries no severity" keeps holding after an edit.
+- **Report v4** (`app/admin/(protected)/review/[id]/report/`) has its own type system (Inter Tight +
+  IBM Plex Mono `tabular-nums`, Material Symbols), is print-first (`[data-avoid]`/`[data-break]` in
+  `globals.css`), and renders §1 (KPI strip + revenue matrix + two composition donuts), §1B (costing via
+  `lib/report/costingBreakdown.ts`), and §2 (per-department compliance table from C3's findings). No §3
+  (R9). `showCharts`/`showSummaryRibbon` are real flags that both default true (no story asks to hide
+  either yet) and `showEvidence` stays stubbed off — `DESIGN.md` Part B **UX-016**. Reached from the
+  review screen's "View report" once `reportGeneratedAt` is set. Currency is Indian short-scale via one
+  centralised formatter.
+- **Publish** (`lib/actions/publish.ts`) is the only way `reportGeneratedAt` data becomes a durable
+  artifact. `lib/report/reportViewModel.ts` assembles the same `{ audit, draft, costing, departments,
+  slices }` shape for both the interactive report page and the PDF, and both render the same
+  `ReportBody` component — so the on-screen report and the published PDF cannot drift into showing
+  different figures for one audit. Publishing bumps `audits.version`, sets `publishedAt`, flips
+  `status → 'published'` (every correction/finding-edit/attach/generate action already refuses anything
+  but `status === 'submitted'`, so publish *is* the freeze), and inserts a new `reports` row holding that
+  version's PDF path — earlier rows are never touched, so versioning is the sole history. `react-dom/server`
+  is imported dynamically inside the publish action only, since Next refuses a static import of it
+  anywhere in the server bundle graph (it owns RSC rendering itself); this runs entirely outside any
+  request-render path, so it doesn't touch Next's own rendering. No "Share" action exists — R12 cut the
+  Client Portal, so there's no public destination a share link could point to; R5's "publish separate
+  from sharing" holds vacuously rather than by building a link to nowhere (`DESIGN.md` Part B **UX-017**).
 
 ---
 

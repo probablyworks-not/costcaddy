@@ -1,0 +1,1 @@
+ALTER TABLE "audits" ADD COLUMN "report_generated_at" timestamp with time zone;

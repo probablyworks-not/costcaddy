@@ -5,9 +5,11 @@
 
 ## What we're building
 **F&B Controller** — a cloud SaaS platform that digitises F&B cost-controller operations for one audit
-firm. It is delivered as **two interfaces over one governed database**:
-- an **Auditor Portal** (internal, mobile-first) for setup, capture and publishing, and
-- a **white-labelled Client Portal** (read-only, branded per client) where outlets receive reports.
+firm. It is delivered as an **Auditor Portal** (internal, mobile-first + laptop) for setup, capture,
+review and publishing, over one governed database. Publishing produces a version-stamped **PDF**, which
+the admin delivers to the outlet directly — there is no outlet-facing portal for now. A **white-labelled
+Client Portal** (read-only, branded per client, token access) is designed (`Super Admin Flow.dc.html`)
+and may be built later, but is out of current scope; see `EXECUTION.md` R12.
 
 The firm serves **multiple restaurant brands and outlets under one account**. It ships in two stages:
 **Stage A** — the audit portal (configure → assign → capture → review → AI-assisted, versioned report);
@@ -19,7 +21,8 @@ reconciliation, POS analysis → dashboards with AI-narrated insight).
   assigns audits, reviews submissions, and publishes reports.
 - **Auditor** (phone primarily, sometimes laptop) — signs in, opens the assigned audit, types the
   metrics, marks every checklist point with a remark and photos, submits once.
-- **Outlet** (reader only) — receives the published report. **No login in this build.**
+- **Outlet** (reader only) — receives the published PDF report directly from the admin. **No login, no
+  portal, in this build.**
 
 ## Why
 Restaurant-group controls audits are otherwise run on spreadsheets and ad-hoc documents: capture is
@@ -30,7 +33,8 @@ costing and variance insight the firm can bill on.
 
 ## What it is deliberately *not*
 - **Not a scheduler.** Due dates are recorded; chasing happens offline. No reminders or notifications.
-- **Not an outlet portal with accounts.** The Client Portal is read-only; outlets have no login.
+- **Not an outlet portal, for now.** No Client Portal, no accounts, no report token — outlets get the
+  PDF directly from the admin. A read-only, token-accessed Client Portal is designed but deferred.
 - **Not an outlet-facing task app.** Corrective actions are tracked *within* the system, shown read-only.
 - **Not a live integration.** All financial data enters by upload — no live POS/accounting/inventory sync.
 

@@ -8,6 +8,34 @@
       "when": 1789114228046,
       "tag": "0000_migration_1",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1789127098287,
+      "tag": "0001_tranquil_kulan_gath",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1789211558729,
+      "tag": "0002_cuddly_ben_grimm",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1789213049590,
+      "tag": "0003_same_princess_powerful",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1789225511736,
+      "tag": "0004_youthful_jubilee",
+      "breakpoints": true
     }
   ]
 }

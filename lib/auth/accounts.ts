@@ -20,6 +20,10 @@ export async function createAuditor(input: {
   email: string;
   phone?: string;
   outletIds: string[];
+  // The design lets the admin type or generate this before the account exists — that's
+  // distinct from the reveal-anytime toggle on an already-hashed password, which A3
+  // deliberately does not build (EXECUTION.md). Falls back to a random one if omitted.
+  password?: string;
 }): Promise<{ user: User; password: string }> {
   const [existing] = await db
     .select({ id: users.id })
@@ -28,7 +32,7 @@ export async function createAuditor(input: {
     .limit(1);
   if (existing) throw new DuplicateEmailError();
 
-  const password = generatePassword();
+  const password = input.password?.trim() || generatePassword();
   const pwdHash = await hashPassword(password);
 
   const [user] = await db

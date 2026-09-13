@@ -18,6 +18,8 @@ import {
   metricRevGroupEnum,
   metricSectionEnum,
   metricUnitEnum,
+  opFileParseStatusEnum,
+  operationalFileTypeEnum,
   polishStateEnum,
   resolutionStatusEnum,
   severityEnum,
@@ -46,6 +48,10 @@ export const audits = pgTable('audits', {
   dueDate: date('due_date').notNull(),
   status: auditStatusEnum('status').notNull().default('assigned'),
   submittedAt: timestamp('submitted_at', { withTimezone: true }),
+  // Set by C3's "Generate report" (idempotent — regenerate only fills items that have
+  // no severity yet, never overwriting a reviewer's edit). Distinct from publishedAt —
+  // generating drafts findings, publishing freezes and versions them (R5).
+  reportGeneratedAt: timestamp('report_generated_at', { withTimezone: true }),
   publishedAt: timestamp('published_at', { withTimezone: true }),
   version: integer('version').notNull().default(0),
   polishState: polishStateEnum('polish_state'),
@@ -130,6 +136,29 @@ export const auditItems = pgTable(
   },
   (table) => [uniqueIndex('audit_items_audit_code_unique').on(table.auditId, table.code)],
 );
+
+// Operational file attach (C1) — per-audit imports (bill edits, discounts, stock
+// statements, …) reviewed alongside the captured checklist. C2's financial engine
+// will read these; C1 only attaches/replaces and records whether each one parsed.
+export const auditOperationalFiles = pgTable('audit_operational_files', {
+  id: uuid('id').primaryKey().defaultRandom(),
+  orgId: uuid('org_id')
+    .notNull()
+    .references(() => orgs.id),
+  auditId: uuid('audit_id')
+    .notNull()
+    .references(() => audits.id),
+  type: operationalFileTypeEnum('type').notNull(),
+  period: text('period').notNull(),
+  name: text('name').notNull(),
+  format: text('format').notNull(),
+  storagePath: text('storage_path').notNull(),
+  parseStatus: opFileParseStatusEnum('parse_status').notNull(),
+  // What it covers, in the reviewer's own words if parsing failed, or a short
+  // machine-derived summary (sheet name, row count) when it parsed.
+  coverageSummary: text('coverage_summary'),
+  uploadedAt: timestamp('uploaded_at', { withTimezone: true }).notNull().defaultNow(),
+});
 
 export const auditItemFiles = pgTable('audit_item_files', {
   id: uuid('id').primaryKey().defaultRandom(),

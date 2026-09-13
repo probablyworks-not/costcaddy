@@ -14,7 +14,7 @@ the values are exact — copy them. The logic class at the bottom holds the seed
 the calculations; read those out rather than re-deriving them. See `CLAUDE.md` → "Design source files".
 
 Package ids are stable and are the tag used in `TASKS.md`: `F*` foundations · `A*` Super Admin ·
-`B*` Auditor · `C*` review, report and outlet portal.
+`B*` Auditor · `C*` review and report export.
 
 ---
 
@@ -36,6 +36,7 @@ recorded here so they are not rediscovered mid-build.
 | R9 | **Report §3 Findings Register.** The spec (RP-1) defines one; `Audit report v4.dc.html` has no such section — §2's matrix already carries Ref ID, severity, impact and corrective action | **Not built.** Design wins on layout. See **UX-008** |
 | R10 | **Remark requirement.** `HANDOVER.md` says every point; the spec allows a bare Pass | Required on **fail / observation / N-A** only; N/A still needs its reason. See **UX-009** |
 | R11 | **AI remark polish.** The mock polishes admin-side inside `generateReport()`, keeping `rawRemark` so the reviewer can revert | Polish runs **on submit** and the polished text **replaces** the raw remark. Reverses the old "remarks are quoted, not rewritten" invariant. See **ADR-0004** / **UX-010** |
+| R12 | **Report export & delivery.** `Audit report v4.dc.html` draws an "Export Data (XLSX)" button alongside Print/PDF, and `Super Admin Flow.dc.html` draws a restaurant/outlet reader tree for a token-based Client Portal | **PDF only, no Client Portal, for now.** The published deliverable is a version-stamped PDF via Playwright; XLSX export and the outlet-facing portal are cut from current scope. Design wins on the report's own layout, but not on which export formats or delivery surfaces ship. See **C5** |
 
 ---
 
@@ -310,7 +311,7 @@ Done when: submitting queues a job that rewrites every non-pass remark into repo
 
 ---
 
-## Review, report and outlet portal — C1…C6
+## Review and report export — C1…C5
 
 ### C1 — Review queue and review
 ```
@@ -383,30 +384,24 @@ Done when: §1 Key Financial & Unit Economic Metrics (KPI strip with per-pax sub
 - **Do not port the mock's edit model.** It is DOM-level `contenteditable` persisted to
   `localStorage['fnb.reportV4.edits.v2']`. Model edits as real fields on real records.
 
-### C5 — Publish
+### C5 — Publish (PDF export)
 ```
 Screens:   — (publish action on review; version stamp on reportDoc)
 Depends:   C4
 Story:     S-12
 Done when: publishing stamps a version and date ("v1 · 21 Jul 2026"), freezes the report
-           read-only, renders a version-stamped PDF via Playwright and an XLSX via exceljs;
-           and publishing is a SEPARATE action from copying the share link (R5) — only
-           publish increments the version
+           read-only, and renders a version-stamped PDF via Playwright — the only export
+           format shipped; and publishing is a SEPARATE action from copying the share link
+           (R5) — only publish increments the version
 ```
 
 A correction is a new version; earlier versions remain. With no audit trail, versioning is the only
 history.
 
-### C6 — Outlet reader portal
-```
-Screens:   reports, detail, deferred  (restaurantScreen tree)
-Design:    Super Admin Flow.dc.html → the restaurant/outlet reader tree
-Depends:   C5
-Done when: an outlet reaches its published reports through an unguessable report token
-           with no login and no account; branding is per client; the report renders
-           read-only; and `deferred` is the design's "Task Assignment — coming soon"
-           placeholder and nothing more
-```
+**No XLSX, no Client Portal, for now (R12).** The design file draws an "Export Data (XLSX)" button next
+to Print/PDF, and Super Admin draws a restaurant/outlet reader tree for token-based access — neither is
+in scope. The admin downloads/shares the PDF directly; there is no outlet-facing portal, no report token,
+and no per-client branding surface. See "Not yet designed" for the deferred outlet portal.
 
 ---
 
@@ -415,6 +410,12 @@ Done when: an outlet reaches its published reports through an unguessable report
 Named so they are not silently lost. **Out of the build until a design exists** — do not invent screens
 for these.
 
+- **Outlet reader / Client Portal (formerly C6).** A design exists (`Super Admin Flow.dc.html`'s
+  restaurant/outlet reader tree) but it's cut from current scope by product decision (R12): for now the
+  only deliverable is the admin-facing PDF export in C5. No outlet login, no report token, no per-client
+  branding. Revisit this package if the Client Portal comes back into scope.
+- **XLSX export.** The report design draws an "Export Data" / "Download full report (XLSX)" control;
+  dropped for now (R12) — PDF via Playwright is the only export format.
 - **Revision note on a v2 publish.** Story S-12 requires it; no field appears in any design file.
 - **Per-client operational-file import adapters.** ARCHITECTURE §7 describes the interface; no screen
   draws the mapping.

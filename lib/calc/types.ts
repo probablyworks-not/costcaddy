@@ -6,7 +6,7 @@ export type MetricSection = 'covers' | 'sales' | 'discount' | 'tax' | 'cost';
 export type MetricRevGroup = 'bar' | 'kitchen';
 export type MetricKind = 'tax' | 'charge';
 export type MetricCostGroup = 'bar' | 'kitchen' | 'nc';
-export type MetricUnit = 'currency' | 'count';
+export type MetricUnit = 'currency' | 'count' | 'number' | 'percent';
 
 export interface MetricDef {
   id: string;

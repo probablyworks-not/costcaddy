@@ -1,0 +1,28 @@
+.outer {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  padding: var(--auditor-shell-pad-mobile);
+  background: var(--bg);
+}
+
+.card {
+  width: 100%;
+  max-width: var(--auditor-shell-maxwidth-mobile);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--auditor-shell-radius-mobile);
+  min-height: var(--auditor-shell-minheight-mobile);
+  overflow: hidden;
+}
+
+@media (min-width: 640px) {
+  .outer {
+    padding: var(--auditor-shell-pad-laptop);
+  }
+  .card {
+    max-width: var(--auditor-shell-maxwidth-laptop);
+    border-radius: var(--auditor-shell-radius-laptop);
+    min-height: var(--auditor-shell-minheight-laptop);
+  }
+}

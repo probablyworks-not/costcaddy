@@ -5,7 +5,214 @@ and DESIGN Part B). One dated line per shipped thing.
 
 ## Foundations — 2026
 
+### 2026-09-12 (BUG-020)
+- Fixed: Template Builder's Taxes category had no way to mark a row as a service charge
+  (every row silently saved as `kind:'tax'`), so Service Charge always read "Needs data"
+  on the report and was double-counted into Total Taxes instead. Taxes rows now offer a
+  Statutory tax / Service charge choice; existing templates need their Service Charge
+  row re-flagged and re-saved. See `docs/BUGS.md` BUG-020.
+
+### 2026-09-12 (C5)
+- Publish shipped: `publishAudit` stamps a version + date, freezes the audit (only
+  `submitted` audits are ever correctable — publish flips it to `published` and every
+  correction/finding-edit/generate action already refuses anything but `submitted`),
+  and renders the same report the review screen shows to a real PDF via headless
+  Chromium (Playwright), uploaded to Storage and recorded as a new `reports` row —
+  earlier versions' rows are untouched. New `lib/report/reportViewModel.ts` shares one
+  data-assembly path between the interactive report page and the PDF, and a new
+  `ReportBody` component shares the actual markup, so the two literally cannot drift
+  into showing different figures. `react-dom/server` is dynamically imported inside the
+  server action only — Next refuses a static import of it anywhere in the server
+  bundle graph. No "Share" action was built at all: R12 cut the Client Portal, so there
+  is no public destination for a share link — R5's "publish separate from sharing" is
+  satisfied by there being nothing to conflate it with. Dropped the unused `xlsxPath`
+  column from `reports` (R12), migration `0004_youthful_jubilee`. Verified the full
+  render → PDF pipeline end-to-end with a throwaway script against fake data (not
+  committed) — produced a valid PDF.
+
+### 2026-09-12 (C4)
+- Report v4 render shipped at `/admin/review/[id]/report`, reached from the review
+  screen's new "View report" link once a report is generated: §1 Key Financial & Unit
+  Economic Metrics (KPI strip with per-pax sub-figures, the Kitchen/Bar revenue matrix,
+  two SVG composition donuts computed from real figures — no hardcoded chart data), §1B
+  Costing & Cost as % of Sales (`lib/report/costingBreakdown.ts`, 7 unit tests), and §2
+  Department Checklists & Compliance Matrix (one card per department, severity ribbon,
+  the 7-column table). No §3 findings register (R9). Print-first via the `[data-avoid]`/
+  `[data-break]` rules already in `globals.css` from F2, plus a Print/PDF preview button
+  (`window.print()` — the real Playwright-rendered, version-stamped PDF is C5). Added
+  the report severity-chip and composition-chart colour tokens to `styles/tokens.css` /
+  `DESIGN.md` Part A.
+
+### 2026-09-12 (C3)
+- Findings generation shipped: `lib/report/classify.ts` ports Super Admin Flow.dc.html's
+  `CATEGORY_RULES`/`classify` verbatim (10 keyword rules over label+remark, Operational
+  Control/Medium fallback; severity capped to High/Medium/Low per R7). A "Generate
+  report" action on the review screen classifies every Fail/Observation into a finding
+  (ref ID = the item's existing template code, category, severity, impact, corrective
+  action, SLA, ownership, resolution status) — idempotent, so Regenerate never clobbers
+  a reviewer's edit, and Pass/N-A items are never touched. Every generated field is
+  editable via a new finding panel. Admin corrections (C1) now clear a stale finding
+  when a status changes away from Fail/Observation, so "Pass carries no severity"
+  holds even after a correction. New `audits.report_generated_at` column, migration
+  `0003_same_princess_powerful`.
+
+### 2026-09-12 (C2)
+- Financial engine shipped as `lib/report/financialDraft.ts`: a pure, I/O-free
+  `buildFinancialReportDraft(defs, values, operationalFiles)` built on top of F7's
+  `computeMetrics`. Adds the one thing F7 doesn't give — the per-revenue-group (Kitchen/
+  Bar) breakdown Report v4 §1's matrix needs, allocating taxes and service charge
+  pro-rata on each group's share of sales, per the report's own formula note. Every
+  figure is a `ReportFigure` (`{status:'ok', value}` or `{status:'needs-data'}`) so a
+  missing input reaches the report as "needs data," never ₹0. 9 unit tests against the
+  same Super Admin seed F7 was tested against. Added `vitest.config.ts` so lib/ tests
+  can use the `@/` path alias like the rest of the app does.
+
+### 2026-09-12 (C1)
+- Review queue + review screen shipped: submitted audits list, the as-captured MTD Metrics/checklist
+  view (statuses, remarks, photos opening full size via signed URLs), admin-side status/remark
+  correction as an explicit action (UX-013), and per-audit operational file attach/replace with a real
+  parse attempt (exceljs for Excel, a plain CSV read) recording whether each file was machine-readable
+  (UX-012). New `audit_operational_files` table, migration `0002_cuddly_ben_grimm`.
+
+### 2026-09-12 (bugfix — auditor dropdown)
+- BUG-017 fixed: the "Create audit link" panel's Auditor dropdown came up empty (only the disabled
+  "Select…" placeholder) for any restaurant with no auditor explicitly linked to it via
+  `auditor_outlets`, even with active auditors in the org — reported via screenshot. The page was
+  scoping the list to that one outlet's links; Super Admin Flow.dc.html shows the design lists every
+  active auditor org-wide here, unfiltered by outlet. Replaced `listActiveAuditorsForOutlet` with
+  `listActiveAuditors(orgId)`.
+
+### 2026-09-12 (bugfix — mobile)
+- BUG-016 fixed: the Metrics step (B2) overflowed horizontally on real mobile widths — found by
+  actually driving the app (Playwright, `--viewport-size=375,700`) against a seeded auditor account
+  after being asked whether mobile responsive design works, rather than by inspection. Root cause was a
+  fixed three-column row layout (label + 134px value + a separate 94px sub column) carried over from
+  the Super Admin file's desktop-only review screen — the two fixed columns alone (248px) barely left
+  room for a label inside the auditor shell's ~340px mobile card. Fix: the sub figure (APC / cost %) now
+  stacks under the value column instead of occupying its own column, and the value column narrowed to
+  100px. Verified via screenshot at both 375px (mobile) and 1024px (laptop) — no overflow at either.
+  `DESIGN.md`'s "Metric section (B2)" entry corrected to match.
+
+### 2026-09-12 (B6)
+- B6 done: AI remark polish on submit (ADR-0004) — **the whole Auditor package (B1–B6) is now built.**
+  `submitAudit` flips the audit to `submitted`, sets `polishState:'polishing'`, then queues
+  `lib/ai/polishRemarks.ts` via Next's `after()` — runs post-response, survives the `redirect()`, and
+  is never awaited by the request that triggered it (no Graphile Worker/pg-boss yet; that's Stage B
+  infra Stage A doesn't have). The job asks `claude-opus-5` (`@anthropic-ai/sdk`, new dependency) to
+  rewrite every non-pass remark into report prose via `client.messages.parse` + a Zod output schema,
+  under a 30s timeout; on success the polished text *replaces* the raw remark (no `rawRemark` kept) and
+  `polishState` becomes `ready`. Any failure — bad response, timeout, API error — is caught, never
+  reaches the auditor, never touches the submit, and just sets `polishState:'failed'` with the raw
+  remarks left verbatim. No automatic retry on `failed` yet (would need the Stage B worker); flagged as
+  a known gap rather than built as a poller. The pending list's "Recently Submitted" rows now show
+  "Polishing remarks…" / "Remarks kept as typed — polish failed" — B6's one UI surface until
+  `reviewQueue` exists (C1). `ARCHITECTURE.md` §2 and `CLAUDE.md`'s stack line updated: the Anthropic
+  SDK lands with B6, not Stage B.
+- BUG-015 fixed alongside it: the B5 submit gate (ported from the Super Admin mock's own
+  `submitDisabled`) never actually checked that fail/observation/N-A points carried a remark — only
+  that their status wasn't `pending`. `lib/checklist/isItemAnswered.ts` is now the one place both
+  `ChecklistScreen` (client gate + jump-to-incomplete) and `submitAudit` (server re-validation) test
+  completeness, so the two can't drift again. Found while wiring B6, which assumes every non-pass point
+  already has something worth polishing.
+
+### 2026-09-12 (B5)
+- B5 done: the submit gate and post-submit immutability. `submitLabel`/`complete` in `ChecklistScreen`
+  are ported from the Super Admin file's `submitDisabled` (~line 2127) — checks metrics *and*
+  checklist, unlike the auditor `.dc.html`'s own checklist-only version. The Submit button is never
+  HTML-`disabled`: per spec story A-10 it stays tappable while incomplete and instead jumps to the
+  first unanswered checklist point (checklist gaps take priority, matching the label's own
+  precedence) or the first empty metric field, expanding its department and focusing/scrolling to it.
+  When complete, tapping opens a confirmation naming the outlet and the counts (story A-11 — no
+  design file draws this dialog, so it's built from the spec) before `lib/actions/checklist.ts` →
+  `submitAudit` re-validates completeness against the DB itself (never trusting the client), flips
+  the audit to `submitted`, and redirects to a new read-only `report` screen
+  (`/auditor/report/[id]`). Submit is one-way: `saveAuditDraft`/`uploadItemPhoto`/`removeItemPhoto`
+  all now reject once an audit is `submitted`/`published` (`assertEditable`), and the checklist page
+  itself redirects to the report screen if revisited post-submit — no unsubmit, anywhere.
+
+### 2026-09-12 (B4)
+- B4 done: explicit Save (`lib/actions/checklist.ts` → `saveAuditDraft`), the first thing to actually
+  persist what B2/B3 held only in client state. One server action upserts every entered metric value
+  and updates every checklist item's status/remark/naReason in a transaction; the first save while an
+  audit is still `assigned` flips it to `in-progress` (R4). Photos are separate and immediate —
+  `uploadItemPhoto`/`removeItemPhoto` upload straight to Supabase Storage (F5) one file at a time as
+  they're attached, not batched into Save, per ADR-0002 ("Save writes only small structured data —
+  photos are already uploaded"). `lib/media/compressImage.ts` decodes each image through
+  `createImageBitmap({imageOrientation:'from-image'})` and re-encodes via canvas before upload — bakes
+  in EXIF orientation and drops the EXIF block entirely, satisfying "compressed and EXIF-normalised
+  client-side first"; non-image attachments pass through unchanged. `getAuditItemFiles` (new query)
+  means a reopened audit shows every previously-attached photo — the mobile→laptop handoff ADR-0002
+  promises. No unsaved-changes guard yet (Back never asks to discard anything, but there's also no
+  `localStorage` cache warning) — that belt-and-braces layer is explicitly Phase 4, not B4.
+
+### 2026-09-12 (bugfix)
+- BUG-013 fixed: Template Builder now shows the "Part 1 · Metrics" header, and calculated rows
+  (Total No Of Pax, Net Sales at Restaurant) render one dashed border instead of a doubled one.
+- BUG-014 fixed: the Templates list now shows real metric/department/checkpoint counts — an
+  unqualified column reference in `listTemplates`'s correlated subqueries was matching each child
+  table's own `id` instead of the parent template's, always returning 0.
+
+### 2026-09-12 (B3)
+- B3 done: the Departmental Checklist tab in `ChecklistStep.tsx`, filling the stub `ChecklistScreen`
+  left for it. Departments collapse/expand (spec story A-5 — the auditor `.dc.html` itself never
+  wires this, only individual points do) with an "n of m answered" header, in template order; each
+  point expands to one exclusive Pass/Fail/Observation/N-A choice at 44px; N-A is built from the
+  product spec rather than copied, since the design file never wires it at all (R3) — its reason
+  picker (`lib/checklist/naReasons.ts`, the fixed list of five) only appears once N-A is selected.
+  Remark required on fail/observation/na, optional on pass (UX-009) — enforced at Submit (B5), not
+  here. Photos are local `File` references only (name/size, removable) — they don't reach Supabase
+  Storage until B4 wires the real upload. Both steps (`ChecklistScreen`'s metrics tab and this one)
+  now stay mounted simultaneously, toggled via the `hidden` attribute rather than conditional
+  rendering, so switching tabs never drops what the auditor already typed.
+
+### 2026-09-12 (B2)
+- B2 done: the Metrics step at `/auditor/checklist/[id]` (`ChecklistScreen.tsx`, the `tabMetrics`
+  branch — `tabChecklist` is a stub pending B3). `lib/calc` gained `metricSections`, a verbatim port
+  of Super Admin Flow.dc.html's grouped-panel builder (covers/sales/discount/tax/cost, each with a
+  derived total row and an APC or cost-% sub-figure) — the same function that will drive the
+  reviewer's as-captured view in C1, so there's one section-shaping implementation, not two. Inputs
+  are sanitized on keystroke (digits + one decimal point only, no reject-after-the-fact dialog);
+  calculated rows render via the existing `CalculatedField` primitive (dashed border, `#f6f8fa`,
+  read-only) and recompute on every keystroke through `computeMetrics`. `lib/queries/audits.ts` gained
+  `getAuditForAuditor` (org+auditor-scoped lookup, 404s rather than leaking another auditor's audit),
+  `getAuditMetricDefs` (maps the DB's `metricKey`/`costGroup` naming onto `lib/calc`'s `MetricDef`
+  shape) and `getAuditMetricValues`. Two new tokens (`--hint-2`, the metric-section note grey) and a
+  new DESIGN.md Part A entry for the metric-section component. No persistence yet — typed values live
+  in client state only until B4 adds explicit Save.
+
+### 2026-09-12
+- B1 done: the auditor shell under `app/auditor/` — sign-in (`/auditor/login`, same
+  one-message empty-field validation as A1, scoped to the `auditor` role) and the pending
+  list (`/auditor/pending`), gated by `app/auditor/(protected)/layout.tsx`. One responsive
+  component tree per UX-001: `AuditorShell` switches padding/max-width/radius/min-height at a
+  new 640px breakpoint via CSS media query, not a JS device flag (values copied verbatim from
+  both `.dc.html` files' `isMobile` ternaries — now tokenized in `styles/tokens.css` and
+  documented in DESIGN.md Part A). `lib/queries/audits.ts` gained `listAuditorAudits` (every
+  audit assigned to the signed-in auditor, across outlets, with a per-audit items-done/total
+  count) and `isOverdue`; pending audits sort by due date ascending with the `OverdueMarker`
+  primitive, recently-submitted/published audits list below. The signed-in auditor resolves
+  from the session via `getCurrentUser` — never a hardcoded name (R6).
+
 ### 2026-09-11
+- A1–A5 done: the full Super Admin surface under `app/admin/` — login (`/admin/login`, one
+  message "Enter your email and password" for empty fields, resolves via `verifyCredentials`);
+  restaurants list/detail with Audits/Reports tabs and live assigned/in-review/published counts
+  (`/admin/restaurants`); auditors CRUD (`/admin/auditors`) reusing `lib/auth/accounts.ts`
+  end-to-end — duplicate email refused, password shown once on create/reset (no reveal-anytime,
+  overriding the design file's persistent toggle per EXECUTION.md's precedence), outlet-access
+  chips, suspend/reactivate, force sign-out, and a soft "remove" (suspend + force sign-out, since
+  `audits.auditor_id` is a non-nullable FK with no cascade — a hard delete was never safe); the
+  Template Builder (`/admin/templates`, `/new`, `/[id]`) with the 7 fixed metric categories,
+  per-row unit picker, cost-row denominator picker, department/checklist-point editing, and live
+  reference-code renumbering (`lib/templates/builderCode.ts`, unit-tested); and audit
+  creation/assignment as the New Audit panel on the restaurant detail page, which clones the
+  template's metrics and checklist points onto `audit_metric_defs`/`audit_items` in one
+  transaction — the "template snapshot on assign" invariant — and generates the share token via
+  `crypto.randomBytes` (not the design mock's `Math.random`, since this token is a bearer
+  credential). Schema note: `metric_unit` gained `number` and `percent` (migration 0001) — the
+  design's 4 metric types (Currency/Number/Count-Pax/Percentage) needed more than the 2 F3
+  originally shipped. `app/page.tsx`'s F2 smoke test is gone, replaced by a redirect into
+  `/admin`.
 - F7 done: the shared calculation core in `lib/calc/` — `computeMetrics(defs, values)` is a
   verbatim port of Super Admin Flow.dc.html's derived cascade (covers, net/bar/kitchen sale,
   discounts, taxes vs. charges, gross sale, bar/kitchen/nc cost, F&B/net-F&B cost);

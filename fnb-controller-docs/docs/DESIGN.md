@@ -70,6 +70,19 @@ deliberately different type treatments — do not merge them.**
 | Financial / discount callout | `#8c4a2f` | — | — |
 | Neutral / N-A / assigned | `#6b7480` / `#9aa4b2` | `#f0f0f0` | `#dcdfe4` |
 
+**Report §2 Risk Severity chip** (added during C4 — `Audit report v4.dc.html`'s own `sevColor()`, a
+distinct palette from the status table above):
+| Severity | Fg | Bg |
+|---|---|---|
+| High | `#c2410c` | `#fff7ed` |
+| Medium | `#a16207` | `#fefce8` |
+| Low / Passed | `#666666` | `#f5f5f5` |
+
+**Report §1 composition donuts** (added during C4 — `Audit report v4.dc.html`'s own chart palette):
+sales composition teals `#0d3b34` · `#1f6f62` · `#4a9c8c` (the same hexes as `--status-pass-bg-deep` /
+`-fg` / `-dot`, reused rather than duplicated) · `#8fc5b8` · `#cfe3dd`; cost composition rust tones
+`#7a2e14` · `#b8541f` · `#d98b4a` · `#f0c9a0`.
+
 Audit lifecycle pills: `assigned` (neutral) → `in-progress` (navy) → `submitted` (navy-solid) →
 `published` (green) · `deferred`. Checklist item statuses: `pass` · `fail` · `observation` · `na`;
 `fail`/`observation` also carry `severity` (High/Medium/Low), `impact`, `correctiveAction`.
@@ -92,12 +105,25 @@ Borders always `1px solid`; read-only/calculated `1px dashed #d9dee4`. Spacing r
 `14px 28px`. Shadows almost none — depth from borders (only the report header carries one). Lists are
 flat rows on `#fafafa`, separated by `1px solid #eee` — no card-per-row.
 
+**Auditor shell breakpoint (B1):** one component tree, CSS-media-query driven (not a JS device flag) at
+`640px`. Below it (mobile, primary): outer pad `28px 16px`, card max-width `390px`, radius `20px`, min-height
+`700px`, header stacks column/stretch. At/above it (laptop, the widened variant): outer pad `36px`, max-width
+`760px`, radius `10px`, min-height `600px`, header row/center. Values copied verbatim from both
+`Auditor Flow - Mobile.dc.html` / `- Laptop.dc.html`'s `isMobile` ternaries.
+
 ## Core components
 - **Sticky header** — white, `1px solid #e6e6e6` bottom, `sticky; z-index:20`; Newsreader wordmark left, role badge right.
 - **Role badge** — pill, `#f0f4f9` bg / `#b9c8dd` border / `#1e3a5f` text, 11/700 uppercase `.08em`.
 - **Primary button** — `#1e3a5f`, white text, no border, radius 6, padding 13, 14/600. Secondary = text-only `#888`. Submit disabled until nothing missing.
 - **Text input** — `padding 11px 12px`, `1px solid #ddd`, radius 6, 14px; focus border `#111`; numeric inputs `width:150px; text-align:right`; label above at 12/`#888`.
 - **Calculated field** — same box, `1px dashed #d9dee4`, `bg #f6f8fa`, weight 700, right-aligned. Never editable.
+- **Metric section (B2)** — header band `#eef2f9` bg / `#dbe4f0` border, radius 6, title 11/700 uppercase
+  `.08em` navy, note 11/`--hint-2` (`#6b7a90`); each row: label flex-1 (wraps, `min-width:0`), a
+  flex-shrink:0 value block right-aligned — a 100px input or calculated-field display, with its sub
+  figure (APC / cost %, or nothing) stacked directly beneath at 11px `--hint`. Adapted from `Super Admin
+  Flow.dc.html`'s MTD Metrics tab (originally a 134px value + a separate 94px sub column — that fixed
+  three-column shape overflowed the auditor shell's ~340px mobile card width; BUG-016) — same section
+  layout still drives both the auditor's capture (B2) and the reviewer's as-captured view (C1).
 - **Grouped panel** — `1px solid #e4e7ea`, radius 10; header band `#f7f9fb` with 13/700 title, 12px hint, right-aligned progress string (`"4 of 12"`).
 - **Department chip** — 24×24, radius 6, `#eef2f9` bg / `#dbe4f0` border, `#1e3a5f` 11/700, centred.
 - **List row** — `padding 16px 4px`, `border-bottom 1px solid #eee`, pointer; 15/600 title + 15px stroked SVG icon (`#1e3a5f`, `stroke-width 1.8`); 13px `#888` meta; right-aligned status pill.
@@ -156,12 +182,14 @@ the report **unedited**. **Why:** preserves the integrity of the field record an
 between what was observed (auditor) and what was judged (reviewer). **Trade-off:** reviewer judgements
 live only in the report version, since there is no separate audit trail.
 
-### UX-005 — Report delivered as a version-stamped PDF (+ read-only Client Portal)
+### UX-005 — Report delivered as a version-stamped PDF, admin-delivered (no Client Portal for now)
 **Decision:** the published report is a self-contained, prominently version-stamped PDF
-(`v1 · 21 Jul 2026`), shared by the admin and surfaced read-only in the white-labelled Client Portal via
-an unguessable token; corrections publish as a new version. **Why:** a downloaded file can't be recalled,
-so visible version clarity replaces a revocable-link model; the token gives account-free outlet access.
+(`v1 · 21 Jul 2026`), delivered directly by the admin; corrections publish as a new version. **Why:** a
+downloaded file can't be recalled, so visible version clarity replaces a revocable-link model.
 **Trade-off:** old PDFs remain in the wild — version stamping, not revocation, is what prevents confusion.
+**Scope cut (R12, EXECUTION.md):** the design also draws XLSX export and a white-labelled, token-accessed
+Client Portal for outlet reading; both are out of current scope. PDF is the only export format and there
+is no outlet-facing portal or report token for now — revisit if the Client Portal comes back into scope.
 
 ### UX-006 — Severity is High / Medium / Low
 **Decision:** three severity levels only. The `Critical` value that appears in the Super Admin file's seed
@@ -201,3 +229,95 @@ submission. **Trade-off — the significant one:** there is nothing to revert to
 meaning, and the report is no longer a quotation of what was observed. The reviewer's correction on the
 review screen becomes the only safety net. UX-004's other half — the submission is shown as captured and
 never edited in place — still holds. Full reasoning in **ADR-0004**; recorded as R11 in `EXECUTION.md`.
+
+### UX-011 — Departments collapse and expand (B3)
+**Decision:** each department in the checklist is its own collapsible section, one card open by default
+(the first, in template order), a click on its header toggling the rest. **Why:** the product spec's
+story A-5 requires this ("departments collapse and expand, each header shows how many points are
+marked") even though `Auditor Flow - Mobile.dc.html` never wires a department-level toggle — only its
+individual checklist points expand (`activeItemId`). Per the stated precedence rule the spec wins on
+behaviour where the design is silent; the department header's existing visual container (icon badge +
+name + progress string) needed no layout change to carry the added `onClick`. **Trade-off:** none — the
+design's markup for the header is unchanged, only its interactivity is additive.
+
+### UX-012 — Operational files attach per-audit, not to a firm-wide inbox (C1)
+**Decision:** the review screen carries its own "Operational Files" panel — attach/replace scoped to the
+audit under review — rather than the design's `sReports` screen, which is a single firm-wide upload list
+matched to a restaurant/period only by free text. **Why:** EXECUTION.md's C1 done-when explicitly ties
+attach/replace to the review flow, and C2's financial engine needs `(auditSnapshot, operationalImports)`
+for one specific audit — a global pool with no audit foreign key can't answer "which files feed this
+report." **Trade-off:** the firm-wide browse/insights view `sReports` draws (parsed preview table,
+cross-file insights) is not built; nothing in C1's done-when calls for it, and it can still be added later
+as a read-only index over the same `audit_operational_files` rows.
+
+### UX-013 — Reviewer corrections are an explicit action, not inline editing
+**Decision:** each checklist point on the review screen shows the submission exactly as captured (UX-004);
+a "Correct status or remark" link reveals a separate form (status buttons, N/A reason, remark) with its own
+Save/Cancel, rather than making the as-captured fields directly editable. **Why:** UX-004/ARCHITECTURE §7
+require the submission to be shown as captured and "never edited in place" — an always-editable field would
+blur that line and risk an accidental one-character change reading as a silent correction. **Trade-off:**
+one extra click before a correction lands; accepted because reviewer corrections should be a deliberate,
+visible action, not a slip of an inline input.
+
+### UX-014 — Report financial matrix has two revenue groups, not three (C2)
+**Decision:** the revenue matrix (Section 1's Sales & Per-Customer Revenue Matrix) breaks sales into
+**Kitchen** and **Bar** — matching F7's own `MetricDef.revGroup: 'bar'|'kitchen'` — rather than the report
+mock's static **Food / Bar / Liquor** three-way split. **Why:** the mock's numbers are hand-typed example
+content, not driven by any data model in its logic class (unlike the Super Admin file, this design file
+carries no seed data or computed cascade at all — EXECUTION.md's own note that it specifies "the output
+shape," not a schema). F7 — the canonical, already-built metric model (ADR-0003) — only distinguishes two
+revenue buckets; inventing a third to match the mock's illustrative labels would mean either a schema
+change unrelated to any captured data, or fabricating a Bar/Liquor split with no underlying metric to
+split it from. **Trade-off:** the report's Bar row reads "Bar" where the mock shows separate Bar and
+Liquor rows; a template that wants that distinction can still get it by tagging the relevant sales metrics
+accordingly — F7 already sums by `revGroup`, so no further engine change would be needed.
+
+### UX-015 — A finding's Ref ID is the item's own template code (C3)
+**Decision:** every finding's `refId` is the checklist item's existing code from the template snapshot
+(`KIT-03`, `SEC-01`, …), never a generated fallback sequence. **Why:** the mock's `decorateItems` falls
+back to `'EQ-'+String(idx+1).padStart(2,'0')` only when `it.refId` and `it.code` are both missing — but
+in the real schema every `audit_item` always carries a `code`, cloned from the template at assign (A5,
+"template snapshot on assign"). The fallback branch in the mock exists for its own seed data quirks, not
+for a case that can occur here. **Trade-off:** none — this is strictly simpler than porting a code path
+that can never run.
+
+### UX-016 — Report v4's build departures from the mock (C4)
+**Decision, bundled:** (1) the composition donuts use what our data actually has — Sales Composition is
+Kitchen/Bar net sales + service charge + statutory taxes (4 slices, following UX-014's two-group model)
+and Cost Composition is Bar/Kitchen/Non-commercial cost (3 slices, F7's own cost groups) — not the mock's
+illustrative Food/Liquor/Beverage breakdowns. (2) `showCharts` and `showSummaryRibbon` exist as real
+flags gating their sections but both default `true` with no admin control to flip them — no story asks
+to hide either, and CLAUDE.md's own convention is not to build settings nobody asked for; an admin-facing
+toggle can be added when one does. `showEvidence` stays stubbed off per the design file itself. (3) All six template departments (SEC/KIT/STR/OPS/POS/OTH) render
+as their own card, not just the four the mock happens to illustrate (Security, Kitchen, Purchase & Stores,
+Operations) — POS Controls and Other Observations get `point_of_sale` / `fact_check` Material Symbols,
+picked to match the existing icon language since the mock never reaches those two. (4) The mock's header
+"Export Data" button (never wired to anything, no `onClick`) and `editMode`'s inline `contenteditable`
+editing are both dropped — CLAUDE.md already rules out porting the mock's edit model, and a
+Playwright-rendered PDF (C5) makes an unwired export button moot. **Why bundled:** none of these are
+independent architectural choices — each is "use the real data model / only build what a story asks for,"
+already the governing principle behind UX-014 and the C4 done-when itself.
+
+### UX-017 — No "Share" action was built for the report (C5)
+**Decision:** the review screen has a Publish button and nothing else — no "Share report" / copy-link
+affordance alongside it. **Why:** R5 settled that publishing must be a separate action from sharing,
+because the mock's `doPublish()` and `shareLink()` mutated identically; R12 then cut the Client Portal
+entirely, so there is no outlet-facing surface, report token, or public URL for a share link to point at.
+Building a "Share" button anyway would either silently reuse the internal `/admin/review/[id]/report`
+admin route (misleading — that page requires a super-admin session, so "sharing" it would just fail for
+anyone else) or fabricate a token system for a portal that doesn't exist. **Trade-off:** none currently —
+R5's separation is satisfied vacuously (there's nothing to conflate publish with). Revisit this the
+moment the Client Portal (deferred, `EXECUTION.md` "Not yet designed") comes back into scope: that's when
+a real share link — and the reason to keep it separate from publish — starts to exist.
+
+### UX-018 — Taxes-category metrics get an explicit Statutory tax / Service charge choice (BUG-020)
+**Decision:** each row added under Template Builder's Taxes category shows a two-option radio (Statutory
+tax / Service charge), defaulting to Statutory tax, instead of the whole category silently stamping every
+row `kind:'tax'`. **Why:** `computeMetrics` (F7) only routes a `kind:'charge'` row into `totalCharges`;
+with no way to set that from the builder, a Service Charge metric was always summed into `totalTaxes`
+instead, so the report showed "Needs data" for Service Charge everywhere while inflating Total Taxes by
+that amount (BUG-020). The design source itself has the same gap — even `Super Admin Flow.dc.html`'s
+builder hardcodes `kind:'tax'` on every tax row; only its seed data hand-tags Service Charge — so this is
+a deliberate departure from the mock's builder, not a port of it. **Trade-off:** one more control on an
+already-dense category; kept to a plain radio pair rather than a general "kind" field since `tax`/`charge`
+are the only two values the schema (and the calc engine) recognise for this section.

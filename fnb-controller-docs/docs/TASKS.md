@@ -17,27 +17,31 @@ Legend: ☐ todo · ◐ in progress · ☑ done (clear on next rollup)
 - ☑ Shared calculation core `computeMetrics` + ₹ formatter, unit-tested vs seed · F7
 
 ## Super Admin
-- ☐ Login + one-message error · A1
-- ☐ Restaurants CRUD + detail with Audits/Reports tabs · A2
-- ☐ Auditors CRUD — password shown once, access, suspend, remove-keeps-audits · A3
-- ☐ Templates library + Template Builder, auto-renumbering reference codes · A4
-- ☐ Audit create/assign, share token, template snapshot on assign · A5
+- ☑ Login + one-message error · A1
+- ☑ Restaurants CRUD + detail with Audits/Reports tabs · A2
+- ☑ Auditors CRUD — password shown once, access, suspend, remove-keeps-audits · A3
+- ☑ Templates library + Template Builder, auto-renumbering reference codes · A4
+- ☑ Audit create/assign, share token, template snapshot on assign · A5
 
 ## Auditor
-- ☐ Responsive shell + login + pending list · B1
-- ☐ Metrics step — calculated rows read-only, live totals from F7 · B2
-- ☐ Checklist step — Pass/Fail/Observation/N-A, remarks, photos; N/A from spec · B3
-- ☐ Explicit Save → server draft; assigned→in-progress; photos on capture · B4
-- ☐ Submit gate naming what's missing → immutable · B5
-- ☐ AI remark polish on submit, with a non-blocking failure path · B6
+- ☑ Responsive shell + login + pending list · B1
+- ☑ Metrics step — calculated rows read-only, live totals from F7 · B2
+- ☑ Checklist step — Pass/Fail/Observation/N-A, remarks, photos; N/A from spec · B3
+- ☑ Explicit Save → server draft; assigned→in-progress; photos on capture · B4
+- ☑ Submit gate naming what's missing → immutable · B5
+- ☑ AI remark polish on submit, with a non-blocking failure path · B6
 
-## Report & outlet portal
-- ☐ Review queue + review as captured + operational file attach · C1
-- ☐ Financial engine — pure (auditSnapshot, imports) → reportDraft · C2
-- ☐ Findings generation from every Fail/Observation, reviewer-editable · C3
-- ☐ Report v4 render — §1, §1B, §2; no §3; print-first · C4
-- ☐ Publish: version stamp, PDF via Playwright, XLSX; split from share link · C5
-- ☐ Outlet reader portal — token access, per-client branding · C6
+## Review and report export
+- ☑ Review queue + review as captured + operational file attach · C1
+- ☑ Financial engine — pure (auditSnapshot, imports) → reportDraft · C2
+- ☑ Findings generation from every Fail/Observation, reviewer-editable · C3
+- ☑ Report v4 render — §1, §1B, §2; no §3; print-first · C4
+- ☑ Publish: version stamp, PDF via Playwright — the only export format; split from share link · C5
 
-F1–F5, F7 done — F6 (deploy pipeline) is the only foundation left; A1 (Super Admin login) can also
-start now that F7 exists. Completed docs work rolled to `docs/archive/2026-09-tasks.md`.
+No Client Portal, no XLSX, for now — cut from scope (`EXECUTION.md` R12; formerly C6).
+
+F1–F5, F7, A1–A5, B1–B6, C1–C5 done — the whole Review and report export package is built. F6 (deploy
+pipeline) is the only work left on the board; nothing else is scoped (Client Portal/XLSX cut, R12).
+Pending migrations `0002`–`0004` still need `db:migrate` run against a real database before any of this
+is exercised end-to-end.
+Completed docs work rolled to `docs/archive/2026-09-tasks.md`.

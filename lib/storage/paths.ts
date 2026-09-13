@@ -7,3 +7,7 @@ export function auditItemFilePath(orgId: string, auditItemId: string, fileId: st
 export function reportFilePath(orgId: string, auditId: string, version: number, filename: string): string {
   return `${orgId}/reports/${auditId}/v${version}/${filename}`;
 }
+
+export function operationalFilePath(orgId: string, auditId: string, fileId: string, filename: string): string {
+  return `${orgId}/operational-files/${auditId}/${fileId}-${filename}`;
+}

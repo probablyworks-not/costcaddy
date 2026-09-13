@@ -4,7 +4,8 @@ import { audits } from './audits';
 
 // Report (ARCHITECTURE §5). One row per PUBLISHED version — publish is a separate
 // action from sharing (R5) and only publish stamps a new version; earlier versions
-// remain, since with no audit trail versioning is the only history (C5).
+// remain, since with no audit trail versioning is the only history (C5). PDF via
+// Playwright is the only export format shipped — no XLSX for now (EXECUTION.md R12).
 export const reports = pgTable(
   'reports',
   {
@@ -19,7 +20,6 @@ export const reports = pgTable(
     token: text('token').notNull().unique(),
     publishedAt: timestamp('published_at', { withTimezone: true }).notNull().defaultNow(),
     pdfPath: text('pdf_path'),
-    xlsxPath: text('xlsx_path'),
     note: text('note'),
   },
   (table) => [uniqueIndex('reports_audit_version_unique').on(table.auditId, table.version)],

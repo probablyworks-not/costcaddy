@@ -1,8 +1,10 @@
+/* Design uses 13px/11px-18px for every action button except the full-width login "Sign
+   in" (14px/13px uniform, an intentional outlier — see LoginForm's explicit override). */
 .button {
   border: none;
   border-radius: var(--radius-control);
-  padding: 13px;
-  font-size: 14px;
+  padding: 11px 18px;
+  font-size: 13px;
   font-weight: 600;
   font-family: var(--font-ui-body);
   cursor: pointer;
@@ -20,9 +22,10 @@
 }
 
 .secondary {
-  background: transparent;
-  color: var(--muted);
-  padding: 13px 0;
+  background: var(--surface);
+  color: var(--ink-3);
+  padding: 11px 18px;
+  border: 1px solid var(--border);
 }
 
 .secondary:disabled {

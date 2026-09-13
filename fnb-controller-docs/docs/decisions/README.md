@@ -13,5 +13,6 @@ and are where *new* decisions get recorded going forward.
 | [0002](0002-no-offline-server-persisted-drafts.md) | No offline; server-persisted drafts with explicit Save | accepted | 2026-09-11 |
 | [0003](0003-super-admin-metric-model-is-canonical.md) | The Super Admin metric model is canonical; the auditor files' is stale | accepted | 2026-09-11 |
 | [0004](0004-ai-polishes-remarks-on-submit.md) | AI polishes remarks on submit, replacing the raw text | accepted | 2026-09-11 |
+| [0005](0005-pdf-only-export-no-client-portal.md) | Publish ships PDF only; the Client Portal is cut from current scope | accepted | 2026-09-12 |
 
 Statuses: proposed · accepted · superseded (note which ADR supersedes it).

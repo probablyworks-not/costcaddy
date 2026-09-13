@@ -14,7 +14,9 @@ Next.js (App Router) + **TypeScript end-to-end** · PostgreSQL on **Supabase** �
 · **own-auth** (argon2 hashes, signed-cookie sessions; Lucia or Auth.js Credentials — not Supabase Auth)
 · **Supabase Storage** (photos, PDFs, uploads) · **Playwright** for PDF, **exceljs** for XLSX ·
 hosting on **Cloudflare/Vercel**. PWA is an installable shell only (Serwist/`next-pwa`), **no offline
-data layer**. Stage B adds SheetJS, Arquero, the Anthropic SDK (TS), Graphile Worker/pg-boss, Recharts.
+data layer**. The **Anthropic SDK (TS)**, `claude-opus-5`, lands early with **B6** (submit-time remark
+polish, ADR-0004) rather than waiting for Stage B, which reuses the same client for analytics narration.
+Stage B adds SheetJS, Arquero, Graphile Worker/pg-boss, Recharts.
 Rationale in `docs/ARCHITECTURE.md` §2 and `docs/decisions/0001-typescript-end-to-end.md`.
 
 ## Directory map
