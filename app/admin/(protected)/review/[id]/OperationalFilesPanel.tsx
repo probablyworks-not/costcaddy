@@ -77,7 +77,7 @@ function OperationalFileRow({ auditId, file }: { auditId: string; file: Operatio
               padding: '5px 9px',
               borderRadius: 'var(--radius-pill)',
               background: file.parseStatus === 'parsed' ? 'var(--status-neutral-bg)' : '#fdf6e3',
-              color: file.parseStatus === 'parsed' ? 'var(--status-neutral-fg-1)' : 'var(--status-observation-fg)',
+              color: file.parseStatus === 'parsed' ? 'var(--status-neutral-fg-1)' : 'var(--status-warn-fg)',
               border: `1px solid ${file.parseStatus === 'parsed' ? 'var(--status-neutral-border)' : '#f0e2b6'}`,
             }}
           >

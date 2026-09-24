@@ -6,13 +6,12 @@ import { NA_REASONS } from '@/lib/checklist/naReasons';
 import { PhotoLightbox } from './PhotoLightbox';
 import { FindingPanel, type Finding } from './FindingPanel';
 
-type ItemStatus = 'pending' | 'pass' | 'fail' | 'observation' | 'na';
+type ItemStatus = 'pending' | 'pass' | 'fail' | 'na';
 
 const STATUS_CHIP: Record<ItemStatus, { bg: string; color: string; border: string; label: string }> = {
   pending: { bg: 'var(--surface)', color: 'var(--muted)', border: 'var(--border)', label: 'PENDING' },
   pass: { bg: '#eafaf6', color: 'var(--status-pass-fg)', border: '#bfe8dc', label: 'PASS' },
   fail: { bg: 'var(--status-fail-bg)', color: 'var(--status-fail-fg-app)', border: 'var(--status-fail-border)', label: 'FAIL' },
-  observation: { bg: '#fdf6e3', color: 'var(--status-observation-fg)', border: '#f0e2b6', label: 'OBSERVATION' },
   na: { bg: 'var(--status-neutral-bg)', color: 'var(--status-neutral-fg-1)', border: 'var(--status-neutral-border)', label: 'N/A' },
 };
 
@@ -139,7 +138,7 @@ export function ReviewItemRow({ item, auditId }: { item: ReviewItem; auditId: st
           }}
         >
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-            {(['pass', 'fail', 'observation', 'na'] as ItemStatus[]).map((s) => (
+            {(['pass', 'fail', 'na'] as ItemStatus[]).map((s) => (
               <button
                 key={s}
                 type="button"

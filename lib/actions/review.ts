@@ -37,18 +37,18 @@ export async function correctAuditItem(
 ): Promise<void> {
   await requireReviewableAudit(auditId);
 
-  if ((status === 'fail' || status === 'observation') && remark.trim() === '') {
-    throw new Error('A remark is required for Fail and Observation.');
+  if (status === 'fail' && remark.trim() === '') {
+    throw new Error('A remark is required for Fail.');
   }
   if (status === 'na' && (!naReason || !NA_REASONS.includes(naReason as (typeof NA_REASONS)[number]))) {
     throw new Error('N/A requires one of the fixed reasons.');
   }
 
   // A status correction can turn a former finding into a Pass/N-A, or a former
-  // Pass/N-A into a new Fail/Observation. Either way any existing finding is stale:
-  // clear it so "Pass items carry no severity, impact or action" still holds, and so
-  // a status newly turned Fail/Observation is picked up by the next Generate/Regenerate
-  // (which only classifies items with no severity yet).
+  // Pass/N-A into a new Fail. Either way any existing finding is stale: clear it so
+  // "Pass items carry no severity, impact or action" still holds, and so a status
+  // newly turned Fail is picked up by the next Generate/Regenerate (which only
+  // classifies items with no severity yet).
   await db
     .update(auditItems)
     .set({
@@ -151,8 +151,8 @@ export async function replaceOperationalFile(fileId: string, auditId: string, fo
   revalidatePath(`/admin/review/${auditId}`);
 }
 
-// C3 — every Fail/Observation becomes a finding (EXECUTION.md C3, ported from Super
-// Admin Flow.dc.html's generateReport/enhanceAll ~line 1611/1842). Idempotent: only
+// C3 — every Fail becomes a finding (EXECUTION.md C3, ported from Super Admin
+// Flow.dc.html's generateReport/enhanceAll ~line 1611/1842). Idempotent: only
 // items with no severity yet are classified, so re-running after a reviewer has
 // already edited a finding never overwrites their edit — same as the mock's
 // `it.severity || r.sev` pattern. Pass/N-A items are never touched (no severity,
@@ -168,7 +168,7 @@ export async function generateReport(auditId: string): Promise<void> {
   await db.transaction(async (tx) => {
     for (const item of items) {
       if (item.severity !== null) continue; // already classified or reviewer-edited
-      if (item.status !== 'fail' && item.status !== 'observation') continue;
+      if (item.status !== 'fail') continue;
 
       const finding = classifyFinding(item.label, item.remark);
       await tx
@@ -204,8 +204,8 @@ export async function updateFinding(
 
   const [item] = await db.select({ status: auditItems.status }).from(auditItems).where(and(eq(auditItems.id, itemId), eq(auditItems.auditId, auditId))).limit(1);
   if (!item) throw new Error('Not found');
-  if (item.status !== 'fail' && item.status !== 'observation') {
-    throw new Error('Only Fail and Observation points carry a finding.');
+  if (item.status !== 'fail') {
+    throw new Error('Only Fail points carry a finding.');
   }
 
   await db.update(auditItems).set(fields).where(eq(auditItems.id, itemId));

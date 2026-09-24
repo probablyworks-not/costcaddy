@@ -15,11 +15,14 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
   return (
     <div>
-      <AppHeader>
-        <RoleBadge>Super Admin</RoleBadge>
-      </AppHeader>
+      <div data-noprint="">
+        <AppHeader>
+          <RoleBadge>Super Admin</RoleBadge>
+        </AppHeader>
+      </div>
       <div style={{ display: 'flex', minHeight: 'calc(100vh - 57px)' }}>
         <div
+          data-noprint=""
           style={{
             width: 220,
             borderRight: '1px solid var(--divider)',

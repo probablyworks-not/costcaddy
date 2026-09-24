@@ -26,7 +26,7 @@ Legend: ☐ todo · ◐ in progress · ☑ done (clear on next rollup)
 ## Auditor
 - ☑ Responsive shell + login + pending list · B1
 - ☑ Metrics step — calculated rows read-only, live totals from F7 · B2
-- ☑ Checklist step — Pass/Fail/Observation/N-A, remarks, photos; N/A from spec · B3
+- ☑ Checklist step — Pass/Fail/N-A, remarks, photos; N/A from spec · B3
 - ☑ Explicit Save → server draft; assigned→in-progress; photos on capture · B4
 - ☑ Submit gate naming what's missing → immutable · B5
 - ☑ AI remark polish on submit, with a non-blocking failure path · B6
@@ -34,7 +34,7 @@ Legend: ☐ todo · ◐ in progress · ☑ done (clear on next rollup)
 ## Review and report export
 - ☑ Review queue + review as captured + operational file attach · C1
 - ☑ Financial engine — pure (auditSnapshot, imports) → reportDraft · C2
-- ☑ Findings generation from every Fail/Observation, reviewer-editable · C3
+- ☑ Findings generation from every Fail, reviewer-editable · C3
 - ☑ Report v4 render — §1, §1B, §2; no §3; print-first · C4
 - ☑ Publish: version stamp, PDF via Playwright — the only export format; split from share link · C5
 

@@ -563,21 +563,286 @@ Root cause: `computeMetrics` (lib/calc/metrics.ts) buckets `section:'tax'` rows 
 Fix:        Added a per-row Statutory tax / Service charge choice to Taxes-category rows in
             TemplateBuilder, and extracted the metric→save-payload mapping into a pure
             `toMetricInput()` (lib/templates/metricCats.ts) so a taxes-category row's own `kind`
-            selection is saved, not the category default. Existing templates built before this fix still
-            need their Service Charge row's kind flipped and re-saved — per the template-snapshot
-            invariant, this does not retroactively fix already-assigned/submitted audits.
+            selection is saved, not the category default. Directly corrected the existing "Tempalte 1"
+            template's Service Charge row to `kind:'charge'` (db, `template_metrics`), and the one
+            in-flight audit already assigned from it (submitted, not yet published) — per the
+            template-snapshot invariant that audit had its own frozen copy of the row and needed a
+            separate correction, safe here only because it isn't published yet.
 Guard:      lib/templates/metricCats.test.ts — a 'taxes' row marked "charge" saves with kind:'charge', one
             marked "tax" saves with kind:'tax', and a non-taxes category ignores the row's kind and uses
             the category default.
 Related:    lib/calc/metrics.ts (totalCharges/totalTaxes split), lib/report/financialDraft.ts (revenue
             matrix), Super Admin Flow.dc.html (the design source itself has the same builder gap — its
             `addBuilderMetric`/`METRIC_CATS` also hardcode `kind:'tax'`; only its seed data's Service
-            Charge row is hand-tagged `charge`)
+            Charge row is hand-tagged `charge`), BUG-021 (same root pattern, Sales category/revGroup)
 
 History:
 - 2026-09-12  opened (user reported "Needs data" for Service Charge/Bar Sale on a report despite the
   source metrics having values)
 - 2026-09-12  fixed — per-row kind selector in Template Builder's Taxes category + toMetricInput() guard
+- 2026-09-13  data-corrected "Tempalte 1" and its one in-flight audit directly (kind:'charge' on Service
+  Charge), at user request
 
-<!-- Next real bug starts at BUG-021. -->
+## BUG-021 — Bar Sale always "Needs data" — every sales metric silently saved as Kitchen revenue
+Status: fixed · Area: app/admin/(protected)/templates/TemplateBuilder, lib/calc/metrics
+
+Repro:      Build a template's Sales category with Food/Beverage/Liquor rows, capture an audit: the
+            report's Bar Sale KPI (and the revenue matrix's Bar row) always shows "Needs data", and
+            Kitchen Sale silently includes every sales metric — Beverage and Liquor included.
+Root cause: Same pattern as BUG-020, one category over: `computeMetrics` (lib/calc/metrics.ts) buckets
+            `section:'sales'` rows into barSale only when `revGroup==='bar'`; TemplateBuilder's "Add
+            Metric to Sales" always saved every row with the category's fixed default, `revGroup:'kitchen'`
+            — there was no way to mark a row as bar revenue, so barSale was permanently null for every
+            template built through the UI. The design source has the identical gap (its
+            `addBuilderMetric`/`METRIC_CATS` also hardcode `revGroup:'kitchen'` for sales; only its seed
+            data hand-tags Liquor/Beverage as `bar`).
+Fix:        Added a per-row Kitchen revenue / Bar revenue choice to Sales-category rows in TemplateBuilder,
+            wired through the same `toMetricInput()` (lib/templates/metricCats.ts) added for BUG-020.
+            Directly corrected "Tempalte 1"'s Beverage Sales and Liquour Sales rows to `revGroup:'bar'`
+            (db, `template_metrics`), and its one in-flight audit's frozen snapshot (`audit_metric_defs`),
+            same as BUG-020 — at user request, per their call that Food is kitchen revenue and
+            Beverage+Liquor are bar revenue for this template.
+Guard:      lib/templates/metricCats.test.ts — a 'sales' row marked "bar" saves with revGroup:'bar', one
+            marked "kitchen" saves with revGroup:'kitchen', and a non-sales category ignores the row's
+            revGroup and uses the category default.
+Related:    BUG-020 (same root pattern), lib/calc/metrics.ts (barSale/kitchenSale split)
+
+History:
+- 2026-09-13  opened (found while investigating BUG-020 — Bar Sale was "Needs data" in the same report)
+- 2026-09-13  fixed — per-row revGroup selector in Template Builder's Sales category + toMetricInput()
+  guard extended; "Tempalte 1" and its in-flight audit data-corrected directly
+
+## BUG-022 — Restaurant detail: submitted audits invisible in Audits tab, Reports tab hardcoded empty, and a "Review Queue" nav item with no design basis
+Status: fixed · Area: app/admin/(protected)/restaurants/[id], app/admin/(protected)/review, lib/queries
+
+Repro:      An auditor submits an audit. The super admin opens Restaurants → that restaurant: the Audits
+            tab still shows only the (now-empty) active list — the submitted audit is nowhere on the
+            page — and the Reports tab always renders "Report generation ships with the C-series
+            packages — nothing to show yet.", even after a report has been published for that outlet.
+            Separately, the sidebar has a top-level "Review Queue" link with no equivalent in
+            `Super Admin Flow.dc.html`'s `superNav` (only Restaurants/Auditors/Templates).
+Root cause: `restaurants/[id]/page.tsx` only ever rendered `activeAudits(audits)` — submitted and
+            published rows were fetched (`listOutletAudits`) but never filtered into their own groups or
+            rendered, and the Reports tab branch was a literal placeholder string left over from before
+            C5 shipped, never wired to the `reports` table. Per `Product Spec - Flow, Screens & Stories
+            .dc.html:171` ("Audits tab lists audits in three groups: active…, submitted and awaiting
+            review…, and audit history") and EXECUTION.md's A2 "done when", the Audits tab should group
+            active/submitted/history and the Reports tab should list published reports — neither was
+            built. The standalone `/admin/review` listing page and its "Review Queue" nav entry were
+            never part of the design's `superNav`; `sReviewQueue` exists as dead, unreachable state in
+            the mock (nothing in the mock's click handlers ever navigates to it as an entry point), so
+            wiring it into the app's top nav was a design deviation, not a documented one.
+Fix:        `restaurants/[id]/page.tsx` now groups the outlet's audits into Active / Submitted — awaiting
+            review (each row links to `/admin/review/[id]`) / History (each row links to
+            `/admin/review/[id]/report`), via new `submittedAudits`/`auditHistory` helpers in
+            `lib/queries/audits.ts`. The Reports tab now queries real published reports via new
+            `lib/queries/reports.ts::listOutletReports` and lists them (template, version, published date,
+            "View report" link) instead of the hardcoded placeholder. Removed the "Review Queue" nav item
+            (`NavLinks.tsx`) and the now-unreachable `/admin/review` listing page + its
+            `listReviewQueue` query; the review-a-submitted-audit screen (`/admin/review/[id]`) is
+            unchanged and now reached from the restaurant's Submitted group, with its "back" link pointed
+            at the restaurant detail page instead of the removed queue. `publishAudit` now revalidates
+            the restaurant detail path instead of the removed `/admin/review` path.
+Guard:      Manual — submit an audit, confirm it appears under the outlet's "Submitted — awaiting review"
+            group with a working Review link; publish it, confirm it moves to History with a "View
+            report" link and appears in the Reports tab; confirm no "Review Queue" nav item and no
+            `/admin/review` route remain (no automated e2e harness yet, per ROADMAP Phase 4).
+Related:    EXECUTION.md A2 ("done when" — Audits tab grouping, Reports tab), C1 (review), C5 (publish),
+            Product Spec - Flow, Screens & Stories.dc.html:171, Super Admin Flow.dc.html (superNav,
+            rdActive/rdSubmitted/rdHistory), DESIGN.md UX-020 (Reports tab month grouping)
+
+History:
+- 2026-09-13  opened (user reported no reports/submitted audits visible; flagged the sidebar "Review
+  Queue" as absent from the design)
+- 2026-09-13  fixed + guard added
+- 2026-09-13  extended: after the fix, user pointed out the Reports tab still didn't match the design's
+  month-grouped view (`Super Admin Flow.dc.html` REPORT_MONTHS/rdMonths). Investigated those constants —
+  they're hand-authored fake seed data (three invented months/report names, no trace to real audits), not
+  a computed model, and there's no `cadence`/month field on `audits` or MTD-rollup report type documented
+  anywhere. Asked the user to choose between (a) grouping already-published reports by their real publish
+  month, or (b) building a genuine new MTD-consolidated-report feature (new schema + aggregation logic).
+  User chose (a). Added month tabs to the Reports tab, derived from `reports.publishedAt` (no fixed month
+  list, no schema change) — see DESIGN.md UX-020.
+- 2026-09-13  extended again: user pointed out the grouping key was still wrong — an audit covering
+  1–31 Aug should file under August even if it's reviewed/published in September, so `publishedAt` was
+  the wrong field. Switched grouping to the audit's own `dueStart` (falling back to `dueDate`) via a new
+  shared `periodMonthKey` helper (`lib/queries/reports.ts`). The user also asked for the design's real MTD
+  consolidated report (a live cumulative rollup — "Week 1 alone" → "Week 1 + Week 2" as more of the month
+  publishes), which is a genuinely new feature, not a grouping fix — see ADR-0006 and DESIGN.md UX-021 for
+  that decision and its build (`lib/report/mtdViewModel.ts`, new route
+  `restaurants/[id]/mtd/[month]`). Verified the aggregation against the org's one real published audit —
+  merged output matched that audit's own totals exactly.
+
+## BUG-023 — Printed/exported audit report: admin chrome leaked in, tables clipped at the page edge, and page 1 was left mostly blank
+Status: fixed · Area: app/admin/(protected)/layout, app/admin/(protected)/review/[id]/report, lib/report/renderReportPdf
+
+Repro:      Printed the report at `/admin/review/[id]/report` (browser print / "PDF reports testing/F&B
+            Controller.pdf"): the left "Super Admin" sidebar nav and top `AppHeader`/"SUPER ADMIN" badge
+            rendered on every page; the Sales & Per-Customer Revenue Matrix, Costing table, and Department
+            Checklists & Compliance Matrix tables were all cut off at the right edge of the page instead of
+            fitting the page width; and page 1 showed only the report title block, with a large blank area
+            below it before Section 1's content started on page 2.
+Root cause: (1) `app/admin/(protected)/layout.tsx`'s sidebar `<div>` and `<AppHeader>` had no `data-noprint`
+            marker, so they printed along with the nested `/report` page — only the page's own inline header
+            was marked. (2) `RevenueMatrix.tsx`, `CostingTable.tsx`, and `ComplianceSection.tsx` wrapped
+            their tables in `overflow-x:auto` containers with `width:100%` tables — browsers don't shrink a
+            table below its content's intrinsic width just because of `width:100%`, so once column content
+            exceeded the printable width the overflow was silently clipped rather than reflowed (confirmed by
+            reproducing the exact clip against the real Playwright `page.pdf()` pipeline, not just the browser
+            print path). (3) `lib/report/renderReportPdf.tsx`'s `buildHtmlDocument` only inlined
+            `styles/tokens.css`, never `app/globals.css`'s `[data-noprint]`/`[data-avoid]`/`[data-break]` print
+            rules, so those attributes already used in `ReportBody`/`ComplianceSection` did nothing during
+            actual PDF generation. (4) `ReportBody.tsx` wrapped the entire Section 1 (KPI strip + Revenue
+            Matrix + both composition donuts) in one `data-avoid` block — too tall to avoid breaking as a
+            single unit, so whenever it didn't fit in the space left on page 1 after the title, the whole
+            block moved to page 2, leaving page 1 mostly empty below the header.
+Fix:        Marked the admin layout's sidebar and `AppHeader` `data-noprint`. Switched all three report
+            tables to `table-layout:fixed` with explicit per-column width percentages so columns respect the
+            page width and wrap instead of overflowing (verified against a real `page.pdf()` render: the
+            8-column Revenue Matrix now fits on one Letter page with nothing clipped). Inlined the
+            `data-noprint`/`data-avoid`/`data-break` print rules directly into `renderReportPdf.tsx`'s
+            generated stylesheet. Split Section 1's single `data-avoid` block into smaller per-card
+            `data-avoid` units (KPI strip, Revenue Matrix, the donut-chart row) so content flows starting on
+            page 1 and only the piece that doesn't fit pushes to the next page. Follow-up (still cut off +
+            too much blank space, see UX-022): the Compliance Matrix's SLA cell still had `whiteSpace:
+            'nowrap'`, which under the new `table-layout:fixed` column widths meant long values ("Within 5
+            Business Days") no longer wrapped and instead overflowed past the department card's
+            `overflow:hidden` boundary, getting visibly clipped again — removed the `nowrap` and widened the
+            SLA/Evidence columns slightly. Separately, each department card's whole-card `data-avoid`
+            (matching the mock, `Audit report v4.dc.html:439` etc.) pushed any department that didn't quite
+            fit the remaining page space entirely onto the next page, wasting most of the page it left —
+            moved `data-avoid` down to just the department's small header row and let the table body break
+            normally between pages (the browser already repeats `<thead>` at a table page-break, confirmed
+            working for the one department long enough to span two pages).
+Guard:      Manual — rendered a real `page.pdf()` against the report's markup structure and confirmed (a) no
+            sidebar/header chrome present, (b) the Revenue Matrix's 8 columns all fit within the Letter page
+            margins with no clipping, (c) Section 1 content begins filling page 1 immediately after the
+            title instead of jumping to page 2, (d) the Compliance Matrix's SLA column wraps instead of
+            overflowing, (e) department cards pack tightly against the page boundary instead of jumping
+            whole to the next page when they'd almost fit. Browser-native print header/footer (date/time,
+            URL, page count) is a per-browser Print dialog setting, not something CSS/JS can suppress — it
+            only appears via `window.print()`/Cmd+P, not via the real "Publish" action's Playwright
+            pipeline, which never navigates to a live URL.
+Related:    app/admin/(protected)/layout.tsx, app/admin/(protected)/review/[id]/report/ReportBody.tsx,
+            RevenueMatrix.tsx, CostingTable.tsx, ComplianceSection.tsx, lib/report/renderReportPdf.tsx,
+            DESIGN.md UX-022
+
+History:
+- 2026-09-13  opened (user reported the tested PDF had no formatting, showed the admin sidebar, and had
+  content cut off)
+- 2026-09-13  fixed — data-noprint on admin chrome, table-layout:fixed on report tables, print CSS inlined
+  into the Playwright HTML, and smaller data-avoid units in Section 1
+- 2026-09-13  regressed/deepened: user reported page 1 still mostly blank after the first fix; traced to
+  Section 1's single oversized data-avoid block and split it into per-card units
+- 2026-09-13  regressed/deepened again: user reported the Compliance Matrix's SLA values were still cut off
+  and pages still had a lot of empty space; fixed the SLA cell's stale `whiteSpace:nowrap` and relaxed
+  department-card `data-avoid` to just the header row (DESIGN.md UX-022)
+
+## BUG-024 — Publish failed: "Attempted to call EvidenceThumb() from the server but EvidenceThumb is on the client"
+Status: fixed · Area: app/admin/(protected)/review/[id]/report, lib/report/renderReportPdf
+
+Repro:      On a submitted audit's review screen, click "Confirm publish" — the action fails and the error
+            overlay shows "Attempted to call EvidenceThumb() from the server but EvidenceThumb is on the
+            client. It's not possible to invoke a client function from the server, it can only be rendered
+            as a Component or passed to props of a Client Component." No report is generated.
+Root cause: `renderReportPdf.tsx` dynamically imports `react-dom/server` and calls `renderToStaticMarkup`
+            directly on the `ReportBody` tree — required because a Server Action module can't statically
+            import `react-dom/server` (it owns RSC rendering itself), so this runs entirely outside Next's
+            own RSC pipeline. `ComplianceSection` renders evidence photos via `EvidenceThumb`
+            (`EvidenceLightbox.tsx`), a `'use client'` component providing the click-to-zoom modal. Outside
+            Next's RSC renderer, the compiled client-reference stub Next substitutes for a `'use client'`
+            export can't be invoked as a plain function — only Next's own RSC serialization step knows how
+            to resolve it — so the static-markup render threw on every publish attempt. The live review
+            page never hit this because it renders through Next's normal RSC pipeline, which handles client
+            boundaries correctly.
+Fix:        Added `EvidenceThumbStatic.tsx` — a plain (non-`'use client'`) presentational thumbnail with no
+            hooks/interactivity, since `EvidenceLightbox.tsx`'s own comment already notes the modal is inert
+            once rasterized for print. Threaded an `interactive` boolean (default `true`) from `ReportBody`
+            down through `ComplianceSection` → `DepartmentCard` → `ComplianceRow`, which picks
+            `EvidenceThumb` when `true` and `EvidenceThumbStatic` when `false`. `renderReportPdf.tsx` now
+            passes `interactive={false}` to `ReportBody`, so the Playwright/static-markup path never touches
+            the client component; the live review page keeps the interactive lightbox unchanged.
+Guard:      Manual — "Confirm publish" on a submitted audit with evidence photos completes and produces a
+            PDF instead of throwing; the live review/report screen still opens the zoom modal on a thumbnail
+            click. `npx tsc --noEmit` passes. No automated PDF-generation test harness yet (Phase 4 adds
+            e2e per ROADMAP.md) — watch for the same failure mode (a `'use client'` component reached from
+            any `react-dom/server` static-markup call) in any future addition to the `ReportBody` tree.
+Related:    app/admin/(protected)/review/[id]/report/EvidenceLightbox.tsx,
+            app/admin/(protected)/review/[id]/report/EvidenceThumbStatic.tsx,
+            app/admin/(protected)/review/[id]/report/ComplianceSection.tsx,
+            app/admin/(protected)/review/[id]/report/ReportBody.tsx, lib/report/renderReportPdf.tsx
+
+History:
+- 2026-09-22  opened (user reported "Confirm publish" failing with the EvidenceThumb server/client error)
+- 2026-09-22  fixed + guard added
+
+## BUG-025 — Auditor portal shows "OVERDUE" on audits whose date range has simply passed
+Status: fixed · Area: db/schema/audits, lib/queries/audits, lib/actions/audits, app/auditor/(protected)/pending, docs/decisions
+
+Repro:      Admin creates an audit link with an "Audit due date range" whose end date is in the past (the
+            normal case for a recurring weekly/monthly/daily audit cadence agreed with the auditor — the
+            range describes which period to audit, not a deadline to submit by). The auditor's pending
+            list marks that audit `● OVERDUE`, even though nothing is actually late.
+Root cause: The range was modelled and named as a due date (`audits.dueStart`/`dueDate`) from the design
+            mock's own labelling and its `overdue: a.dueDate < TODAY` mock logic, and
+            `lib/queries/audits.ts::isOverdue` implemented that literally. But the range is actually the
+            audit-conduct window the restaurant contracts the auditor for — the same field ADR-0006/
+            UX-020 already treat as "the period the audit covers" for report grouping. Once the window's
+            end date passed, every audit still `assigned`/`in-progress` was flagged overdue regardless of
+            whether it was actually late.
+Fix:        Renamed `audits.dueStart`/`dueDate` to `audits.periodStart`/`periodEnd` (migration
+            `0006_amazing_frank_castle.sql`) across the schema, `createAudit`, `lib/queries/audits.ts`,
+            `lib/queries/review.ts`, and `lib/queries/reports.ts`, and removed `isOverdue` and
+            `OverdueMarker` entirely — there is no deadline concept on an audit to compute one from. Admin
+            form label changed to "Audit date range"; auditor-portal "Due {date}" labels changed to
+            "Period {date}". See ADR-0008.
+Guard:      Manual — create an audit whose date range ends in the past; the auditor's pending list shows
+            it as a normal assigned/in-progress row with no overdue marker, sorted by period end as
+            before. `npx tsc --noEmit` and `npm run lint` pass (pre-existing unrelated lint error in
+            `AuditsHeader.tsx:207` untouched). Watch for any future re-introduction of an "overdue"/"past
+            due" check against `periodEnd` — it is a coverage period, not a deadline; a real deadline
+            needs its own field and its own ADR.
+Related:    db/schema/audits.ts, db/migrations/0006_amazing_frank_castle.sql, lib/queries/audits.ts,
+            lib/queries/review.ts, lib/queries/reports.ts, lib/actions/audits.ts,
+            app/admin/(protected)/restaurants/[id]/AuditsHeader.tsx,
+            app/auditor/(protected)/pending/page.tsx, docs/decisions/0008-audit-date-range-is-a-period-not-a-deadline.md
+
+## BUG-026 — Published PDF's evidence photo thumbnails aren't clickable
+Status: fixed · Area: lib/storage, lib/report/reportViewModel, app/admin/(protected)/review/[id]/report
+
+Repro:      Publish an audit, open the resulting PDF (e.g. in Preview.app or a browser), click a
+            checkpoint's evidence photo thumbnail in the Evidence column — nothing happens.
+Root cause: Two compounding issues. (1) `EvidenceThumbStatic` — the non-interactive thumbnail used only
+            in the Playwright/PDF render path (`ComplianceSection.tsx` with `interactive={false}`) — was
+            a plain `<div>` with an `<img>` inside, no `<a href>`, so there was nothing for Chromium's
+            print-to-PDF to turn into a clickable link annotation (the interactive web version's
+            click-to-zoom modal is inert once rasterized to print anyway, per UX-017). (2) Even with a
+            link, `reportViewModel.ts` generated the photo's Supabase Storage signed URL with the storage
+            layer's default 1-hour TTL (`lib/storage/index.ts`), baked into the PDF at publish time — a
+            link would have 404'd within an hour, since a published PDF is meant to be opened much later.
+Fix:        Added `REPORT_EVIDENCE_URL_TTL_SECONDS` (10 years) in `lib/storage/index.ts`, used only by
+            `reportViewModel.ts`'s evidence-photo `createSignedUrl()` call (the general 1-hour default is
+            unchanged everywhere else, e.g. the pre-publish review screen). Wrapped
+            `EvidenceThumbStatic`'s thumbnail in `<a href={photo.url} target="_blank">` so Chromium's
+            print-to-PDF preserves it as a real clickable link. See ADR-0009 for the options considered
+            (a report-token redirect route; a public bucket) and why long-lived signed URLs was chosen.
+            Scope: new publishes only — already-published PDFs are not retroactively fixed.
+Guard:      Manual — publish a fresh test audit, open the PDF, click an evidence thumbnail, confirm the
+            full photo opens in a new tab; re-check after the old 1-hour TTL would have elapsed to
+            confirm the long TTL is actually in effect (not just working by coincidence within the hour).
+            `npm run build` passes (typecheck).
+Related:    ADR-0009, docs/DESIGN.md UX-017 (superseded in part), UX-025, lib/storage/index.ts,
+            lib/report/reportViewModel.ts,
+            app/admin/(protected)/review/[id]/report/EvidenceThumbStatic.tsx
+
+History:
+- 2026-09-22  opened
+- 2026-09-22  fixed + guard added
+
+History:
+- 2026-09-22  opened (user reported the audit date range being treated as a due date, showing OVERDUE
+  in the auditor portal when it shouldn't)
+- 2026-09-22  fixed + guard added
+
+<!-- Next real bug starts at BUG-026. -->
 

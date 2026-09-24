@@ -8,7 +8,7 @@ export function RevenueMatrix({ draft }: { draft: FinancialReportDraft }) {
   const rows = [...draft.revenueMatrix.rows, draft.revenueMatrix.total];
 
   return (
-    <div style={{ border: '1px solid var(--r-border)', borderRadius: 10, overflow: 'hidden', background: '#fff', boxShadow: 'var(--shadow-card)', marginBottom: 24 }}>
+    <div data-avoid="" style={{ border: '1px solid var(--r-border)', borderRadius: 10, overflow: 'hidden', background: '#fff', boxShadow: 'var(--shadow-card)', marginBottom: 24 }}>
       <div style={{ background: 'var(--navy-050)', borderBottom: '1px solid var(--r-border)', padding: '12px 16px' }}>
         <h3 style={{ margin: 0, fontSize: 13.5, fontWeight: 700, color: 'var(--navy-700)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
           Sales &amp; Per-Customer Revenue Matrix
@@ -17,18 +17,18 @@ export function RevenueMatrix({ draft }: { draft: FinancialReportDraft }) {
           Sales − discount = net sales; + taxes + service charge = gross sale. Taxes and service charge allocated pro-rata on net sales; APC on covers.
         </p>
       </div>
-      <div style={{ overflowX: 'auto' }}>
-        <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 12 }}>
+      <div>
+        <table style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', textAlign: 'left', fontSize: 12 }}>
           <thead>
             <tr style={{ borderBottom: '1px solid var(--r-border-2)', fontSize: 11, fontWeight: 600, color: 'var(--r-ink)', background: '#fff' }}>
-              <th style={{ padding: '10px 12px 10px 16px', fontWeight: 600 }}>Category</th>
-              <th style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Sales (₹)</th>
-              <th style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Discount (₹)</th>
-              <th style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Net Sales (₹)</th>
-              <th style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Taxes (₹)</th>
-              <th style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Service Charge (₹)</th>
-              <th style={{ padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Gross Sale (₹)</th>
-              <th style={{ padding: '10px 16px 10px 12px', textAlign: 'right', fontWeight: 600, background: 'var(--r-surface-alt-1)' }}>APC (₹)</th>
+              <th style={{ width: '16%', padding: '10px 12px 10px 16px', fontWeight: 600 }}>Category</th>
+              <th style={{ width: '12%', padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Sales (₹)</th>
+              <th style={{ width: '12%', padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Discount (₹)</th>
+              <th style={{ width: '12%', padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Net Sales (₹)</th>
+              <th style={{ width: '12%', padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Taxes (₹)</th>
+              <th style={{ width: '12%', padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Service Charge (₹)</th>
+              <th style={{ width: '12%', padding: '10px 12px', textAlign: 'right', fontWeight: 600 }}>Gross Sale (₹)</th>
+              <th style={{ width: '12%', padding: '10px 16px 10px 12px', textAlign: 'right', fontWeight: 600, background: 'var(--r-surface-alt-1)' }}>APC (₹)</th>
             </tr>
           </thead>
           <tbody>

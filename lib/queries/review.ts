@@ -2,38 +2,10 @@ import { and, asc, eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { auditOperationalFiles, audits, outlets, templates, users } from '@/db/schema';
 
-export type ReviewQueueRow = {
-  id: string;
-  outletName: string;
-  auditorName: string;
-  dueDate: string;
-  submittedAt: Date | null;
-};
-
-// C1 — reviewQueue: submitted audits awaiting review & publish. Published audits drop
-// off the queue; there is no unsubmit, so 'submitted' is the only state that belongs here.
-export async function listReviewQueue(orgId: string): Promise<ReviewQueueRow[]> {
-  const rows = await db
-    .select({
-      id: audits.id,
-      outletName: outlets.name,
-      auditorName: users.name,
-      dueDate: audits.dueDate,
-      submittedAt: audits.submittedAt,
-    })
-    .from(audits)
-    .innerJoin(outlets, eq(outlets.id, audits.outletId))
-    .innerJoin(users, eq(users.id, audits.auditorId))
-    .where(and(eq(audits.orgId, orgId), eq(audits.status, 'submitted')))
-    .orderBy(asc(audits.submittedAt));
-
-  return rows;
-}
-
 export type ReviewAuditDetail = {
   id: string;
   status: (typeof audits.status.enumValues)[number];
-  dueDate: string;
+  periodEnd: string;
   outletId: string;
   outletName: string;
   auditorName: string;
@@ -49,7 +21,7 @@ export async function getAuditForReview(orgId: string, auditId: string): Promise
     .select({
       id: audits.id,
       status: audits.status,
-      dueDate: audits.dueDate,
+      periodEnd: audits.periodEnd,
       outletId: audits.outletId,
       outletName: outlets.name,
       auditorName: users.name,

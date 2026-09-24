@@ -37,7 +37,6 @@ const STATUS_CHIP: Record<ItemStatus, { bg: string; color: string; border: strin
   pending: { bg: 'var(--surface)', color: 'var(--muted)', border: 'var(--border)', label: 'PENDING' },
   pass: { bg: '#eafaf6', color: 'var(--status-pass-fg)', border: '#bfe8dc', label: 'PASS' },
   fail: { bg: 'var(--status-fail-bg)', color: 'var(--status-fail-fg-app)', border: 'var(--status-fail-border)', label: 'FAIL' },
-  observation: { bg: '#fdf6e3', color: 'var(--status-observation-fg)', border: '#f0e2b6', label: 'OBSERVATION' },
   na: { bg: 'var(--status-neutral-bg)', color: 'var(--status-neutral-fg-1)', border: 'var(--status-neutral-border)', label: 'N/A' },
 };
 
@@ -154,7 +153,7 @@ export function ChecklistStep({
     <div style={{ padding: '16px 24px 32px 24px' }}>
       <div style={{ fontSize: 15, fontWeight: 600, marginBottom: 2 }}>Department checklist</div>
       <div style={{ fontSize: 12, color: 'var(--hint)', marginBottom: 12 }}>
-        Mark each checkpoint and add the observation for the report
+        Mark each checkpoint and add a remark for the report
       </div>
 
       {departments.map((dept, i) => {
@@ -271,7 +270,7 @@ function ChecklistItemRow({
       {active && (
         <div style={{ marginTop: 14, display: 'flex', flexDirection: 'column', gap: 12 }}>
           <div style={{ display: 'flex', gap: 8 }}>
-            {(['pass', 'fail', 'observation', 'na'] as ItemStatus[]).map((s) => (
+            {(['pass', 'fail', 'na'] as ItemStatus[]).map((s) => (
               <button
                 key={s}
                 type="button"

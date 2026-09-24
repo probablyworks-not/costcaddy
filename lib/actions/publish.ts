@@ -57,7 +57,7 @@ export async function publishAudit(auditId: string): Promise<void> {
     await tx.update(audits).set({ status: 'published', publishedAt, version }).where(eq(audits.id, auditId));
   });
 
-  revalidatePath('/admin/review');
+  revalidatePath(`/admin/restaurants/${vm.audit.outletId}`);
   revalidatePath(`/admin/review/${auditId}`);
   revalidatePath(`/admin/review/${auditId}/report`);
   redirect(`/admin/review/${auditId}/report`);

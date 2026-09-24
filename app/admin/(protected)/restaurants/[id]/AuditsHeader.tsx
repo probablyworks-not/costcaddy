@@ -163,7 +163,7 @@ function AuditForm({
           marginBottom: 'var(--space-7)',
         }}
       >
-        Create audit link
+        Create audit
       </div>
       <input type="hidden" name="outletId" value={outletId} />
       <div style={{ display: 'flex', gap: 'var(--space-6)', flexWrap: 'wrap', alignItems: 'flex-end' }}>
@@ -181,10 +181,10 @@ function AuditForm({
           ))}
         </SelectField>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6, flex: 1.3, minWidth: 240 }}>
-          <label style={{ fontSize: 12, color: 'var(--muted)' }}>Audit due date range</label>
+          <label style={{ fontSize: 12, color: 'var(--muted)' }}>Audit date range</label>
           <div style={{ display: 'flex', gap: 8 }}>
-            <input type="date" name="dueStart" style={dateInputStyle} />
-            <input type="date" name="dueEnd" required style={dateInputStyle} />
+            <input type="date" name="periodStart" style={dateInputStyle} />
+            <input type="date" name="periodEnd" required style={dateInputStyle} />
           </div>
         </div>
         <SelectField label="Auditor" name="auditorId" flex={1} minWidth={150} required>
@@ -195,7 +195,7 @@ function AuditForm({
           ))}
         </SelectField>
         <Button type="submit" disabled={pending}>
-          {pending ? 'Creating…' : 'Create audit link'}
+          {pending ? 'Creating…' : 'Create audit'}
         </Button>
       </div>
       {state.error && (
@@ -204,7 +204,7 @@ function AuditForm({
         </div>
       )}
       <div style={{ fontSize: 12, color: 'var(--muted-2)', marginTop: 'var(--space-6)' }}>
-        A shareable audit URL is generated on create — send it to the auditor, no login setup
+        The audit appears in the auditor's portal on create — no link to send, no login setup
         needed.
       </div>
     </form>

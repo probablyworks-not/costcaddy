@@ -55,7 +55,7 @@
   --status-fail-fg-report: #9f1d17;
   --status-fail-bg: #fdeceb;
   --status-fail-border: #f0c9c6;
-  --status-observation-fg: #8a6a09;
+  --status-warn-fg: #8a6a09;
   --status-pass-fg: #1f6f62;
   --status-pass-dot: #4a9c8c;
   --status-pass-bg-deep: #0d3b34;

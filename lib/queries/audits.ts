@@ -8,7 +8,7 @@ export type AuditRow = {
   token: string;
   name: string | null;
   status: (typeof audits.status.enumValues)[number];
-  dueDate: string;
+  periodEnd: string;
   templateName: string;
   auditorName: string;
 };
@@ -20,7 +20,7 @@ export async function listOutletAudits(orgId: string, outletId: string): Promise
       token: audits.token,
       name: audits.name,
       status: audits.status,
-      dueDate: audits.dueDate,
+      periodEnd: audits.periodEnd,
       templateName: templates.name,
       auditorName: users.name,
     })
@@ -37,12 +37,20 @@ export function activeAudits(rows: AuditRow[]): AuditRow[] {
   return rows.filter((r) => r.status === 'assigned' || r.status === 'in-progress');
 }
 
+export function submittedAudits(rows: AuditRow[]): AuditRow[] {
+  return rows.filter((r) => r.status === 'submitted');
+}
+
+export function auditHistory(rows: AuditRow[]): AuditRow[] {
+  return rows.filter((r) => r.status === 'published');
+}
+
 export type AuditorAuditRow = {
   id: string;
   token: string;
   name: string | null;
   status: (typeof audits.status.enumValues)[number];
-  dueDate: string;
+  periodEnd: string;
   submittedAt: Date | null;
   polishState: (typeof audits.polishState.enumValues)[number] | null;
   outletName: string;
@@ -59,7 +67,7 @@ export async function listAuditorAudits(orgId: string, auditorId: string): Promi
       token: audits.token,
       name: audits.name,
       status: audits.status,
-      dueDate: audits.dueDate,
+      periodEnd: audits.periodEnd,
       submittedAt: audits.submittedAt,
       polishState: audits.polishState,
       outletName: outlets.name,
@@ -69,7 +77,7 @@ export async function listAuditorAudits(orgId: string, auditorId: string): Promi
     .innerJoin(outlets, eq(outlets.id, audits.outletId))
     .innerJoin(templates, eq(templates.id, audits.templateId))
     .where(and(eq(audits.orgId, orgId), eq(audits.auditorId, auditorId)))
-    .orderBy(audits.dueDate);
+    .orderBy(audits.periodEnd);
 
   const auditIds = rows.map((r) => r.id);
   const items = auditIds.length
@@ -94,18 +102,10 @@ export async function listAuditorAudits(orgId: string, auditorId: string): Promi
   }));
 }
 
-export function isOverdue(row: Pick<AuditorAuditRow, 'dueDate' | 'status'>): boolean {
-  if (row.status !== 'assigned' && row.status !== 'in-progress') return false;
-  const due = new Date(row.dueDate + 'T00:00:00');
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  return due < today;
-}
-
 export type AuditDetail = {
   id: string;
   status: (typeof audits.status.enumValues)[number];
-  dueDate: string;
+  periodEnd: string;
   outletName: string;
   templateName: string;
 };
@@ -118,7 +118,7 @@ export async function getAuditForAuditor(orgId: string, auditorId: string, audit
     .select({
       id: audits.id,
       status: audits.status,
-      dueDate: audits.dueDate,
+      periodEnd: audits.periodEnd,
       outletName: outlets.name,
       templateName: templates.name,
     })

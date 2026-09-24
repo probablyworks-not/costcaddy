@@ -7,7 +7,6 @@ const NAV = [
   { href: '/admin/restaurants', label: 'Restaurants' },
   { href: '/admin/auditors', label: 'Auditors' },
   { href: '/admin/templates', label: 'Templates' },
-  { href: '/admin/review', label: 'Review Queue' },
 ];
 
 // Design: active nav item gets bg #f0f4f9, border-left #1e3a5f, weight 700

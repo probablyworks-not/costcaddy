@@ -1,0 +1,7 @@
+{
+  "_comment": "Project-level, NOT part of the user-level design-extractor agent/skill. Lives in this repo's root. Lists which screens (by their literal {{stateName}} binding, e.g. from Super_Admin_Flow_dc.html) need near-100% UI fidelity. Everything else defaults to 'standard' — UX/structure correctness matters most, exact pixel values have more tolerance. Edit this list per project; the agent never invents one.",
+
+  "strict_screens": ["sBuilder", "sAuditors"],
+
+  "default_tier": "standard"
+}

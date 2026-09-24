@@ -1,0 +1,562 @@
+{
+  "source_file": "F&B Controller audit platform/Super Admin Flow.dc.html",
+  "extraction_notes": [
+    "No schema/design-spec.schema.json was found anywhere in this repo (checked project root and via glob for **/*.schema.json). Proceeded using the structure implied by the design-extraction process steps (screens, unresolved_style_bindings, flagged_unreferenced_bindings, data_shapes, state_machine, calculations, design_tokens). If a schema file is added later, this file should be re-validated/reshaped against it.",
+    "This single .dc.html models THREE role-scoped portals behind one top-level {{role}} state toggle: 'auditor' (showAuditor), 'super' (showSuper — the Super Admin surface this extraction focuses on), and 'restaurant' (showRestaurant — a client/outlet-facing preview). All three are documented below because they share state and because two of the three role-switch entry points are themselves dead code (see flagged_unreferenced_bindings) — a build agent needs to know the Restaurant portal has no reachable UI toggle in this file, not that it doesn't exist.",
+    "Per CLAUDE.md precedence, inline style values below are copied verbatim from the file, not invented.",
+    "design-fidelity.config.json (project root) sets strict_screens: ['sBuilder','sAuditors'], default_tier:'standard'. Every screen below carries fidelity_tier accordingly."
+  ],
+  "fidelity_config_used": {
+    "path": "design-fidelity.config.json",
+    "strict_screens": ["sBuilder", "sAuditors"],
+    "default_tier": "standard"
+  },
+  "global_design_tokens": {
+    "fonts": {
+      "body": "'Inter', sans-serif (Google Fonts: Inter 400/500/600/700)",
+      "display": "'Newsreader', serif (Google Fonts: Newsreader opsz 6..72, weights 500/600) — used for all page/section H1-style titles, e.g. 'Restaurants', 'Auditors', 'Checklist Templates', 'Template Builder', 'Review Queue', 'Operational Reports', 'F&B Controller' wordmark",
+      "monospace (data/urls/dates)": "ui-monospace, SFMono-Regular, Menlo, monospace — used for audit URLs, MTD period labels, date inputs, password fields, checklist item codes"
+    },
+    "base_colors": {
+      "page_bg": "#fafafa",
+      "card_bg": "#fff",
+      "text_primary": "#111",
+      "border_default": "#e6e6e6 / #eee / #ddd (three distinct greys used interchangeably across cards, dividers, inputs — not unified into one token in this file)",
+      "text_muted": "#888",
+      "text_faint": "#999 / #aaa / #bbb (three distinct greys)",
+      "brand_navy": "#1e3a5f (primary action color: buttons, active nav, active tab, active pills, headline icons)",
+      "placeholder": "#bbb"
+    },
+    "status_colors": {
+      "pass": {"bg": "#eef4fa", "color": "#1e3a5f", "border": "1px solid #c3d6ea", "label": "PASS"},
+      "fail": {"bg": "#fef2f2", "color": "#b91c1c", "border": "1px solid #fecaca", "label": "FAIL"},
+      "observation": {"bg": "#fffbeb", "color": "#b45309", "border": "1px solid #fde68a", "label": "OBSERVATION"},
+      "na": {"bg": "#f4f4f5", "color": "#52525b", "border": "1px solid #dcdce0", "label": "NOT PRESENT"},
+      "pending": {"bg": "#fff", "color": "#999", "border": "1px dashed #ccc", "label": "PENDING"},
+      "audit_assigned": {"bg": "#fff", "color": "#666", "border": "1px solid #ddd", "label": "ASSIGNED"},
+      "audit_in_progress": {"bg": "#fffbeb", "color": "#b45309", "border": "1px solid #fde68a", "label": "IN PROGRESS"},
+      "audit_submitted": {"bg": "#eef2f9", "color": "#1e3a5f", "border": "1px solid #b9c8dd", "label": "SUBMITTED"},
+      "audit_published": {"bg": "#1e3a5f", "color": "#fff", "border": "1px solid #1e3a5f", "label": "PUBLISHED"},
+      "severity": {
+        "Critical": {"bg": "#fef2f2", "color": "#b91c1c"},
+        "High": {"bg": "#fff7ed", "color": "#c2410c"},
+        "Medium": {"bg": "#fefce8", "color": "#a16207"},
+        "default_(Low/unset)": {"bg": "#f5f5f5", "color": "#666"}
+      }
+    },
+    "buttons": {
+      "primary": {"padding": "13px (login) / 10-11px 16-18px (in-context actions)", "background": "#1e3a5f", "color": "#fff", "border": "none", "border_radius": "6px (most) / 7-8px (a few, e.g. submit CTA, save template)", "font_size": "13-14px", "font_weight": 600, "note": "6px radius is the dominant pattern; 7px (auditor tab-continue, submit button) and 8px (Save Template) are the minority exceptions — do not collapse them into 6px"},
+      "secondary_outline": {"padding": "9-11px 14-18px", "background": "#fff", "border": "1px solid #ddd (neutral) or 1px solid #111/#1e3a5f (emphasized, e.g. '+ New Restaurant', '+ New Template')", "border_radius": "6px", "font_weight": 600},
+      "text_link_back": {"style": "border:none;background:none;color:#888;font-size:13px;padding:0;", "pattern": "‹ Back to X — used identically across aChecklist, sReview, sDetail, rDetail, sReportDoc"}
+    },
+    "pills_chips": {
+      "shape": "border-radius:20px, font-size:10-11px, font-weight:700, letter-spacing 0.05-0.06em, padding:4-6px 8-10px — used consistently for all status chips (item status, audit status, auditor active/suspended, AI-STRUCTURED, LOW CONFIDENCE, PARSED, cadence tags)"
+    },
+    "cards": {
+      "list_row_card": "border:1px solid #eee or #e4e4e4/#e4e7ea, border-radius:8px (dominant) or 10px (template row card only), padding:15-18px",
+      "form_panel": "border:1px solid #e4e4e4, border-radius:8px, background:#fafbfc, padding:16-18px — used for every inline 'create' panel (New Restaurant, Create audit link, New auditor account, expanded auditor Manage card)"
+    }
+  },
+  "screens": [
+    {
+      "id": "showAuditor / showSuper / showRestaurant (role switch)",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "Top-level role toggle in the page header. Only two of the three roles have a reachable UI control in this file (see flagged_unreferenced_bindings for the missing third).",
+      "literal_elements": [
+        {"type": "text", "value": "F&B Controller", "style": "font-family:'Newsreader',serif;font-size:21px;font-weight:600;"},
+        {"type": "button", "label": "Auditor", "onClick_binding": "goAuditor"},
+        {"type": "button", "label": "Super Admin", "onClick_binding": "goSuper"}
+      ],
+      "note": "Header pill group container: display:flex;border:1px solid #dcdfe4;border-radius:20px;overflow:hidden;"
+    },
+    {
+      "id": "sSuperLogin",
+      "parent": "showSuper",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "Super admin console sign-in screen. Renders when role==='super' && !superAuthed.",
+      "literal_text": {
+        "title": "F&B Controller",
+        "subtitle": "Super admin console",
+        "footer_note": "Auditors sign in from the auditor app with credentials issued here. Super admin accounts are provisioned by the platform owner."
+      },
+      "fields": [
+        {"label": "Work email", "type": "email", "placeholder": "you@fnbcontroller.com", "binding": "slEmail/onSlEmail", "required": true},
+        {"label": "Password", "type": "password", "placeholder": "••••••••", "binding": "slPwd/onSlPwd", "required": true}
+      ],
+      "buttons": [
+        {"label": "Sign in", "onClick_binding": "superLogin"}
+      ],
+      "conditionals": [
+        {"binding": "slCredsStep", "note": "Always true in this file (only credential step is ever rendered) — slStep state and slBack/sendSelfReset/slCode/slResetSent exist in state/logic but there is no second step (e.g. 2FA code or reset-sent confirmation) actually rendered anywhere. See flagged_unreferenced_bindings."},
+        {"binding": "slHasError", "note": "Shows {{slError}} in #b91c1c bold 12px text when a login validation error exists (e.g. 'Enter your email and password')."}
+      ],
+      "validation": "superLogin() requires non-empty trimmed email and non-empty password; else sets slError='Enter your email and password'."
+    },
+    {
+      "id": "sSuperApp",
+      "parent": "showSuper",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "The persistent left sidebar shell for the authenticated Super Admin console (220px wide). Renders alongside sSuperAppMain / sReportDoc, not a distinct content screen itself.",
+      "literal_text": {"eyebrow": "SUPER ADMIN"},
+      "nav_items": {
+        "list_binding": "superNav",
+        "item_shape": {"label": "string (literal)", "key": "string", "onClick": "function"},
+        "items": ["Restaurants (key: restaurants)", "Auditors (key: auditors)", "Templates (key: templates)"],
+        "active_style": "weight:700, bg:#f0f4f9, border-left:2px solid #1e3a5f; inactive: weight:500, bg:transparent, border-left:2px solid transparent"
+      },
+      "footer": {
+        "text_binding": "{{slEmail}} (shows the logged-in super admin's email)",
+        "button": {"label": "Sign out", "onClick_binding": "superLogout"}
+      }
+    },
+    {
+      "id": "sReportDoc",
+      "parent": "showSuper",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "Full-bleed report-document viewer. Renders when superScreen==='reportDoc'. Embeds the separate 'Audit report v4' design file via <dc-import name=\"Audit report v4\" hint-size=\"100%,900px\">.",
+      "buttons": [{"label": "‹ Back to reports", "onClick_binding": "backFromReportDoc"}],
+      "bound_text": ["{{rdocTitle}} (14px/600)", "{{rdocMeta}} (12px, monospace, #8a93a0)"],
+      "reachable_from": ["sRestaurantDetail > Reports tab > report row 'View report' button (rp.onOpen)", "sRestaurantDetail > Reports tab > 'View MTD/monthly report' button (rdOpenMtd)"]
+    },
+    {
+      "id": "sSuperAppMain",
+      "parent": "showSuper",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "Main content wrapper (flex:1, padding:28px 40px, max-width:1100px) hosting the superScreen state machine. Renders when superAuthed && superScreen!=='reportDoc'.",
+      "unresolved_style_bindings_local": [],
+      "children_screens": ["sRestaurants", "sRestaurantDetail", "sAuditors", "sTemplates", "sBuilder", "sReviewQueue", "sReview", "sDetail", "sReports"]
+    },
+    {
+      "id": "sRestaurants",
+      "parent": "sSuperAppMain",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "Restaurants list — the super admin landing screen (superScreen==='restaurants').",
+      "literal_text": {
+        "title": "Restaurants",
+        "subtitle": "Create a restaurant, then run audits under it",
+        "new_button": "+ New Restaurant",
+        "empty_new_restaurant_labels": {"name_label": "Restaurant name", "name_placeholder": "e.g. Harbour House", "city_label": "Location", "city_placeholder": "e.g. Bandra, Mumbai", "create_button": "Create"}
+      },
+      "conditionals": [
+        {"binding": "showNewRestaurant", "note": "Toggled by '+ New Restaurant' button; reveals inline create-restaurant form panel."}
+      ],
+      "repeated_list": {
+        "list_binding": "restaurantRows",
+        "as": "r",
+        "item_shape": {
+          "id": "string", "name": "string (literal, e.g. 'Unit 7A Restaurant & Bar')", "city": "string (literal, e.g. 'Lower Parel, Mumbai')",
+          "activeCount": "number — count of that restaurant's audits with status assigned|in-progress",
+          "reviewCount": "number — count with status submitted",
+          "publishedCount": "number — count with status published",
+          "onClick": "function — opens restaurant detail"
+        },
+        "meaning": "One row per restaurant, each row clickable to sRestaurantDetail, showing three live-computed counters (Active / To review / Published)."
+      },
+      "seed_data_source": "RESTAURANT_RECORDS = [{id:'r1',name:'Unit 7A Restaurant & Bar',city:'Lower Parel, Mumbai'}, {id:'r2',name:'Coastal Kitchen',city:'Panjim, Goa'}, {id:'r3',name:'The Grand Bistro',city:'Indiranagar, Bengaluru'}, {id:'r4',name:'Spice Route',city:'Connaught Place, Delhi'}]"
+    },
+    {
+      "id": "sRestaurantDetail",
+      "parent": "sSuperAppMain",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "Single-restaurant workspace with two inline tabs (Audits / Reports) driven by rdTab state (not separate sc-if screens of their own, but distinct enough to be worth documenting as sub-views). Renders when superScreen==='restaurantDetail' and a matching restaurant exists.",
+      "literal_text": {
+        "back_button": "‹ All restaurants",
+        "audits_tab_label": "Audits",
+        "reports_tab_label": "Reports",
+        "new_audit_button": "+ New Audit",
+        "active_audits_eyebrow": "Active audits",
+        "no_active_audits_text": "No active audits — create one to get a shareable link.",
+        "create_audit_panel_title": "Create audit link",
+        "create_audit_helper": "A shareable audit URL is generated on create — send it to the auditor, no login setup needed.",
+        "no_reports_text": "No reports filed in this period.",
+        "reports_section_title": "Audit reports & MTD"
+      },
+      "sub_tabs": {
+        "rdTabAudits": {
+          "binding": "rdTabAudits = (rdTab !== 'reports')",
+          "elements": {
+            "new_audit_form": {
+              "conditional": "naOpen",
+              "fields": [
+                {"label": "Audit name", "placeholder": "e.g. July Week 4 — Full Ops", "binding": "naName/onNaName", "type": "text"},
+                {"label": "Audit template", "type": "select", "options_binding": "templateOptions (each option value=t.id, label=t.name)", "binding": "naTemplateId/onNaTemplate"},
+                {"label": "Audit due date range", "type": "two date inputs joined by an em-dash", "bindings": ["naDueStart/onNaDueStart", "naDueEnd/onNaDueEnd"]},
+                {"label": "Auditor (optional)", "type": "select", "options_binding": "auditorOptions (list of active auditor names, falls back to AUDITORS if none active)", "binding": "naAuditor/onNaAuditor"}
+              ],
+              "button": {"label": "Create audit link", "onClick_binding": "createAudit"}
+            },
+            "active_audits_list": {
+              "list_binding": "rdActive",
+              "item_shape": {
+                "templateName": "string (audit custom name if set, else the template's name)",
+                "auditor": "string", "dueDateLabel": "formatted date or date-range string",
+                "chipBg/chipColor/chipBorder/chipLabel": "STATE-DEPENDENT status chip (see unresolved_style_bindings)",
+                "url": "string — https://audit.fnbcontroller.com/a/{token or id}",
+                "cardBg": "#f6f9fc after copy, else #fff",
+                "copyLabel": "'Copied ✓' or 'Copy link'", "copyBg/copyColor": "#1e3a5f/#fff when copied, else #fff/#1e3a5f",
+                "onCopy": "function", "onOpen": "function — opens sDetail"
+              }
+            }
+          }
+        },
+        "rdTabReports": {
+          "binding": "rdTabReports = (rdTab === 'reports')",
+          "elements": {
+            "month_pills": {"list_binding": "rdMonths", "item_shape": {"label": "e.g. 'July 2026 (Active)' for current, else 'June 2026'", "isCurrent": "bool", "bg/color/border": "STATE-DEPENDENT selected/unselected"}, "note": "sc-if value={{m.isCurrent}} renders an EMPTY block (no children) — dead/inert inline conditional, see flagged section."},
+            "mtd_panel": {"period_label": "Period: {{rdMtdPeriod}}", "title_binding": "rdMtdTitle (e.g. 'July 2026 — MTD consolidated report' or '... Monthly consolidated report')", "button_label_binding": "'View {{rdMtdBtnLabel}} report' where rdMtdBtnLabel is 'MTD' or 'monthly'"},
+            "reports_list": {"list_binding": "rdReports", "item_shape": {"name": "string, e.g. 'Week 3: Bar & Liquor Audit'", "cadence": "string, e.g. 'Weekly'/'Bi-weekly'/'Monthly'", "completed": "date string, e.g. 'Jul 17, 2026'"}, "button_label": "View report"}
+          }
+        }
+      },
+      "seed_data_source": "REPORT_MONTHS (3 months: 2026-07 current, 2026-06, 2026-05) and MONTH_REPORTS keyed by month with per-month arrays of {name, cadence, completed}."
+    },
+    {
+      "id": "sAuditors",
+      "parent": "sSuperAppMain",
+      "fidelity_tier": "strict",
+      "boundary_confidence": "high",
+      "description": "STRICT-TIER screen. Auditor management: add, view, expand/manage, set password, remove. Renders when superScreen==='auditors'.",
+      "literal_text": {
+        "title": "Auditors",
+        "subtitle": "Add or remove auditors, issue passwords, control outlet access",
+        "add_button": "+ Add Auditor",
+        "new_auditor_panel_title": "New auditor account",
+        "field_labels": {"full_name": "Full name", "email": "Work email (login ID)", "mobile": "Mobile", "temp_password": "Temporary password"},
+        "placeholders": {"full_name": "e.g. Neha Iyer", "email": "neha.iyer@fnbcontroller.com", "mobile": "+91 …", "temp_password": "Generate or type one"},
+        "buttons_in_panel": ["Generate (password)", "Create auditor", "Cancel"],
+        "expanded_card": {
+          "password_section_eyebrow": "Password",
+          "last_changed_prefix": "Last changed: {{u.pwdChanged}}",
+          "current_password_eyebrow": "Current password",
+          "buttons": ["Show/Hide (toggle reveal)", "Copy", "Generate (new password draft)", "Set password"],
+          "new_password_placeholder": "New password",
+          "remove_section_eyebrow": "Remove from platform",
+          "remove_confirm_flow": {
+            "step1_text": "Login is revoked immediately. Submitted audits and published reports stay on record.",
+            "step1_button": "Remove {{u.firstName}}",
+            "step2_text": "Remove {{u.name}}?",
+            "step2_subtext_binding": "{{u.removeNote}} — literal computed text: '<N> open audit(s) will be left unassigned — reassign them first if the work is in progress.' OR 'No open audits assigned, so nothing will be left unassigned.'",
+            "step2_buttons": ["Yes, remove", "Keep account"]
+          }
+        }
+      },
+      "fields": [
+        {"label": "Full name", "type": "text", "required": true, "validation": "createAuditor() rejects empty trimmed name: 'Enter the auditor's full name'"},
+        {"label": "Work email (login ID)", "type": "email", "required": true, "validation": "must include '@' and must not already exist (case-insensitive) among s.auditors, else 'Enter a valid work email — this is their login ID' / 'An auditor already exists with that email'"},
+        {"label": "Mobile", "type": "text", "required": false, "default_if_blank": "'—'"},
+        {"label": "Temporary password", "type": "text (monospace)", "required": true, "validation": "'Set or generate a temporary password'", "generator": "genPwd() picks one of ['Chiller','Pantry','Griddle','Cellar','Larder','Skillet'] + '-' + 4-digit random number"}
+      ],
+      "repeated_list": {
+        "list_binding": "auditorRows",
+        "as": "u",
+        "item_shape": {
+          "id": "string", "name": "string", "email": "string", "phone": "string",
+          "initials": "derived 2-letter uppercase initials",
+          "avatarBg/avatarColor": "STATE-DEPENDENT (active vs suspended)",
+          "chipLabel": "'ACTIVE' or 'SUSPENDED'", "chipBg/chipColor/chipBorder": "STATE-DEPENDENT",
+          "outletsLabel": "'No outlet access' | outlet name (if exactly 1) | '<N> outlets'",
+          "workloadLabel": "'No open audits' | '1 open audit' | '<N> open audits' (count of that auditor's non-published audits)",
+          "lastActive": "string, e.g. 'today, 09:12'", "pwdChanged": "string", "mustChange": "bool",
+          "expanded": "bool (this row's manage-card open state)", "manageLabel": "'Close' or 'Manage'",
+          "pwdDraft": "string (new password input draft)", "pwdDisplay": "revealed plaintext or bullet-masked string", "revealLabel": "'Hide' or 'Show'",
+          "confirmingRemove/notConfirmingRemove": "bool pair", "onAskRemove/onCancelRemove/onRemove": "functions",
+          "firstName": "derived", "removeNote": "derived literal sentence (see above)"
+        }
+      },
+      "seed_data_source": "AUDITOR_RECORDS = [{id:'u1',name:'Riya Sharma',email:'riya.sharma@fnbcontroller.com',phone:'+91 98200 41122',status:'active',outlets:['Unit 7A Restaurant & Bar','Coastal Kitchen'],lastActive:'today, 09:12',pwd:'Riya@2026kitchen',pwdChanged:'12 Jun 2026',mustChange:false}, {id:'u2',name:'Aman Verma',...status:'active',outlets:['The Grand Bistro'],...}, {id:'u3',name:'Kabir Singh',...status:'suspended',outlets:['Spice Route'],pwdChanged:'never — invite pending',mustChange:true}]",
+      "computed_summary_fields_in_logic_not_rendered": ["auTotal", "auActive", "auSuspended", "auPendingInvite — these three headline counters and the total are computed in renderVals() but there is no markup on this screen that displays them (no summary stat row exists in the sAuditors block). Confirm before treating as a spec — likely an intended-but-unbuilt summary strip."],
+      "strict_tier_boundary_note": "Per strict-tier requirement: this screen's expanded 'Manage' card renders ONLY a password-management block and a remove-confirmation block. Several fully-computed features never appear in markup at all — outlet-access toggle chips, a suspend/reactivate button, a 'send reset link' action, and a 'force sign out all sessions' action. These are not ambiguous style values, they are entire absent UI affordances — see flagged_unreferenced_bindings for the full list, called out explicitly here because this is a strict screen and the gap is load-bearing for build completeness."
+    },
+    {
+      "id": "sTemplates",
+      "parent": "sSuperAppMain",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "Checklist template library. Renders when superScreen==='templates'.",
+      "literal_text": {"title": "Checklist Templates", "subtitle": "Reusable across restaurants", "new_button": "+ New Template", "row_subtitle": "Reusable across restaurants", "row_cta": "Edit template ›", "row_footer_labels": ["Metrics", "Departments", "Checkpoints"]},
+      "repeated_list": {
+        "list_binding": "templateRows", "as": "t",
+        "item_shape": {"id": "string", "name": "string", "count": "number of checklist items", "catCount": "number of distinct categories", "metricLabel": "number of metrics", "structureLabel": "derived string '<N> categor(y|ies) · <N> points'", "onClick": "opens sBuilder pre-loaded with this template"}
+      },
+      "seed_data_source": "TEMPLATES = [{id:'t1',name:'Full Departmental Operations Audit', items:T1_ITEMS (all 6 departments flattened), metrics:DEFAULT_METRICS}, {id:'t2',name:'Food Safety & Compliance', items:T2_ITEMS (Kitchen + Other Observations & Compliance depts only), metrics:DEFAULT_METRICS}]"
+    },
+    {
+      "id": "sBuilder",
+      "parent": "sSuperAppMain",
+      "fidelity_tier": "strict",
+      "boundary_confidence": "high",
+      "description": "STRICT-TIER screen. Template Builder — a two-part editor: Part 1 Metrics (grouped into 7 fixed categories), Part 2 Department-wise checklist (dynamic categories/items). Renders when superScreen==='builder'. Reachable via sTemplates '+ New Template' (newTemplateBlank) or clicking a template row (openTemplateInBuilder).",
+      "literal_text": {
+        "title": "Template Builder",
+        "subtitle": "Metrics the auditor enters, then department-wise checklist points",
+        "name_field_label": "Template name", "name_placeholder": "e.g. Daily Operations Checklist",
+        "part1_label": "Part 1 · Metrics",
+        "part2_label": "Part 2 · Department-wise checklist",
+        "add_department_button": "Add Department",
+        "add_checklist_point_button": "Add Checklist Point",
+        "department_name_placeholder": "Department name (e.g. Security)",
+        "checkpoint_placeholders": {"question": "Question / inspection check", "guidance": "Guidance for the auditor (optional)"},
+        "save_button": "Save Template",
+        "auto_sum_note": "Auto-sum · no input (shown next to every derived/after metric row)"
+      },
+      "metric_categories_exhaustive": [
+        {"key": "covers", "title": "Volume", "hint": "Guest counts entered by the auditor", "derived_rows": ["Total No Of Pax (badge: Calculated)"], "after_rows": [], "has_denominator_pill": false},
+        {"key": "sales", "title": "Sales", "hint": "Revenue split captured at the outlet", "derived_rows": ["Net Sales at Restaurant (badge: Reconciled sub-total)"], "after_rows": [], "has_denominator_pill": false},
+        {"key": "discounts", "title": "Discounts", "hint": "Discounts deducted from gross sale", "derived_rows": ["Total Discounts (badge: Sum of all discounts)"], "after_rows": [], "has_denominator_pill": false},
+        {"key": "taxes", "title": "Taxes", "hint": "Service charge and statutory taxes", "derived_rows": ["Total Taxes (badge: Sum of all taxes)"], "after_rows": ["Total Gross Sale (badge: Net sales − discounts + taxes)"], "has_denominator_pill": false},
+        {"key": "barCost", "title": "Bar Cost", "hint": "Costed against bar revenue", "derived_rows": ["Total Bar Cost (badge: Subtotal)"], "after_rows": [], "has_denominator_pill": true},
+        {"key": "kitchenCost", "title": "Kitchen Cost", "hint": "Costed against food revenue", "derived_rows": ["Total Kitchen Cost (badge: Subtotal)"], "after_rows": ["Total F&B Cost (badge: Bar + kitchen)"], "has_denominator_pill": true},
+        {"key": "ncCost", "title": "Costing — Other", "hint": "Non-commercial cost, costed against net sales", "derived_rows": [], "after_rows": ["Total Net F&B Cost (badge: Grand total cost)"], "has_denominator_pill": true}
+      ],
+      "metric_row_fields": [
+        {"field": "Metric name", "type": "text", "placeholder": "Metric name"},
+        {"field": "Unit", "type": "select", "literal_options": ["Currency (₹ / $) [value=currency]", "Number [value=number]", "Count / Pax [value=count]", "Percentage (%) [value=percent]"]},
+        {"field": "denominator pills (cost categories only)", "type": "pill group", "choices_binding": "denChoices = [{v:'net',l:'All net sales'},{v:'bar',l:'All bar sales'},{v:'kitchen',l:'All food sales'}] plus every currently-defined sales metric as an additional pill"}
+      ],
+      "checklist_builder": {
+        "add_department_button_icon": "circled plus SVG",
+        "category_header_fields": ["caret toggle", "category number (1-based, monospace)", "category name text input", "auto-derived 3-letter category code (uppercase, blurred on name change via commitBuilderCatCode)", "count label '<N> checklist point(s)'", "Add Checklist Point button", "delete-department icon button"],
+        "checkpoint_row_fields": [
+          {"field": "code", "read_only": true, "derivation": "categoryCode + '-' + 2-digit zero-padded index, e.g. 'SEC-01'"},
+          {"field": "label", "type": "text", "placeholder": "Question / inspection check"},
+          {"field": "guidance", "type": "text", "placeholder": "Guidance for the auditor (optional)", "required": false},
+          {"field": "delete", "type": "icon button"}
+        ]
+      },
+      "unresolved_style_bindings_local": [],
+      "seed_departments_used_for_default_categories": "DEPTS: Security (SEC, 6 items), Kitchen (KIT, 6 items), Purchase & Store - Dry / Liquor / Beverages (STR, 10 items), Operations (OPS, 5 items), POS Controls (POS, 7 items), Other Observations & Compliance (OTH, 4 items). Each department's last item is a freeform 'Other Observations - <Dept>' checkpoint (freeform:true).",
+      "strict_tier_boundary_note": "sBuilder is strict-tier. Note the 'newAuditMode'/'continueCreate'/'assign' code path (see flagged_unreferenced_bindings) is a DIFFERENT, entirely dead alternate entry into template/audit creation — it is not part of the reachable sBuilder flow, which is only entered via sTemplates. Do not build the dead 'new vs reuse' mode-choice step; it has no matching screen anywhere in this file."
+    },
+    {
+      "id": "sReviewQueue",
+      "parent": "sSuperAppMain",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "List of submitted-but-not-yet-reviewed audits. Renders when superScreen==='reviewQueue'.",
+      "literal_text": {"title": "Review Queue", "subtitle": "Submitted audits awaiting review & publish", "empty_state": "Nothing waiting for review.", "row_cta": "Review"},
+      "repeated_list": {"list_binding": "reviewRows", "as": "a", "item_shape": {"restaurant": "string", "auditor": "string", "dueDateLabel": "formatted date", "onClick": "opens sReview"}, "filter": "s.audits.filter(a => a.status === 'submitted')"}
+    },
+    {
+      "id": "sReview",
+      "parent": "sSuperAppMain",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "Full as-captured review of one submitted audit, with report-generation controls. Renders when superScreen==='review' and a selected audit exists.",
+      "literal_text": {
+        "back_button": "‹ Back to review queue",
+        "generate_button_states": "{{generateLabel}} = 'Generate report' or 'Generating report…' while generatingReport is true",
+        "report_generated_pill": "REPORT GENERATED",
+        "buttons_after_ready": ["Share report", "View", "PDF", "Regenerate"],
+        "review_hint_not_ready": "Submission shown exactly as the auditor captured it. Review the statuses, remarks and evidence, then generate the report.",
+        "review_hint_ready": "Report generated from this submission — findings below are classified with severity, impact, corrective action, SLA and ownership. Share it with the outlet or export a PDF.",
+        "mtd_panel_title": "MTD Metrics",
+        "auditor_remark_eyebrow": "Auditor's remark",
+        "auditor_remark_footnote": "Submitted as captured in the field · read-only",
+        "finding_field_labels": ["Specific finding (system-classified wording)", "Operational Impact", "Corrective Action", "SLA Timeline", "Assigned Ownership"],
+        "status_line_prefix": "Status: {{it.resolutionStatus}}"
+      },
+      "conditionals": [
+        {"binding": "reportNotReady", "renders": "Generate report button"},
+        {"binding": "reportReady", "renders": "REPORT GENERATED pill + Share/View/PDF/Regenerate buttons"},
+        {"binding": "hasExportFlash", "renders": "transient flash text {{exportFlashLabel}}"},
+        {"binding": "it.showFinding", "note": "= reportReady && it.hasFinding — findings block only shows once a report has been generated, even though severity/impact data may already exist on the item"}
+      ],
+      "repeated_lists": [
+        {"list_binding": "mtdViewSections", "as": "sec", "nested_list": "sec.rows as r", "note": "Read-only render of the same metric sections used in the auditor's MTD entry tab (isDerived=true throughout, editable=false)."},
+        {"list_binding": "reviewItems", "as": "it", "item_shape": "decorated checklist item (see Data Shapes > ChecklistItem) plus showFinding, verbatimRemark, structuredFinding"}
+      ],
+      "dead_actions_in_logic_not_here": "exportCsv and exportHtml exist in renderVals() output but only exportPdf is wired to a button on this screen — see flagged_unreferenced_bindings."
+    },
+    {
+      "id": "sDetail",
+      "parent": "sSuperAppMain",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "medium",
+      "boundary_note": "This screen is visually and structurally almost identical to sReview minus the report-generation controls and MTD panel — it's a simpler read-only checklist view reached from 'View' links on active/history audit cards. Kept as its own screen entry rather than folded into sReview because it has a distinct route (superScreen==='detail') and a distinct back target (backToDashboard → restaurantDetail), but flagging medium confidence since the two screens' overlap in content could indicate one was meant to supersede the other.",
+      "literal_text": {"back_button": "‹ Back to dashboard"},
+      "repeated_list": {"list_binding": "selItems", "as": "it", "item_shape": "decorated checklist item — code, label, remarkDisplay, chip, and conditionally a finding block (impact/correctiveAction/sla/ownership/resolutionStatus) when it.hasFinding"},
+      "note_dead_code": "doPublish is computed in renderVals() but this screen — the one place a 'Publish' action would make contextual sense — has no Publish button in markup at all. See flagged_unreferenced_bindings."
+    },
+    {
+      "id": "sReports",
+      "parent": "sSuperAppMain",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "Operational Reports — file upload + AI-parsed structured preview of non-audit documents (bill edits, discounts, purchase statements, etc). Renders when superScreen==='reports'.",
+      "literal_text": {
+        "title": "Operational Reports",
+        "subtitle": "Upload Excel/CSV, PDF, or image files — auto-parsed into structured insights",
+        "dropzone_title": "Drag & drop a report file here",
+        "dropzone_subtitle": "Excel · CSV · PDF · Image (OCR)",
+        "upload_label": "Upload CSV / File",
+        "simulate_button_states": "{{simulateLabel}} = 'Simulate Upload' or 'All sample uploads added' once opPool is exhausted",
+        "flagged_pill": "LOW CONFIDENCE",
+        "parsed_pill": "PARSED",
+        "parsed_preview_eyebrow": "Parsed Preview",
+        "insights_eyebrow": "Insights",
+        "download_link": "Download original file"
+      },
+      "repeated_list": {
+        "list_binding": "opRows", "as": "o",
+        "item_shape": {"id": "string", "type": "string (report type, e.g. 'Bill Edit & Modification')", "restaurant": "string", "period": "string", "format": "'Excel'|'Image'|'CSV'|'PDF'", "flagged": "bool", "cols": "string[] (table headers)", "rows": "[{cells:string[]}] (table rows)", "insights": "string[] (AI-style bullet notes)", "expanded": "bool", "colCount": "derived = cols.length"}
+      },
+      "seed_data_source": "OPREPORTS_SEED (6 pre-loaded reports) and OPPOOL (2 additional reports revealed one-at-a-time by 'Simulate Upload', prepended to the visible list, simulating async upload/parse). File input onChange also triggers simulateUpload — it does not actually parse any uploaded file, it just pulls the next canned item from OPPOOL."
+    },
+    {
+      "id": "showRestaurant (Restaurant/Client portal preview)",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "low",
+      "boundary_note": "This whole role (rList/rDetail/rDeferred, hardcoded to 'Spice Route') is fully built with markup and its own sidebar, but — unlike Auditor/Super Admin — has NO reachable entry point anywhere in this file: the header role-toggle only renders Auditor and Super Admin buttons (goRestaurant/restaurantBtnStyle are computed but never used in markup — see flagged_unreferenced_bindings). Marking boundary_confidence low even though this is a standard-tier screen, per instructions to flag rather than silently guess, because it's ambiguous whether this portal is (a) an intentionally-hidden preview of the future white-labelled Client Portal mentioned in CLAUDE.md, or (b) simply orphaned/leftover markup. Given CLAUDE.md describes a separate white-labelled Client Portal as a real product surface, treat (a) as the likely intent, but confirm before building from this block as if it were reachable UI in the current design.",
+      "sidebar": {"restaurant_name_hardcoded": "Spice Route", "nav_items": ["Published Reports (goReportsList)", "Task Assignment (goDeferred)"]},
+      "sub_screens": {
+        "rList": {"title": "Published Reports", "subtitle": "Only reports published for Spice Route", "list_binding": "publishedRows", "item_shape": {"templateName": "string", "publishedLabel": "date", "dueDateLabel": "date", "onClick": "opens rDetail"}, "filter": "audits where restaurant==='Spice Route' && status==='published', sorted by dueDate desc"},
+        "rDetail": {
+          "back_button": "‹ Back to reports",
+          "header_lines": ["{{pubTemplateName}}", "Outlet: {{pubRestaurant}} · Audit date {{pubAuditDate}}", "Published {{pubPublishedLabel}} · v{{pubVersion}} · Auditor: {{pubAuditor}}"],
+          "export_button": "Export PDF", "export_flash_text": "Exported ✓",
+          "observation_report_table": {
+            "conditional": "pubHasFindings",
+            "eyebrow": "Observation Report",
+            "literal_column_headers": ["Ref ID", "Core Category", "Specific Findings / Observations", "Risk Severity", "Operational Impact", "Immediate Corrective Action Required", "SLA Timeline", "Assigned Ownership", "Status"],
+            "list_binding": "pubFindings"
+          },
+          "checkpoint_detail_eyebrow": "Checkpoint detail & evidence",
+          "list_binding": "pubItems",
+          "photo_evidence_eyebrow": "Photo evidence · {{it.proofLabel}}"
+        },
+        "rDeferred": {
+          "title": "Task Assignment",
+          "banner_text": "Coming soon — deferred to a later phase. You'll be able to create roles, assign corrective tasks to Food & Procurement managers, and track status here.",
+          "disabled_preview_rows": [{"label": "Food Manager", "button": "Assign Task"}, {"label": "Procurement Manager", "button": "Assign Task"}],
+          "note": "The disabled preview rows use hardcoded literal labels, not a data-bound list — intentionally static mockup content, opacity:0.45, pointer-events:none on the whole block."
+        }
+      }
+    },
+    {
+      "id": "showAuditor (Auditor mobile/laptop demo, embedded in this file)",
+      "fidelity_tier": "standard",
+      "boundary_confidence": "high",
+      "description": "This file also contains a full embedded copy of the Auditor flow (aLogin/aPending/aChecklist/aReport) sharing the same AUDITS state as the Super Admin views. Per CLAUDE.md, the AUTHORITATIVE auditor UI specs are 'Auditor Flow - Mobile.dc.html' and 'Auditor Flow - Laptop.dc.html' — this embedded copy exists so the Super Admin design canvas can preview auditor-side effects of admin actions (e.g. AI-enhanced remarks) in one file. Documented briefly, not exhaustively, since it is out of scope for a 'Super Admin Flow' extraction; do not treat this section as the primary auditor spec.",
+      "sub_screens": ["aLogin (auditorScreen==='login')", "aPending (auditorScreen==='pending', includes Recently Submitted history)", "aChecklist (auditorScreen==='checklist', two tabs: MTD Metrics / Departmental Checklist)", "aReport (auditorScreen==='report', read-only submitted view)"]
+    }
+  ],
+  "state_machine": {
+    "top_level_role": {"state_key": "role", "values": ["auditor", "super", "restaurant"], "transitions": {"goAuditor": "-> auditor", "goSuper": "-> super", "goRestaurant": "-> restaurant (UNREACHABLE — no UI control triggers this, see flagged_unreferenced_bindings)"}},
+    "super_admin_auth": {"state_key": "superAuthed", "values": [false, true], "transitions": {"superLogin": "validates slEmail+slPwd non-empty, then true", "superLogout": "-> false, also resets superScreen to 'restaurants'"}},
+    "superScreen": {
+      "values_with_rendered_sc_if": ["restaurants", "restaurantDetail", "auditors", "templates", "builder", "reviewQueue", "review", "detail", "reports", "reportDoc"],
+      "values_set_by_logic_with_no_matching_sc_if": ["assign (set by continueCreate when newAuditMode==='reuse')", "dashboard (set by assignAudit) — reaching either of these states would render a BLANK sSuperAppMain content area, since no sc-if matches; both are unreachable via any wired button though, see flagged_unreferenced_bindings"]
+    },
+    "audit_status_lifecycle": {
+      "values": ["assigned", "in-progress", "submitted", "published"],
+      "transitions": "assigned/in-progress set at creation (createAudit/assignAudit) and by the auditor's own checklist-answer actions (not visible in this file, mirrored from the Auditor flow files) -> doSubmit (auditor side) sets 'submitted' -> doPublish OR shareLink (super admin side) sets 'published' and stamps publishedAt + increments version",
+      "guard_note": "This matches the CLAUDE.md invariant 'Submit is one-way' and 'Publish freezes; correction versions' — shareLink/doPublish both do version:(a.version||0)+1 on every publish, consistent with the correction-versioning architecture invariant."
+    },
+    "checklist_item_status": {"values": ["pending", "pass", "fail", "observation", "na"], "set_by": "setItemStatus(auditId,itemId,status) — auditor-only action mirrored here for the read-only super-admin views"},
+    "rdTab": {"values": ["audits", "reports"], "default": "audits"},
+    "auditorTab (embedded auditor demo)": {"values": ["metrics", "checklist"], "default": "metrics"},
+    "builderOpenCats / openCats": {"description": "null/undefined means 'first category open by default' in the builder; an explicit array (possibly empty) once the user has toggled anything"}
+  },
+  "calculations": {
+    "computeMetrics(defs, vals)": {
+      "description": "Pure derivation over a template's metric definitions and an audit's entered MTD values. All figures are month-to-date only (no day-wise entry) per the 'MTD period' field.",
+      "outputs": {
+        "covers": "sum of all metrics in section 'covers' (e.g. No of Pax)",
+        "netSale": "sum of all metrics in section 'sales'",
+        "barSale": "sum of 'sales' metrics where revGroup==='bar'",
+        "kitchenSale": "sum of 'sales' metrics where revGroup!=='bar'",
+        "totalDiscounts": "sum of all metrics in section 'discount'",
+        "totalTaxes": "sum of 'tax' section metrics where kind!=='charge'",
+        "totalCharges": "sum of 'tax' section metrics where kind==='charge' (i.e. Service Charge is a 'charge', SGST/CGST/VAT are 'tax')",
+        "grossSale": "netSale + totalCharges + totalTaxes − totalDiscounts (all treated as 0 if unset, EXCEPT the whole result is null only if netSale, totalTaxes, totalCharges AND totalDiscounts are ALL null)",
+        "barCost": "sum of 'cost' section metrics where group==='bar'",
+        "kitchenCost": "sum of 'cost' section metrics where group==='kitchen'",
+        "ncCost": "sum of 'cost' section metrics where group==='nc'",
+        "fnbCost": "barCost + kitchenCost",
+        "netFnbCost": "fnbCost − ncCost"
+      },
+      "per_row_derived_display": {
+        "APC (average per cover)": "value / covers, only computed if covers is truthy (non-null, non-zero)",
+        "cost %": "(numerator / metricDen(denominator)) * 100, formatted to 2 decimals + '%'",
+        "metricDen resolution": "den==='net'→netSale, den==='bar'→barSale, den==='kitchen'→kitchenSale, else looks up c.byId[den] (a specific other metric's raw value)"
+      },
+      "currency_formatting": "fmtINR(n): Indian digit grouping (lakhs/crores comma style, e.g. ₹1,65,151), rounds to nearest whole rupee, returns '—' for null/undefined, prefixes '-₹' for negative. NOTE: this hand-rolled formatter groups digits Indian-style but does NOT use the short-scale abbreviation (₹4.80L) that CLAUDE.md's coding conventions mandate ('Indian short-scale (₹4.80L) via one formatter') — flag this as a design-vs-doc discrepancy to reconcile when implementing, not something to silently resolve either way."
+    },
+    "metricSections(...)": "Groups computeMetrics() output into UI sections in a fixed order: Covers → MTD Total Net Sale (with per-row APC) → Discounts → Charges & Taxes (ends with TOTAL GROSS SALE) → Costing (bar cost rows, TOTAL BAR COST, kitchen cost rows, TOTAL KITCHEN COST, TOTAL F&B COST, nc cost rows, TOTAL NET F&B COST). Each section is only included if it has at least one matching metric definition.",
+    "checklist_progress": {
+      "selDone/selTotal": "count of items with status!=='pending' out of all items",
+      "mtdComplete": "true only if every metric definition id has a non-null numeric value entered",
+      "submitDisabled": "!(selDone===selTotal && mtdComplete) — auditor cannot submit until every checklist item is answered AND every MTD metric is filled",
+      "group_scoreLabel": "Math.round(passed/scored*100)+'% pass' where scored = items with status pass or fail (observation and na are excluded from the pass-rate denominator); 'Not scored yet' if scored===0"
+    },
+    "AI classify/polish (report generation)": {
+      "classify(text)": "Keyword-matches the item's label+remark (lowercased) against a fixed 10-rule CATEGORY_RULES table (temperature/cold→'Temperature & Expiry' Critical..High, raw/cross-contamination→'Food Safety Risk' Critical, label/fifo/expiry→'Inventory Control' High, hygiene/clean/grease→'Hygiene Standards' High, waste/bin/pest→'Statutory Compliance' Medium, fire/extinguisher→'Statutory Compliance' Critical, bill/void→'Revenue Control' High, discount/comp→'Revenue Control' Medium, cancel/reason code→'Revenue Control' High, stock/purchase/invoice/vendor/gst→'Inventory Control' Medium); falls back to 'Operational Control' Medium if no keyword matches.",
+      "polish(item, evidenceCount)": "Rewrites the auditor's raw remark into report prose: capitalizes first letter, strips trailing punctuation/whitespace, appends 'Checkpoint meets the documented standard.' for pass items or ', observed during the walkthrough.' for others, and appends an evidence-corroboration sentence if photos/files are attached. Returns a fixed 'No remark recorded...' sentence if the remark was empty. This is the concrete implementation this design file uses for CLAUDE.md's 'Remarks are AI-polished on submit' invariant — note the ACTUAL polish trigger in this file is 'Generate report' in sReview (enhanceAll/enhanceItem), not literally at auditor submit time; reconcile this design-vs-doc timing difference (ADR-0004/UX-010) rather than assuming the doc's 'at submit' wording is exactly how this canvas models it.",
+      "severity/impact/correctiveAction/sla/ownership on enhance": "Only populated for non-pass items (status!=='pass'); pass items get these all cleared to null/''. Existing item-level values always win over the CATEGORY_RULES default (it.severity || r.sev, etc)."
+    }
+  },
+  "data_shapes": {
+    "ChecklistItemDefinition (template authoring level)": {"label": "string", "guidance": "string", "freeform": "bool (optional) — freeform items get 'Nothing to report' instead of 'Pass' as the primary button label, and hide the Fail button", "cat": "string (department name)", "code": "string, format '<CATCODE>-<2-digit index>', e.g. 'SEC-04'"},
+    "ChecklistItem (live audit instance, decorated by decorateItems())": {
+      "id": "string", "code": "string", "cat/catCode": "string", "label": "string", "guidance": "string", "freeform": "bool",
+      "status": "'pending'|'pass'|'fail'|'observation'|'na'", "remark": "string", "rawRemark": "string (pre-AI-polish original, preserved for revert)",
+      "naReason": "string — one of NA_REASONS or custom", "photos": "number", "files": "File[]",
+      "severity": "'Critical'|'High'|'Medium'|null", "impact": "string", "correctiveAction": "string", "sla": "string", "ownership": "string", "resolutionStatus": "'Pending'|'Resolved'|string",
+      "aiEnhanced": "bool", "refId": "string, e.g. 'EQ-03' (assigned at enhance-time if absent)", "category": "string (report category, from classify())"
+    },
+    "File": {"kind": "'image'|'csv'|'file'", "name": "string", "meta": "string, e.g. 'Camera · 1.6 MB' or '312 rows · 48 KB'"},
+    "MetricDefinition": {"id": "string, e.g. 'm_food'", "label": "string", "section": "'covers'|'sales'|'discount'|'tax'|'cost'", "revGroup": "'bar'|'kitchen' (sales only)", "kind": "'charge'|'tax' (tax section only)", "group": "'bar'|'kitchen'|'nc' (cost section only)", "den": "string — a metric id or 'net'/'bar'/'kitchen' (cost section only, the % denominator)", "unit": "'currency'|'number'|'count'|'percent' (builder-set, defaults to 'count' for covers/volume section, else 'currency')"},
+    "Audit": {
+      "id": "string", "token": "string (optional, used for the shareable audit URL)", "restaurant": "string (restaurant NAME, not id — a denormalization)", "auditor": "string (auditor NAME, not id)",
+      "templateId": "string", "name": "string (optional custom audit name, else falls back to template name)",
+      "dueStart": "ISO date (optional)", "dueDate": "ISO date (required — acts as 'due end' when dueStart present)",
+      "status": "'assigned'|'in-progress'|'submitted'|'published'", "submittedAt": "ISO date (optional)", "publishedAt": "ISO date (optional)", "version": "number (increments on every publish)",
+      "metrics": "Record<metricId, string> plus 'period' (free-text MTD period label, e.g. 'Jul 1-14, 2026')", "metricDefs": "MetricDefinition[] (snapshotted at submit/creation — matches CLAUDE.md's 'template snapshot on assign' invariant)",
+      "items": "ChecklistItem[]"
+    },
+    "Restaurant": {"id": "string", "name": "string", "city": "string"},
+    "AuditorAccount": {"id": "string", "name": "string", "email": "string (login id)", "phone": "string", "status": "'active'|'suspended'", "outlets": "string[] (restaurant names)", "lastActive": "string (display label, not a real timestamp)", "pwd": "string (plaintext in this mock — real build must argon2-hash per CLAUDE.md)", "pwdChanged": "string (display label)", "mustChange": "bool"},
+    "Template": {"id": "string", "name": "string", "items": "ChecklistItemDefinition[]", "metrics": "MetricDefinition[]"},
+    "OperationalReport": {"id": "string", "type": "string (report type label)", "restaurant": "string", "period": "string", "format": "'Excel'|'Image'|'CSV'|'PDF'", "flagged": "bool (low-confidence OCR flag)", "cols": "string[]", "rows": "[{cells: string[]}]", "insights": "string[]"},
+    "NA_REASONS (fixed select options)": ["Not applicable at this outlet", "Record / register not maintained", "Document not available during audit", "Area or asset not accessible", "Responsible staff unavailable"]
+  },
+  "unresolved_style_bindings": [
+    {"binding": "a.chipBg / a.chipColor / a.chipBorder / a.chipLabel", "screens": ["aPending", "sReviewQueue (implicitly via reused audit rows)", "sRestaurantDetail (active/history audit cards)"], "note": "Resolves via auditChip(status) — 4 concrete value sets exist in logic (assigned/in-progress/submitted/published, listed under global_design_tokens.status_colors) but the binding itself is state-dependent per-row and not a static value in markup."},
+    {"binding": "it.chipBg / it.chipColor / it.chipBorder / it.chipLabel (checklist item status chip)", "screens": ["sReview", "sDetail", "sRestaurantDetail (embedded), aChecklist, aReport, rDetail"], "note": "Resolves via chip(status) — 5 concrete value sets exist (pass/fail/observation/na/pending, listed under global_design_tokens.status_colors); binding itself is state-dependent."},
+    {"binding": "it.sevBg / it.sevColor (severity pill)", "screens": ["sReview", "sDetail", "rDetail"], "note": "Resolves via sevColor(severity) — 4 concrete value sets exist (Critical/High/Medium/default, listed under global_design_tokens.status_colors)."},
+    {"binding": "it.passBg/passBorder/passColor, failBg/failBorder/failColor, obsBg/obsBorder/obsColor, naBg/naBorder/naColor (status-action button styling)", "screens": ["aChecklist item-active state"], "note": "Resolves via btnStyles(status) — the 'on' vs 'off' state per button depends on the item's CURRENT status; genuinely state-dependent, not a fixed literal."},
+    {"binding": "u.avatarBg/avatarColor, u.chipBg/chipColor/chipBorder (auditor active/suspended)", "screens": ["sAuditors (STRICT TIER)"], "note": "Two concrete states exist (active: #f0f4f9/#1e3a5f avatar, #eef2f7/#1e3a5f/#c3d6ea chip; suspended: #f3f3f3/#999 avatar, #f7f0f0/#b91c1c/#e6c9c9 chip) — captured in full above since this is a strict screen, so there is no unresolved gap here, just noting the binding is state-driven per row."},
+    {"binding": "m.bg/m.color/m.border (report-month pill selected state)", "screens": ["sRestaurantDetail > Reports tab"], "note": "Selected: #1e3a5f bg / #fff text / #1e3a5f border. Unselected: #fff bg / #4a525c text / #e2e6ea border. Fully resolved values exist in logic, listed for completeness — not a gap."},
+    {"binding": "a.cardBg / a.copyBg / a.copyColor (active-audit card, post-copy state)", "screens": ["sRestaurantDetail > Audits tab"], "note": "Copied: cardBg #f6f9fc, copyBg #1e3a5f, copyColor #fff. Not copied: cardBg #fff, copyBg #fff, copyColor #1e3a5f. Resolved values exist, listed for completeness."},
+    {"binding": "g.headerColor / g.badgeBg / g.badgeColor / g.badgeBorder / g.barColor (checklist category group header, complete vs incomplete)", "screens": ["aChecklist"], "note": "IMPORTANT GAP: complete and incomplete branches resolve to the SAME literal values in this file (both '#1e3a5f' for barColor/badgeColor, both '#eef2f7'/'#eef4fa'-adjacent for badgeBg) except headerColor (#1e3a5f complete vs #5b6a7f incomplete) and badgeBorder (1px solid #c3d6ea complete vs 1px solid #dbe4f0 incomplete) and cardBorder (1px solid #cfd8e6 open vs 1px solid #e6e6e6 closed). This looks like it may be an authoring oversight (complete/incomplete badge styling barely differs) rather than a true unresolved binding — flagging because the intent (should completed categories look visually distinct?) is ambiguous from the file alone."}
+  ],
+  "flagged_unreferenced_bindings": [
+    {
+      "category": "Entire dead alternate audit-creation flow",
+      "bindings": ["newAuditMode", "newAuditName", "newAuditRestaurant", "newAuditTemplateId", "onNewAuditNameChange", "onNewAuditRestaurantChange", "onNewAuditTemplateChange", "setModeNew", "setModeReuse", "continueCreate", "assignAuditorName", "assignRestaurant", "assignDueDate", "assignTemplateId", "onAssignAuditorChange", "onAssignRestaurantChange", "onAssignDueDateChange", "assignAudit"],
+      "note": "Fully implemented in the logic class (state fields + handlers) but NEVER referenced by any onClick/onChange/sc-if in the markup, and continueCreate()/assignAudit() target superScreen values ('assign', 'dashboard') that have no matching <sc-if> anywhere — reaching them would render a blank main panel. The reachable path into sBuilder is exclusively via sTemplates (newTemplateBlank / openTemplateInBuilder), which IS wired. Do not build this 'choose new template vs reuse existing, then assign' step; confirm with the team before treating it as an intended-but-unbuilt feature vs. leftover cruft from an earlier design iteration."
+    },
+    {"category": "Role-switch: Restaurant/Client portal has no entry control", "bindings": ["goRestaurant", "restaurantBtnStyle"], "note": "Header pill group only renders Auditor and Super Admin buttons (2 of 3 possible role buttons). showRestaurant markup and all its sub-screens (rList/rDetail/rDeferred) are fully built and DO consume state correctly once role==='restaurant', but nothing in this file can ever set role to 'restaurant'. See screen entry 'showRestaurant' boundary_note."},
+    {"category": "Device (mobile/laptop) toggle has no entry control", "bindings": ["setMobile", "setLaptop", "mobileBtnStyle", "laptopBtnStyle"], "note": "state.device defaults to 'laptop' and affects only the embedded Auditor demo's outer padding/width/radius (auditorOuterPad etc). No button anywhere calls setMobile/setLaptop, and mobileBtnStyle/laptopBtnStyle are computed but never rendered. In this Super Admin file the device toggle is effectively inert; the real mobile/laptop split lives in the separate Auditor Flow - Mobile/Laptop.dc.html files per CLAUDE.md."},
+    {"category": "sAuditors (STRICT TIER) — computed-but-unrendered per-row actions", "bindings": ["u.onSendReset (sendReset — 'Reset link sent to {{email}}' flash)", "u.onForceSignOut (forceSignOut — 'All sessions ended for {{name}}' flash)", "u.outletChips (outlet-access toggle chips per restaurant)", "u.onToggleStatus / u.statusActionLabel ('Suspend access'/'Reactivate access')", "u.onToggleMustChange / u.mustChange (force-password-change-on-next-login checkbox)"], "note": "All fully computed per auditor row in decorateItems-equivalent (auditorRows in renderVals), but the expanded 'Manage' card in markup only renders the password block and the remove-confirmation block (lines ~636-680). This is a strict-tier screen, so this gap is called out with elevated importance per extraction rules: outlet access control, suspend/reactivate, forced reset, and force-sign-out are all real product capabilities implied by CLAUDE.md's admin-auth section ('Sessions are signed-cookie and admin-revocable (\"end all sessions\")', 'admin sets/resets passwords') that this design canvas computed but never surfaced. Confirm with the design owner whether these are missing markup (build them) or intentionally deferred before treating as in-scope."},
+    {"category": "sReview / sDetail — computed-but-unrendered export/publish actions", "bindings": ["exportCsv", "exportHtml", "doPublish"], "note": "exportPdf is wired to a button in sReview; exportCsv and exportHtml are defined identically but have no corresponding button anywhere. doPublish is defined and would set an audit to 'published', but sDetail (the natural home for a Publish action, given shareLink in sReview already does an equivalent publish-and-copy-link action) has no Publish button in its markup. Likely represents CSV/HTML export and a plain-publish (as opposed to publish+share-link) as intended-but-unbuilt actions — confirm before spec'ing as required."},
+    {"category": "sBuilder — computed-but-unreferenced handler", "bindings": ["addBuilderItem"], "note": "Exposed in renderVals() output but never called from markup — the two wired equivalents are addBuilderItemToCat(cid) (used by each department's 'Add Checklist Point' button) and addBuilderCat() (used by 'Add Department', which seeds a new department with one blank item). addBuilderItem() would add a bare item with cat:'Uncategorised' outside of any existing department grouping and is likely superseded/leftover."},
+    {"category": "sAuditors — computed-but-unrendered summary counters", "bindings": ["auTotal", "auActive", "auSuspended", "auPendingInvite"], "note": "Computed headline counts (total auditors, active count, suspended count, count with a still-pending invite/temp-password) with no matching summary-stat UI anywhere on the sAuditors screen. Strict-tier screen — flagging explicitly per extraction rules rather than omitting."},
+    {"category": "openAnyPublished (logic method, entirely orphaned)", "bindings": ["openAnyPublished"], "note": "Defined in the Component class but not even included in the renderVals() return object — it is unreachable from markup by construction (markup can only bind to keys renderVals() returns). Appears to be dead/leftover logic, not a feature gap."},
+    {"category": "sSuperLogin — unused multi-step login scaffolding", "bindings": ["slStep", "slCode", "onSlCode", "slRemember", "onSlRemember", "slResetSent", "sendSelfReset", "slBack"], "note": "State fields and handlers exist for what looks like a 'remember me' checkbox, a second verification-code step, and a self-service password-reset confirmation step, but the markup only ever renders the slCredsStep block (which renderVals() hardcodes to always-true: `slCredsStep: true`). No 'Forgot password?' link, remember-me checkbox, or code-entry UI exists anywhere in the login screen markup. Confirm before building a multi-step/2FA login — the current design shows single-step email+password only."},
+    {"category": "Inert inline conditional (not a binding gap, a template no-op)", "location": "sRestaurantDetail > Reports tab > month pill, line ~533", "detail": "<sc-if value=\"{{m.isCurrent}}\"></sc-if> has no children — it is a no-op regardless of m.isCurrent's value. If the intent was an 'Active' badge/dot on the current month's pill (the pill's own label text does already append ' (Active)' literally, so this may be intentionally redundant/leftover), confirm before adding any visual marker here."}
+  ],
+  "informational_notes": [
+    "sSuperApp's condition `s.role!=='super' || s.superAuthed` has an unreachable-in-context first disjunct: it is only ever evaluated nested inside `<sc-if value=\"{{showSuper}}\">`, which itself requires `s.role==='super'`, making `s.role!=='super'` always false at that point. Functionally the binding just reduces to `s.superAuthed`. Not a bug to fix, just worth knowing when tracing the condition rather than assuming role-switching logic is more complex than it is.",
+    "CLAUDE.md's 'Calculated is never typed — derivable figures are read-only everywhere' is faithfully modeled: every derivedRow() in metricSections() has isInput:false, isDerived:true and no onChange.",
+    "CLAUDE.md's 'N/A is neither fail nor blank — needs a reason, excluded from compliance %' is faithfully modeled: group.scoreLabel's pass-rate denominator (`scored`) filters to status pass|fail only, excluding both 'observation' and 'na' from the percentage.",
+    "fmtINR() groups digits Indian-style (lakh/crore commas) but does not abbreviate to short-scale (₹4.80L) — this conflicts with the literal wording of CLAUDE.md's coding-conventions line on currency formatting. Flagged under calculations.computeMetrics for reconciliation, not resolved here."
+  ]
+}

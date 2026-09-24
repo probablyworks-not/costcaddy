@@ -5,12 +5,54 @@ and DESIGN Part B). One dated line per shipped thing.
 
 ## Foundations — 2026
 
+### 2026-09-22
+- Removed "Observation" as a checklist item status — the auditor and admin review screens
+  now offer Pass/Fail/N-A only; existing `observation` items were folded into `fail`
+  (ADR-0007, UX-024).
+- Removed the "copy audit link" share-URL row and button from a restaurant's active-audit
+  rows, and reworded the New Audit panel ("Create audit link" → "Create audit", helper text
+  no longer mentions a shareable URL) — auditors reach an assigned audit by logging into the
+  portal directly, not via link (UX-023).
+- Renamed `audits.dueStart`/`dueDate` to `periodStart`/`periodEnd` and removed the
+  "OVERDUE" marker from the auditor portal — the audit date range is the recurring
+  conduct window agreed with the auditor, not a submission deadline (ADR-0008, BUG-025).
+- Evidence photo thumbnails in the published PDF are now clickable, opening the full
+  photo — previously baked in as rasterized pixels only, with no way to reach the
+  full-size image from the PDF (ADR-0009, UX-025, BUG-026).
+
+### 2026-09-16
+- Evidence photos now render as real thumbnails, clickable to full size, in both the
+  Report screen's Section 2 compliance table and the exported PDF (previously "N photos"
+  plain text with no way to view them) — un-stubs `showEvidence` (UX-017).
+
+### 2026-09-13 (BUG-022)
+- Fixed: a restaurant's Audits tab only ever showed active audits — submitted and
+  published ones were invisible — and its Reports tab was a hardcoded placeholder that
+  never showed real published reports. The Audits tab now groups Active / Submitted —
+  awaiting review / History; the Reports tab lists actual published reports. Removed the
+  sidebar's "Review Queue" nav item and the standalone `/admin/review` listing page —
+  neither had a basis in the design's nav; reviewing a submitted audit is now reached
+  from its restaurant's Submitted group. The Reports tab also now groups reports by the
+  month each audit's own period covers (not when it was published) — a 1–31 Aug audit
+  files under August even if reviewed in September. Added a live MTD consolidated
+  report per outlet/month: recomputed on every view from whichever audits are published
+  that month, no separate "generate" step. See `docs/BUGS.md` BUG-022, `docs/DESIGN.md`
+  UX-020/UX-021, ADR-0006.
+
+### 2026-09-13 (BUG-021)
+- Fixed: Template Builder's Sales category had no way to mark a row as bar revenue
+  (every row silently saved as `revGroup:'kitchen'`), so Bar Sale always read "Needs
+  data" on the report. Sales rows now offer a Kitchen revenue / Bar revenue choice.
+  Data-corrected "Tempalte 1" and its one in-flight audit directly at user request. See
+  `docs/BUGS.md` BUG-021.
+
 ### 2026-09-12 (BUG-020)
 - Fixed: Template Builder's Taxes category had no way to mark a row as a service charge
   (every row silently saved as `kind:'tax'`), so Service Charge always read "Needs data"
   on the report and was double-counted into Total Taxes instead. Taxes rows now offer a
   Statutory tax / Service charge choice; existing templates need their Service Charge
-  row re-flagged and re-saved. See `docs/BUGS.md` BUG-020.
+  row re-flagged and re-saved (done directly for "Tempalte 1" and its in-flight audit).
+  See `docs/BUGS.md` BUG-020.
 
 ### 2026-09-12 (C5)
 - Publish shipped: `publishAudit` stamps a version + date, freezes the audit (only

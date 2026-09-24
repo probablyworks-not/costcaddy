@@ -33,17 +33,18 @@ Storage bucket + signed URLs. Deploy pipeline. `CLAUDE.md`.
 - **Audit management:** create/assign/track audits and visits; shareable audit URL per assignment;
   **template snapshot on assign** (copy-on-assign).
 - **Auditor capture (the core):** pending list; Metrics step (calculated rows read-only, live totals);
-  Checklist step (Pass/Fail/Observation/N-A, required remarks, N/A reason, photos uploaded on capture);
+  Checklist step (Pass/Fail/N-A, required remarks, N/A reason, photos uploaded on capture);
   **corrective actions** (owner + action + status on findings, D14); explicit **Save** (server draft,
   cross-device); Submit blocked until complete with a **named count of what's missing**; Submit →
   immutable → review queue.
 
 ## Phase 2 — AI reports (2 wks) · maps proposal Phase 2
 - **Review + report:** review screen (submission as captured; correct status/remark; open photos);
-  generate report (findings from every Fail/Observation; financial sections from captured metrics);
+  generate report (findings from every Fail; financial sections from captured metrics);
   **AI-assisted narration grounded in captured values** (D12); edit findings; publish → versioned +
   frozen; report v4 render; **PDF (Playwright, version-stamped)** — the only export format;
-  `showEvidence` stubbed off (D4).
+  evidence photos render as real clickable/embedded thumbnails, both on the Report screen and in the
+  PDF (D4, UX-017).
 - **No Client Portal for now.** The admin delivers the PDF directly; the white-labelled, token-accessed
   read-only Client Portal is designed (`Super Admin Flow.dc.html`) but out of current scope — see
   `EXECUTION.md` R12 and "Not yet designed."

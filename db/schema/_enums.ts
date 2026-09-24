@@ -27,13 +27,7 @@ export const auditStatusEnum = pgEnum('audit_status', [
 ]);
 export const polishStateEnum = pgEnum('polish_state', ['polishing', 'ready', 'failed']);
 
-export const itemStatusEnum = pgEnum('item_status', [
-  'pending',
-  'pass',
-  'fail',
-  'observation',
-  'na',
-]);
+export const itemStatusEnum = pgEnum('item_status', ['pending', 'pass', 'fail', 'na']);
 export const severityEnum = pgEnum('severity', ['High', 'Medium', 'Low']);
 export const resolutionStatusEnum = pgEnum('resolution_status', ['Pending', 'Resolved']);
 export const fileKindEnum = pgEnum('file_kind', ['image', 'file']);

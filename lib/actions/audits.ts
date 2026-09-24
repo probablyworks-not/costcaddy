@@ -32,14 +32,14 @@ export async function createAudit(
   const templateId = String(formData.get('templateId') ?? '');
   const auditorId = String(formData.get('auditorId') ?? '');
   const name = String(formData.get('name') ?? '').trim() || null;
-  const dueStart = String(formData.get('dueStart') ?? '') || null;
-  const dueEnd = String(formData.get('dueEnd') ?? '') || null;
+  const periodStart = String(formData.get('periodStart') ?? '') || null;
+  const periodEnd = String(formData.get('periodEnd') ?? '') || null;
 
   if (!outletId || !templateId || !auditorId) {
     return { error: 'Pick a template and an auditor' };
   }
-  if (!dueEnd && !dueStart) {
-    return { error: 'Set a due date' };
+  if (!periodEnd && !periodStart) {
+    return { error: 'Set an audit period' };
   }
 
   await db.transaction(async (tx) => {
@@ -52,8 +52,8 @@ export async function createAudit(
         auditorId,
         templateId,
         name,
-        dueStart,
-        dueDate: dueEnd ?? dueStart!,
+        periodStart,
+        periodEnd: periodEnd ?? periodStart!,
         status: 'assigned',
       })
       .returning({ id: audits.id });

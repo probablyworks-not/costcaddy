@@ -32,9 +32,9 @@ recorded here so they are not rediscovered mid-build.
 | R5 | **`doPublish()` and `shareLink()` mutate identically** — publishing and sharing are conflated | Separate them. Only publish stamps a version (C5) |
 | R6 | **Identity by name string.** Audits reference restaurant and auditor by name; auditor identity is hardcoded `AUDITOR_NAME = 'Riya Sharma'`. The `dashboard` screen key has no markup | Normalise to FK ids (F3). `dashboard` is a dead key — route to `restaurantDetail` |
 | R7 | **Severity scale.** Seed data carries `Critical`; DESIGN Part A, the report's severity select and its ribbon know only High/Medium/Low | **High / Medium / Low.** `Critical` is dropped. See DESIGN Part B **UX-006** |
-| R8 | **Compliance denominator.** The design's `scoreLabel` counts only `pass+fail`; the invariant excludes N/A only | `pass / (pass + fail + observation)` — **N/A excluded only**. See **UX-007** |
+| R8 | **Compliance denominator.** The design's `scoreLabel` counts only `pass+fail`; the invariant excludes N/A only | `pass / (pass + fail)` — **N/A excluded only**. See **UX-007** (originally `pass + fail + observation`; `observation` removed, see **UX-024**) |
 | R9 | **Report §3 Findings Register.** The spec (RP-1) defines one; `Audit report v4.dc.html` has no such section — §2's matrix already carries Ref ID, severity, impact and corrective action | **Not built.** Design wins on layout. See **UX-008** |
-| R10 | **Remark requirement.** `HANDOVER.md` says every point; the spec allows a bare Pass | Required on **fail / observation / N-A** only; N/A still needs its reason. See **UX-009** |
+| R10 | **Remark requirement.** `HANDOVER.md` says every point; the spec allows a bare Pass | Required on **fail / N-A** only; N/A still needs its reason. See **UX-009** (originally also on `observation`; that status removed, see **UX-024**) |
 | R11 | **AI remark polish.** The mock polishes admin-side inside `generateReport()`, keeping `rawRemark` so the reviewer can revert | Polish runs **on submit** and the polished text **replaces** the raw remark. Reverses the old "remarks are quoted, not rewritten" invariant. See **ADR-0004** / **UX-010** |
 | R12 | **Report export & delivery.** `Audit report v4.dc.html` draws an "Export Data (XLSX)" button alongside Print/PDF, and `Super Admin Flow.dc.html` draws a restaurant/outlet reader tree for a token-based Client Portal | **PDF only, no Client Portal, for now.** The published deliverable is a version-stamped PDF via Playwright; XLSX export and the outlet-facing portal are cut from current scope. Design wins on the report's own layout, but not on which export formats or delivery surfaces ship. See **C5** |
 
@@ -203,10 +203,10 @@ OPS Operations · POS POS Controls · OTH Other Observations — each ending in 
 Screens:   assign, plus the New-audit panel on restaurantDetail
 Depends:   A4
 Story:     S-7
-Done when: picking a template and an auditor creates the audit and it appears in that
-           auditor's list; the audit holds its OWN COPY of the template (metricDefs cloned,
-           items materialised) so later template edits never touch it; and the share URL
-           https://audit.fnbcontroller.com/a/<token> is copyable from the active row
+Done when: picking a template and an auditor creates the audit and it appears directly in that
+           auditor's list (no share link — access is via auditor login, UX-023); the audit holds
+           its OWN COPY of the template (metricDefs cloned, items materialised) so later template
+           edits never touch it
 ```
 
 ---
@@ -222,11 +222,11 @@ difference, identical behaviour and data.
 Screens:   login, pending
 Depends:   A5
 Story:     A-1, A-2
-Done when: each card shows restaurant, template and progress ("4 of 12"), sorted by due
-           date ascending with ● OVERDUE on anything past due; recently submitted sits
-           below; there is a clear empty state; a wrong password keeps the email and shows
-           one message; and the signed-in auditor is resolved from the session, never a
-           hardcoded name (R6)
+Done when: each card shows restaurant, template and progress ("4 of 12"), sorted by audit
+           period ascending; recently submitted sits below; there is a clear empty state; a
+           wrong password keeps the email and shows one message; and the signed-in auditor
+           is resolved from the session, never a hardcoded name (R6). No overdue/past-due
+           marker — the date range is the audit-conduct period, not a deadline (ADR-0008)
 ```
 
 ### B2 — Metrics step
@@ -245,18 +245,19 @@ Screens:   checklist → auditorTab 'checklist' (mobile) / step 2 (laptop)
 Depends:   B1
 Story:     A-5, A-6, A-7, A-8
 Done when: departments collapse and expand with "n of m answered" per header in template
-           order; a row expands in place with Pass/Fail/Observation/N-A as one exclusive
-           choice at 44px, and the collapsed row then shows the status and the start of
-           the remark; a remark of any length plus several removable photos can be attached
-           to a point; fail, observation and N-A require a remark while a bare Pass is
-           allowed; N/A requires a reason from the fixed five; and N/A points are excluded
-           from the compliance percentage and listed separately
+           order; a row expands in place with Pass/Fail/N-A as one exclusive choice at
+           44px, and the collapsed row then shows the status and the start of the remark;
+           a remark of any length plus several removable photos can be attached to a
+           point; fail and N/A require a remark while a bare Pass is allowed; N/A requires
+           a reason from the fixed five; and N/A points are excluded from the compliance
+           percentage and listed separately (originally a four-way Pass/Fail/Observation/
+           N-A choice — `observation` was removed, see `DESIGN.md` Part B **UX-024**)
 ```
 
 N/A reasons (fixed list): Not applicable at this outlet · Record / register not maintained · Document not
 available during audit · Area or asset not accessible · Responsible staff unavailable.
 
-Compliance (R8): `pass / (pass + fail + observation)` — N/A excluded from the denominator only.
+Compliance (R8): `pass / (pass + fail)` — N/A excluded from the denominator only (UX-024).
 
 **Build N/A from the spec (R3)** — the auditor design file does not implement it.
 
@@ -349,10 +350,11 @@ Screens:   review (reportReady)
 Design:    Super Admin Flow.dc.html → generateReport / CATEGORY_RULES
 Depends:   C2
 Story:     S-11
-Done when: every Fail and Observation becomes a finding with reference ID, category,
-           severity, impact, corrective action, SLA and ownership; the financial sections
-           fill from the metrics; every generated field is editable by the reviewer; and
-           Pass items carry no severity, impact or action
+Done when: every Fail becomes a finding with reference ID, category, severity, impact,
+           corrective action, SLA and ownership; the financial sections fill from the
+           metrics; every generated field is editable by the reviewer; and Pass/N-A items
+           carry no severity, impact or action (originally "every Fail and Observation" —
+           `observation` removed, see `DESIGN.md` Part B **UX-024**)
 ```
 
 `CATEGORY_RULES` is the deterministic floor — 10 keyword rules over `label + remark`, falling back to
@@ -379,7 +381,7 @@ Done when: §1 Key Financial & Unit Economic Metrics (KPI strip with per-pax sub
 ```
 
 - **No §3 Findings Register** (R9) — §2's table already carries those columns.
-- `showEvidence` ships stubbed off.
+- Evidence photos render as real clickable/embedded thumbnails, on the Report screen and in the PDF (UX-017).
 - All numbers in IBM Plex Mono with `tabular-nums`; currency Indian short-scale via the F7 formatter.
 - **Do not port the mock's edit model.** It is DOM-level `contenteditable` persisted to
   `localStorage['fnb.reportV4.edits.v2']`. Model edits as real fields on real records.

@@ -36,6 +36,20 @@
       "when": 1789225511736,
       "tag": "0004_youthful_jubilee",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1790067205341,
+      "tag": "0005_sudden_cargill",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1790067300000,
+      "tag": "0006_amazing_frank_castle",
+      "breakpoints": true
     }
   ]
 }

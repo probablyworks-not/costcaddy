@@ -120,15 +120,17 @@ Template       { id, name, metrics: MetricDef[], items: ChecklistPoint[] }
                    unit?:     'currency'|'count' }
   Department     { cat, code, items[] }             // code e.g. 'KIT','OTH'; reference codes auto-renumber
   ChecklistPoint { label, guidance, freeform?, cat, catCode, code }   // code = 'KIT-03'
-Audit          { id, token, outletId, auditorId, templateId, dueStart?, dueDate,
+Audit          { id, token, outletId, auditorId, templateId, periodStart?, periodEnd,
+                 // periodStart/periodEnd: the recurring audit-conduct window, not a due
+                 // date — ADR-0008. No overdue/deadline concept exists on an audit.
                  status: 'assigned'|'in-progress'|'submitted'|'published',
                  metricDefs: MetricDef[],                 // FROZEN copy taken at creation
                  submittedAt?, publishedAt?, version?, metrics{}, items[],
                  polishState?: 'polishing'|'ready'|'failed' }         // ADR-0004
 AuditItem      { id, code, cat, catCode, label, guidance, freeform,
-                 status: 'pending'|'pass'|'fail'|'observation'|'na',
+                 status: 'pending'|'pass'|'fail'|'na',
                  remark, naReason?, photos:n, files[],
-                 severity?: 'High'|'Medium'|'Low',        // fail/observation only; set by reviewer
+                 severity?: 'High'|'Medium'|'Low',        // fail only; set by reviewer
                  impact?, correctiveAction?, sla?, ownership?,
                  resolutionStatus?: 'Pending'|'Resolved', // corrective-action tracking (D14)
                  refId?, category? }                      // set by report generation
@@ -170,7 +172,7 @@ stacked steps + right-aligned progress). Layout differs; behaviour and data are 
 **Submit → AI polishes every non-pass remark into report prose, replacing the raw text** (async job with a
 `polishState`; a failure never blocks or reverses the submit — ADR-0004) → Review (submission shown
 **exactly as captured**, never edited in place) → attach operational reports → **Generate report**
-(findings from every Fail/Observation; financial sections from captured metrics; the LLM narrates only and
+(findings from every Fail; financial sections from captured metrics; the LLM narrates only and
 **never computes numbers**, D12) → edit findings → **Publish** (versioned + frozen; a separate action from
 copying the share link) → render report v4 → **PDF via Playwright, version-stamped**
 (`v1 · 21 Jul 2026`) — the only export format — delivered directly by the admin (no Client Portal for
@@ -187,19 +189,22 @@ now; `EXECUTION.md` R12).
   not yet designed) — C2 only carries each attached file's type/period/parse-status through untouched.
 - **Findings generation** is `lib/report/classify.ts`'s `classifyFinding` — the mock's `CATEGORY_RULES`/
   `classify` ported verbatim (10 keyword rules over label+remark, Operational Control/Medium fallback).
-  A "Generate report" action (`generateReport`) classifies every Fail/Observation with no severity yet —
+  A "Generate report" action (`generateReport`) classifies every Fail with no severity yet —
   idempotent, so Regenerate never overwrites a reviewer's edit — and stamps `audits.reportGeneratedAt`.
   `refId` is always the item's own template code (e.g. `KIT-03`), never a generated `EQ-01` sequence
   (`DESIGN.md` Part B **UX-015**) — every real audit item already has one from the template snapshot
   (A5), so there's nothing for a fallback scheme to cover. Pass/N-A items are never classified; a status
-  correction (C1) that moves an item away from Fail/Observation clears any existing finding so "Pass
+  correction (C1) that moves an item away from Fail clears any existing finding so "Pass
   carries no severity" keeps holding after an edit.
 - **Report v4** (`app/admin/(protected)/review/[id]/report/`) has its own type system (Inter Tight +
   IBM Plex Mono `tabular-nums`, Material Symbols), is print-first (`[data-avoid]`/`[data-break]` in
   `globals.css`), and renders §1 (KPI strip + revenue matrix + two composition donuts), §1B (costing via
   `lib/report/costingBreakdown.ts`), and §2 (per-department compliance table from C3's findings). No §3
   (R9). `showCharts`/`showSummaryRibbon` are real flags that both default true (no story asks to hide
-  either yet) and `showEvidence` stays stubbed off — `DESIGN.md` Part B **UX-016**. Reached from the
+  either yet). The Evidence column carries real photo thumbnails, clickable both on the web and in
+  the PDF — the PDF thumbnail is wrapped in a real `<a href>` backed by a long-lived (10-year)
+  signed URL, since a published PDF is opened long after the storage layer's normal 1-hour default
+  would expire (ADR-0009) — `DESIGN.md` Part B **UX-016**/**UX-017**/**UX-025**. Reached from the
   review screen's "View report" once `reportGeneratedAt` is set. Currency is Indian short-scale via one
   centralised formatter.
 - **Publish** (`lib/actions/publish.ts`) is the only way `reportGeneratedAt` data becomes a durable
@@ -228,8 +233,8 @@ Correctness load-bearers — encode in schema, guard in review:
   remain. With no audit trail (D9), versioning is the **sole** history.
 - **Calculated is never typed.** Any derivable figure is read-only everywhere; totals recompute live.
 - **N/A is neither fail nor blank.** Requires a reason, excluded from compliance %, listed separately.
-  Compliance is `pass / (pass + fail + observation)` — N/A is excluded from the denominator, an
-  observation is not (UX-007).
+  Compliance is `pass / (pass + fail)` — N/A is excluded from the denominator (UX-007, revised —
+  the checklist item status is now Pass/Fail/N-A only; see UX-018).
 - **Remarks are AI-polished on submit, and the polish is the record.** The rewrite happens once, at
   submit, and replaces the raw text; no verbatim copy is kept, so nothing can be reverted. The model
   rewrites prose only and never touches a number. Severity/impact/corrective-action are still set by the

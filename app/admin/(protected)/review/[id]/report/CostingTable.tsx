@@ -14,13 +14,13 @@ export function CostingTable({ breakdown }: { breakdown: CostingBreakdown }) {
             Cost Analysis &amp; F&amp;B Cost Breakdown
           </h3>
         </div>
-        <div style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: 12 }}>
+        <div>
+          <table style={{ width: '100%', tableLayout: 'fixed', borderCollapse: 'collapse', textAlign: 'left', fontSize: 12 }}>
             <thead>
               <tr style={{ borderBottom: '1px solid var(--r-border-2)', fontSize: 11, color: 'var(--r-ink)', background: '#fff' }}>
-                <th style={{ padding: '10px 12px 10px 16px', fontWeight: 600 }}>Cost Category / Line Item</th>
-                <th style={{ padding: '10px 16px', textAlign: 'right', fontWeight: 600 }}>Direct Cost (₹)</th>
-                <th style={{ padding: '10px 16px 10px 12px', textAlign: 'right', fontWeight: 600 }}>%age (Sales Share)</th>
+                <th style={{ width: '55%', padding: '10px 12px 10px 16px', fontWeight: 600 }}>Cost Category / Line Item</th>
+                <th style={{ width: '25%', padding: '10px 16px', textAlign: 'right', fontWeight: 600 }}>Direct Cost (₹)</th>
+                <th style={{ width: '20%', padding: '10px 16px 10px 12px', textAlign: 'right', fontWeight: 600 }}>%age (Sales Share)</th>
               </tr>
             </thead>
             <tbody>

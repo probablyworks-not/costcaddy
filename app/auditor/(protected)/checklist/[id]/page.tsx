@@ -52,7 +52,7 @@ export default async function AuditorChecklistPage({ params }: { params: Promise
             {RESTAURANT_ICON}
             <span>{audit.outletName}</span>
           </div>
-          <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 2 }}>Due {audit.dueDate}</div>
+          <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 2 }}>Period {audit.periodEnd}</div>
         </div>
 
         <ChecklistScreen

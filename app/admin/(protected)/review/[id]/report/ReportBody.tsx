@@ -14,12 +14,21 @@ export interface PublishBadge {
 // The report content itself, shared between the interactive review-screen page (C4)
 // and C5's Playwright PDF render, so the two can never drift into showing different
 // figures for the same audit — see lib/report/reportViewModel.ts.
-export function ReportBody({ vm, publish }: { vm: ReportViewModel; publish?: PublishBadge }) {
+export function ReportBody({
+  vm,
+  publish,
+  interactive = true,
+}: {
+  vm: ReportViewModel;
+  publish?: PublishBadge;
+  // false for renderReportPdf.tsx's react-dom/server static render, which can't invoke
+  // ComplianceSection's 'use client' EvidenceThumb outside Next's own RSC pipeline.
+  interactive?: boolean;
+}) {
   const { audit, draft, costing, departments, salesSlices, costSlices } = vm;
 
   // Ported from the design as real flags, not omitted — no story yet asks an admin to
-  // hide either, so both default on (DESIGN.md UX-016). `showEvidence` stays stubbed
-  // off per the design file itself; there's no evidence-embedding code to gate at all.
+  // hide either, so both default on (DESIGN.md UX-016).
   const showCharts = true;
   const showSummaryRibbon = true;
 
@@ -55,7 +64,7 @@ export function ReportBody({ vm, publish }: { vm: ReportViewModel; publish?: Pub
           ) : (
             <div style={{ fontSize: 10.5, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--r-muted)', fontWeight: 600 }}>Draft — not yet published</div>
           )}
-          <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--r-ink)', marginTop: 2 }}>Audit Date: {audit.dueDate}</div>
+          <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--r-ink)', marginTop: 2 }}>Audit Date: {audit.periodEnd}</div>
           <div style={{ fontSize: 11.5, fontFamily: 'var(--font-report-mono)', color: 'var(--r-muted)', marginTop: 4 }}>
             Generated {audit.reportGeneratedAt?.toISOString().slice(0, 10)}
           </div>
@@ -63,12 +72,14 @@ export function ReportBody({ vm, publish }: { vm: ReportViewModel; publish?: Pub
       </div>
       <div style={{ height: 1, background: 'var(--r-border-2)', margin: '8px 0 24px' }} />
 
-      <section data-avoid="" style={{ marginBottom: 40 }}>
+      <section style={{ marginBottom: 40 }}>
         <SectionHeading label="Section 1 · Key Financial & Unit Economic Metrics" right={`Audited ${count(draft.kpis.covers)} covers`} />
-        <KpiStrip kpis={draft.kpis} />
+        <div data-avoid="">
+          <KpiStrip kpis={draft.kpis} />
+        </div>
         <RevenueMatrix draft={draft} />
         {showCharts && (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 20, marginBottom: 24 }}>
+          <div data-avoid="" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 20, marginBottom: 24 }}>
             <CompositionDonut title="Sales Composition" totalLabel={moneyShort(draft.kpis.grossSale)} slices={salesSlices} />
             <CompositionDonut
               title="Cost Composition"
@@ -80,7 +91,7 @@ export function ReportBody({ vm, publish }: { vm: ReportViewModel; publish?: Pub
       </section>
 
       <CostingTable breakdown={costing} />
-      <ComplianceSection departments={departments} showSummaryRibbon={showSummaryRibbon} />
+      <ComplianceSection departments={departments} showSummaryRibbon={showSummaryRibbon} interactive={interactive} />
     </>
   );
 }

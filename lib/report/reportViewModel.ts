@@ -1,5 +1,6 @@
 import { getAuditForReview, listOperationalFiles, type ReviewAuditDetail } from '@/lib/queries/review';
 import { getAuditItemFiles, getAuditItems, getAuditMetricDefs, getAuditMetricValues } from '@/lib/queries/audits';
+import { createSignedUrl, REPORT_EVIDENCE_URL_TTL_SECONDS } from '@/lib/storage';
 import { buildFinancialReportDraft, type FinancialReportDraft } from './financialDraft';
 import { buildCostingBreakdown, type CostingBreakdown } from './costingBreakdown';
 import { figureValue } from './figure';
@@ -37,6 +38,22 @@ export async function loadReportViewModel(orgId: string, auditId: string): Promi
   );
   const costing = buildCostingBreakdown(defs, values);
 
+  const itemPhotos = await Promise.all(
+    items.map(async (it) => {
+      const files = itemFiles.filter((f) => f.auditItemId === it.id);
+      const photos = await Promise.all(
+        files.map(async (f) => ({
+          id: f.id,
+          name: f.name,
+          isImage: f.kind === 'image',
+          url: await createSignedUrl(f.storagePath, REPORT_EVIDENCE_URL_TTL_SECONDS).catch(() => ''),
+        })),
+      );
+      return [it.id, photos] as const;
+    }),
+  );
+  const photosByItemId = new Map(itemPhotos);
+
   const departments: Department[] = [];
   for (const it of items) {
     let dept = departments.find((d) => d.cat === it.cat);
@@ -55,7 +72,7 @@ export async function loadReportViewModel(orgId: string, auditId: string): Promi
       impact: it.impact,
       correctiveAction: it.correctiveAction,
       sla: it.sla,
-      photoCount: itemFiles.filter((f) => f.auditItemId === it.id).length,
+      photos: photosByItemId.get(it.id) ?? [],
     };
     dept.items.push(complianceItem);
   }

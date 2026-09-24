@@ -19,8 +19,8 @@ export function KpiStrip({ kpis }: { kpis: FinancialDraftKpis }) {
   return (
     <div
       style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))',
+        display: 'flex',
+        flexWrap: 'wrap',
         border: '1px solid var(--r-border)',
         borderRadius: 8,
         overflow: 'hidden',
@@ -33,8 +33,12 @@ export function KpiStrip({ kpis }: { kpis: FinancialDraftKpis }) {
         <div
           key={c.label}
           style={{
+            flex: '1 1 160px',
+            minWidth: 160,
             padding: 16,
             borderRight: c.last ? 'none' : '1px solid var(--r-border)',
+            borderTop: '1px solid var(--r-border)',
+            marginTop: -1,
             background: c.last ? 'var(--r-surface-alt-1)' : 'transparent',
             display: 'flex',
             flexDirection: 'column',

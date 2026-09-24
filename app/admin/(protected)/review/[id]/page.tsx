@@ -87,8 +87,11 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
 
   return (
     <div>
-      <Link href="/admin/review" style={{ color: 'var(--muted)', fontSize: 13, marginBottom: 14, display: 'inline-block' }}>
-        &lsaquo; Back to review queue
+      <Link
+        href={`/admin/restaurants/${audit.outletId}`}
+        style={{ color: 'var(--muted)', fontSize: 13, marginBottom: 14, display: 'inline-block' }}
+      >
+        &lsaquo; Back to {audit.outletName}
       </Link>
 
       <div
@@ -109,7 +112,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
             <span>{audit.outletName}</span>
           </div>
           <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 2 }}>
-            Auditor: {audit.auditorName} · Due {audit.dueDate}
+            Auditor: {audit.auditorName} · Period {audit.periodEnd}
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>

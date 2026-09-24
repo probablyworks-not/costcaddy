@@ -3,10 +3,13 @@ import { getStorageClient } from './client';
 export { auditItemFilePath, operationalFilePath, reportFilePath } from './paths';
 
 // One private bucket for photos, PDFs and uploads (F5) — never public; every read goes
-// through a signed URL that expires.
+// through a signed URL that expires. Exception: report evidence photos use a long-lived
+// signed URL (ADR-0009) so links baked into a published PDF still work years later —
+// still not public, but a bearer credential per photo until expiry or file deletion.
 export const STORAGE_BUCKET = 'audit-files';
 
 const DEFAULT_SIGNED_URL_TTL_SECONDS = 60 * 60; // 1 hour
+export const REPORT_EVIDENCE_URL_TTL_SECONDS = 60 * 60 * 24 * 365 * 10; // 10 years — ADR-0009
 
 export async function ensureBucketExists(): Promise<void> {
   const client = getStorageClient();

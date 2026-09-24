@@ -22,7 +22,6 @@ const STATUS_CHIP: Record<string, { bg: string; color: string; border: string; l
   pending: { bg: 'var(--surface)', color: 'var(--muted)', border: 'var(--border)', label: 'PENDING' },
   pass: { bg: '#eafaf6', color: 'var(--status-pass-fg)', border: '#bfe8dc', label: 'PASS' },
   fail: { bg: 'var(--status-fail-bg)', color: 'var(--status-fail-fg-app)', border: 'var(--status-fail-border)', label: 'FAIL' },
-  observation: { bg: '#fdf6e3', color: 'var(--status-observation-fg)', border: '#f0e2b6', label: 'OBSERVATION' },
   na: { bg: 'var(--status-neutral-bg)', color: 'var(--status-neutral-fg-1)', border: 'var(--status-neutral-border)', label: 'N/A' },
 };
 
@@ -68,7 +67,7 @@ export default async function AuditorReportPage({ params }: { params: Promise<{ 
               {RESTAURANT_ICON}
               <span>{audit.outletName}</span>
             </div>
-            <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 2 }}>Due {audit.dueDate}</div>
+            <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 2 }}>Period {audit.periodEnd}</div>
           </div>
           <div
             style={{

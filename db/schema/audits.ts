@@ -44,8 +44,11 @@ export const audits = pgTable('audits', {
     .notNull()
     .references(() => templates.id),
   name: text('name'),
-  dueStart: date('due_start'),
-  dueDate: date('due_date').notNull(),
+  // The recurring audit-conduct window agreed with the auditor (e.g. "Week 4 of July"),
+  // not a submission deadline — nothing in the auditor portal treats periodEnd as a due
+  // date to chase (ADR-0008). periodStart is nullable for audits with only a single date.
+  periodStart: date('period_start'),
+  periodEnd: date('period_end').notNull(),
   status: auditStatusEnum('status').notNull().default('assigned'),
   submittedAt: timestamp('submitted_at', { withTimezone: true }),
   // Set by C3's "Generate report" (idempotent — regenerate only fills items that have
@@ -122,7 +125,7 @@ export const auditItems = pgTable(
     status: itemStatusEnum('status').notNull().default('pending'),
     remark: text('remark').notNull().default(''),
     naReason: text('na_reason'),
-    // Set by the reviewer only, never in the field (fail/observation only).
+    // Set by the reviewer only, never in the field (fail only).
     severity: severityEnum('severity'),
     impact: text('impact'),
     correctiveAction: text('corrective_action'),

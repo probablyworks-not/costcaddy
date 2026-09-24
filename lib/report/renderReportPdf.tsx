@@ -34,6 +34,10 @@ ${FONT_LINKS}
 ${loadTokensCss()}
 * { box-sizing: border-box; }
 body { margin: 0; background: #ffffff; font-family: var(--font-report-body), 'Inter Tight', sans-serif; }
+body { background: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+[data-noprint] { display: none !important; }
+[data-avoid] { page-break-inside: avoid; }
+[data-break] { page-break-before: always; }
 </style>
 </head>
 <body>
@@ -55,7 +59,7 @@ export async function renderReportPdf(vm: ReportViewModel, publish: PublishBadge
   // outside the request-render path, so rendering a static HTML string here for
   // Playwright to print doesn't touch Next's own rendering at all.
   const { renderToStaticMarkup } = await import('react-dom/server');
-  const bodyMarkup = renderToStaticMarkup(<ReportBody vm={vm} publish={publish} />);
+  const bodyMarkup = renderToStaticMarkup(<ReportBody vm={vm} publish={publish} interactive={false} />);
   const html = buildHtmlDocument(bodyMarkup);
 
   const browser = await chromium.launch();

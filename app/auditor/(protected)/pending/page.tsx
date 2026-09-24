@@ -2,8 +2,7 @@ import Link from 'next/link';
 import { getCurrentUser } from '@/lib/auth';
 import { AuditorShell } from '@/components/ui/AuditorShell';
 import { ListRow } from '@/components/ui/ListRow';
-import { OverdueMarker } from '@/components/ui/OverdueMarker';
-import { listAuditorAudits, isOverdue, type AuditorAuditRow } from '@/lib/queries/audits';
+import { listAuditorAudits, type AuditorAuditRow } from '@/lib/queries/audits';
 
 const RESTAURANT_ICON = (
   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--navy-700)" strokeWidth="1.8" style={{ flexShrink: 0 }}>
@@ -13,8 +12,9 @@ const RESTAURANT_ICON = (
   </svg>
 );
 
-// B1 — pending list (screen key `pending`). Sorted by due date ascending; recently
-// submitted sits below in its own section.
+// B1 — pending list (screen key `pending`). Sorted by audit-period end ascending; the
+// period is the recurring conduct window agreed with the auditor, not a deadline, so
+// nothing here is ever marked overdue (ADR-0008). Recently submitted sits below.
 export default async function AuditorPendingPage() {
   const user = await getCurrentUser();
   if (!user) return null; // layout already redirects; narrows the type below
@@ -22,7 +22,7 @@ export default async function AuditorPendingPage() {
   const audits = await listAuditorAudits(user.orgId, user.id);
   const pending = audits
     .filter((a) => a.status === 'assigned' || a.status === 'in-progress')
-    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+    .sort((a, b) => a.periodEnd.localeCompare(b.periodEnd));
   const submittedHistory = audits
     .filter((a) => a.status === 'submitted' || a.status === 'published')
     .sort((a, b) => (b.submittedAt?.getTime() ?? 0) - (a.submittedAt?.getTime() ?? 0))
@@ -75,7 +75,6 @@ export default async function AuditorPendingPage() {
 }
 
 function PendingRow({ audit }: { audit: AuditorAuditRow }) {
-  const overdue = isOverdue(audit);
   const chip = audit.status === 'in-progress' ? IN_PROGRESS_CHIP : ASSIGNED_CHIP;
   return (
     <Link href={`/auditor/checklist/${audit.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
@@ -84,12 +83,7 @@ function PendingRow({ audit }: { audit: AuditorAuditRow }) {
         title={audit.outletName}
         meta={
           <>
-            Due {audit.dueDate} · {audit.itemsDone} of {audit.itemsTotal} items
-            {overdue && (
-              <div style={{ marginTop: 6 }}>
-                <OverdueMarker />
-              </div>
-            )}
+            Period {audit.periodEnd} · {audit.itemsDone} of {audit.itemsTotal} items
           </>
         }
         status={<Chip {...chip} />}
@@ -107,7 +101,7 @@ function HistoryRow({ audit }: { audit: AuditorAuditRow }) {
         title={audit.outletName}
         meta={
           <>
-            Due {audit.dueDate}
+            Period {audit.periodEnd}
             <PolishStatus state={audit.polishState} />
           </>
         }
@@ -124,7 +118,7 @@ function PolishStatus({ state }: { state: AuditorAuditRow['polishState'] }) {
     return <div style={{ fontSize: 11, color: 'var(--hint)', marginTop: 3 }}>Polishing remarks…</div>;
   }
   if (state === 'failed') {
-    return <div style={{ fontSize: 11, color: 'var(--status-observation-fg)', marginTop: 3 }}>Remarks kept as typed — polish failed</div>;
+    return <div style={{ fontSize: 11, color: 'var(--status-warn-fg)', marginTop: 3 }}>Remarks kept as typed — polish failed</div>;
   }
   return null;
 }

@@ -1,0 +1,83 @@
+import { getAuditMetricDefs, getAuditMetricValues } from '@/lib/queries/audits';
+import { listOperationalFiles } from '@/lib/queries/review';
+import { parseMetricValue, type MetricDef, type MetricValues } from '@/lib/calc';
+import { buildFinancialReportDraft, type FinancialReportDraft } from './financialDraft';
+import { buildCostingBreakdown, type CostingBreakdown } from './costingBreakdown';
+import { figureValue } from './figure';
+import type { DonutSlice } from '@/app/admin/(protected)/review/[id]/report/CompositionDonut';
+
+export interface MtdContributor {
+  auditId: string;
+  name: string;
+  templateName: string;
+  version: number;
+  publishedAt: Date;
+}
+
+export interface MtdViewModel {
+  draft: FinancialReportDraft;
+  costing: CostingBreakdown;
+  salesSlices: DonutSlice[];
+  costSlices: DonutSlice[];
+  contributors: MtdContributor[];
+}
+
+// MTD is recomputed live on every view — no stored/versioned row of its own (DESIGN.md
+// UX-021). It combines every audit published within the month, keyed by `metricKey`
+// (getAuditMetricDefs already maps a def's `id` to `metricKey`, never the row's own uuid
+// — see that function's own note), so two audits that reuse the same metric add
+// together, and a metric unique to one audit still contributes on its own. Reruns
+// computeMetrics (via buildFinancialReportDraft/buildCostingBreakdown) on the summed raw
+// values rather than summing each audit's own totals, so derived figures (grossSale,
+// pro-rata tax/service-charge splits, %s) stay correct instead of double-deriving.
+export async function buildMtdViewModel(contributors: MtdContributor[]): Promise<MtdViewModel> {
+  const mergedDefs = new Map<string, MetricDef>();
+  const mergedValues: MetricValues = {};
+  const opFiles: Awaited<ReturnType<typeof listOperationalFiles>> = [];
+
+  for (const c of contributors) {
+    const [defs, values, files] = await Promise.all([
+      getAuditMetricDefs(c.auditId),
+      getAuditMetricValues(c.auditId),
+      listOperationalFiles(c.auditId),
+    ]);
+    for (const d of defs) {
+      if (!mergedDefs.has(d.id)) mergedDefs.set(d.id, d);
+      const n = parseMetricValue(values[d.id]);
+      if (n === null) continue;
+      const cur = parseMetricValue(mergedValues[d.id]);
+      mergedValues[d.id] = (cur ?? 0) + n;
+    }
+    opFiles.push(...files);
+  }
+
+  const defs = [...mergedDefs.values()];
+  const draft = buildFinancialReportDraft(
+    defs,
+    mergedValues,
+    opFiles.map((f) => ({ type: f.type, period: f.period, parsed: f.parseStatus === 'parsed', coverageSummary: f.coverageSummary })),
+  );
+  const costing = buildCostingBreakdown(defs, mergedValues);
+
+  const kitchenNet = figureValue(draft.revenueMatrix.rows.find((r) => r.key === 'kitchen')?.netSales ?? { status: 'needs-data' });
+  const barNet = figureValue(draft.revenueMatrix.rows.find((r) => r.key === 'bar')?.netSales ?? { status: 'needs-data' });
+  const taxes = figureValue(draft.kpis.totalTaxes);
+  const charges = figureValue(draft.kpis.totalCharges);
+  const salesSlices: DonutSlice[] = [
+    { label: 'Kitchen', value: kitchenNet ?? 0, color: 'var(--status-pass-bg-deep)' },
+    { label: 'Bar', value: barNet ?? 0, color: 'var(--status-pass-fg)' },
+    { label: 'Service charge', value: charges ?? 0, color: 'var(--report-chart-teal-4)' },
+    { label: 'Statutory taxes', value: taxes ?? 0, color: 'var(--report-chart-teal-5)' },
+  ];
+
+  const barCost = figureValue(costing.bar?.total ?? { status: 'needs-data' });
+  const kitchenCost = figureValue(costing.kitchen?.total ?? { status: 'needs-data' });
+  const ncCost = figureValue(costing.nonCommercial[0]?.value ?? { status: 'needs-data' });
+  const costSlices: DonutSlice[] = [
+    { label: 'Bar & Cellar cost', value: barCost ?? 0, color: 'var(--report-chart-rust-1)' },
+    { label: 'Kitchen & Production cost', value: kitchenCost ?? 0, color: 'var(--report-chart-rust-2)' },
+    { label: 'Non-commercial cost', value: ncCost ?? 0, color: 'var(--report-chart-rust-4)' },
+  ];
+
+  return { draft, costing, salesSlices, costSlices, contributors };
+}

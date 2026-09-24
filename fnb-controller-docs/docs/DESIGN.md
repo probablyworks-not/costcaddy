@@ -65,7 +65,7 @@ deliberately different type treatments — do not merge them.**
 | Meaning | Fg | Bg | Border |
 |---|---|---|---|
 | Fail / High / Overdue | `#9f1d17` (report) · `#b91c1c` (app) | `#fdeceb` | `#f0c9c6` |
-| Observation / Medium | `#8a6a09` | amber tint | — |
+| Warn (parse/polish notices only — not a checklist status, UX-024) | `#8a6a09` | amber tint | — |
 | Pass / Compliant | `#1f6f62`, dot `#4a9c8c` | `#0d3b34` (deep) | — |
 | Financial / discount callout | `#8c4a2f` | — | — |
 | Neutral / N-A / assigned | `#6b7480` / `#9aa4b2` | `#f0f0f0` | `#dcdfe4` |
@@ -84,8 +84,8 @@ sales composition teals `#0d3b34` · `#1f6f62` · `#4a9c8c` (the same hexes as `
 `#7a2e14` · `#b8541f` · `#d98b4a` · `#f0c9a0`.
 
 Audit lifecycle pills: `assigned` (neutral) → `in-progress` (navy) → `submitted` (navy-solid) →
-`published` (green) · `deferred`. Checklist item statuses: `pass` · `fail` · `observation` · `na`;
-`fail`/`observation` also carry `severity` (High/Medium/Low), `impact`, `correctiveAction`.
+`published` (green) · `deferred`. Checklist item statuses: `pass` · `fail` · `na` (UX-024 — `observation`
+removed); `fail` also carries `severity` (High/Medium/Low), `impact`, `correctiveAction`.
 
 ## Typography
 **App UI** — body/UI `Inter` (400–700); page & screen titles `Newsreader` serif (500/600, titles &
@@ -128,7 +128,8 @@ flat rows on `#fafafa`, separated by `1px solid #eee` — no card-per-row.
 - **Department chip** — 24×24, radius 6, `#eef2f9` bg / `#dbe4f0` border, `#1e3a5f` 11/700, centred.
 - **List row** — `padding 16px 4px`, `border-bottom 1px solid #eee`, pointer; 15/600 title + 15px stroked SVG icon (`#1e3a5f`, `stroke-width 1.8`); 13px `#888` meta; right-aligned status pill.
 - **Progress bar** — 5px tall, track `#eee`, fill `#1e3a5f`, radius 3.
-- **Overdue marker** — `● OVERDUE`, 11/700 `#b91c1c` `.04em`.
+- **Overdue marker** — removed (ADR-0008): the audit date range is a conduct period, not a deadline, so
+  nothing in the auditor portal computes or shows an overdue state.
 - **Report table / KPI strip** — full-width `#e4e8ee` rules, 12px cells; header 10.5/600 uppercase `#6b7686`; figures right-aligned mono; category colour dot 8px. KPI strip: big mono number over 10.5 uppercase label, cells divided by `border-right`.
 - **Icons** — App UI: inline stroked SVG `#1e3a5f`, `stroke-width 1.8`, 14–16px, `fill:none`. Report: Material Symbols Outlined.
 
@@ -199,12 +200,11 @@ extending it. **Trade-off:** nothing can be escalated above High; a genuinely ur
 the SLA field ("Immediate (24 Hours)") instead of by a fourth severity. Recorded as R7 in `EXECUTION.md`.
 
 ### UX-007 — Compliance % excludes N/A only
-**Decision:** the department and report compliance figure is `pass / (pass + fail + observation)`. N/A is
-excluded from the denominator; an observation counts against the score. **Why:** the stated invariant is
-that *N/A* is neither fail nor blank — it says nothing about observations, and an observation is a real
-non-conformity. The design file's `scoreLabel` excludes both, which flatters the score. **Trade-off:**
-scores read lower than the mock's, and an outlet with many advisory observations is penalised alongside one
-with outright failures. Recorded as R8 in `EXECUTION.md`.
+**Decision:** the department and report compliance figure is `pass / (pass + fail)`. N/A is excluded from
+the denominator. **Why:** the stated invariant is that *N/A* is neither fail nor blank. The design file's
+`scoreLabel` excludes it too. **Superseded in part by UX-024** — the checklist no longer has a separate
+`observation` status, so the original three-term denominator (`pass + fail + observation`) no longer
+applies; every non-pass, non-N/A point is now `fail`. Recorded as R8 in `EXECUTION.md`.
 
 ### UX-008 — No separate findings register in the report
 **Decision:** the report ends at §2. The spec's "§3 · Findings Register" (RP-1) is not built. **Why:** §2's
@@ -214,11 +214,12 @@ stated precedence rule. **Trade-off:** there is no flat, cross-department view o
 reader wanting only the failures scans the department cards. Recorded as R9 in `EXECUTION.md`.
 
 ### UX-009 — A remark is required on non-pass points only
-**Decision:** fail, observation and N-A each require a remark; a bare Pass is allowed. N/A additionally
-requires a reason from the fixed list of five. **Why:** on a 38-point checklist most points pass, and
-demanding a typed sentence on each one makes the mobile-first capture slow enough that auditors work around
-it. The evidentiary value is in explaining what went wrong. **Trade-off:** reverses `HANDOVER.md`'s
-"remark required on every point"; a pass is recorded without supporting words. Recorded as R10.
+**Decision:** fail and N-A each require a remark; a bare Pass is allowed. N/A additionally requires a
+reason from the fixed list of five. **Why:** on a 38-point checklist most points pass, and demanding a
+typed sentence on each one makes the mobile-first capture slow enough that auditors work around it. The
+evidentiary value is in explaining what went wrong. **Trade-off:** reverses `HANDOVER.md`'s "remark
+required on every point"; a pass is recorded without supporting words. Recorded as R10. (Originally also
+named `observation` — see UX-024.)
 
 ### UX-010 — AI polishes remarks on submit *(supersedes UX-004 on the remarks point)*
 **Decision:** submitting queues a job that rewrites every non-pass remark into report prose, and the
@@ -288,7 +289,8 @@ and Cost Composition is Bar/Kitchen/Non-commercial cost (3 slices, F7's own cost
 illustrative Food/Liquor/Beverage breakdowns. (2) `showCharts` and `showSummaryRibbon` exist as real
 flags gating their sections but both default `true` with no admin control to flip them — no story asks
 to hide either, and CLAUDE.md's own convention is not to build settings nobody asked for; an admin-facing
-toggle can be added when one does. `showEvidence` stays stubbed off per the design file itself. (3) All six template departments (SEC/KIT/STR/OPS/POS/OTH) render
+toggle can be added when one does. `showEvidence` was originally stubbed off per the design file itself —
+see UX-017 for where that changed. (3) All six template departments (SEC/KIT/STR/OPS/POS/OTH) render
 as their own card, not just the four the mock happens to illustrate (Security, Kitchen, Purchase & Stores,
 Operations) — POS Controls and Other Observations get `point_of_sale` / `fact_check` Material Symbols,
 picked to match the existing icon language since the mock never reaches those two. (4) The mock's header
@@ -297,6 +299,28 @@ editing are both dropped — CLAUDE.md already rules out porting the mock's edit
 Playwright-rendered PDF (C5) makes an unwired export button moot. **Why bundled:** none of these are
 independent architectural choices — each is "use the real data model / only build what a story asks for,"
 already the governing principle behind UX-014 and the C4 done-when itself.
+
+### UX-017 — Evidence photos un-stubbed: real thumbnails in both the Report screen and the PDF
+> **Partly superseded by UX-025.** PDF thumbnails are no longer baked pixels only — they're wrapped
+> in a real `<a href>` so they're clickable in the PDF, backed by a long-lived (not 1-hour) signed
+> URL. The rest of this entry (real `auditItemFiles`-backed thumbnails, up to 4 + overflow, shared
+> `ReportBody` markup) still holds.
+
+**Decision:** the Section 2 Evidence column now carries the checkpoint's actual `auditItemFiles` rows
+(resolved to signed URLs the same way the Review screen already does) instead of a bare `photoCount`,
+and renders real clickable thumbnails — up to 4 per checkpoint with a `+N` overflow — via a new
+`EvidenceThumb`/lightbox component scoped to the report (`--r-*` tokens, distinct from the Review
+screen's own `PhotoLightbox`). Because `ReportBody` renders identically for the live web page and for
+C5's Playwright PDF export, the same `<img>`-based thumbnail markup works in both: interactive with a
+full-size modal on the web, and rasterized into the PDF's pixels by Playwright before `page.pdf()` runs
+on the PDF path (the click handler is simply inert there — no branching needed). Photos are embedded as
+baked pixels, not links, so the PDF stays viewable forever regardless of the 1-hour signed-URL TTL.
+**Why:** the mock's own Evidence cell was a decorative "has evidence" placeholder with no real photo
+behind it, and `showEvidence` was deliberately left stubbed off in the initial C4 build (UX-016) since
+nothing yet needed to view captured photos from the Report screen — Review screen was reviewer entry
+point. Once photo review from the report/PDF deliverable itself was requested, the underlying data
+(`auditItemFiles`, `createSignedUrl`) already existed; only the report's own presentation was missing.
+**Trade-off:** none — this reuses the existing storage/signed-URL machinery, adds no new data model.
 
 ### UX-017 — No "Share" action was built for the report (C5)
 **Decision:** the review screen has a Publish button and nothing else — no "Share report" / copy-link
@@ -321,3 +345,95 @@ builder hardcodes `kind:'tax'` on every tax row; only its seed data hand-tags Se
 a deliberate departure from the mock's builder, not a port of it. **Trade-off:** one more control on an
 already-dense category; kept to a plain radio pair rather than a general "kind" field since `tax`/`charge`
 are the only two values the schema (and the calc engine) recognise for this section.
+
+### UX-019 — Sales-category metrics get an explicit Kitchen / Bar revenue choice (BUG-021)
+**Decision:** each row added under Template Builder's Sales category shows a two-option radio (Kitchen
+revenue / Bar revenue), defaulting to Kitchen, instead of the whole category silently stamping every row
+`revGroup:'kitchen'`. **Why:** the same pattern as UX-018 one category over — `computeMetrics` (F7) only
+routes a `revGroup:'bar'` row into `barSale`; with no way to set that from the builder, Bar Sale was
+always null/"Needs data" and every sales metric (Beverage and Liquor included) was silently summed into
+Kitchen Sale instead (BUG-021). Same departure from the mock's builder as UX-018, for the same reason.
+**Trade-off:** same as UX-018 — one more control per row, kept to the two values the schema recognises.
+
+### UX-020 — Reports tab groups by the audit's covered period, not a fixed/fake month list (BUG-022)
+**Decision:** the restaurant detail Reports tab derives its month tabs from the calendar month each
+audit's own period (`periodStart`, falling back to `periodEnd`) falls in, newest first — not the design mock's
+`REPORT_MONTHS`/`MONTH_REPORTS`. An audit covering 1–31 Aug files under August even if it wasn't reviewed
+and published until September. **Why:** those constants in `Super Admin Flow.dc.html` (:1193-1212) are
+entirely hand-authored seed data — three fixed months with invented report names/dates that don't trace
+to any real audit — not a computed model to port. First pass grouped by `reports.publishedAt` instead;
+the user then pointed out a report covering August should file under August regardless of when it was
+actually published, so grouping was moved to the audit's own period. **Trade-off:** no way to assign an
+audit to a month independent of its due-date range at creation — a month tab only appears once a report
+covering that month has actually published.
+
+### UX-021 — MTD consolidated report: live-recomputed, merged by `metricKey`, no checklist (ADR-0006)
+**Decision:** the Reports tab's month view also shows a "View MTD report" card that opens a new aggregate
+report combining every audit published that month for the outlet — recomputed fresh on every view, never
+stored/versioned. Audits are merged by `metricKey` (summing raw values, then rerunning `computeMetrics`),
+so Week 1 alone becomes Week 1 + Week 2 the moment Week 2 publishes, with no re-generate step. **Why:**
+UX-020 deferred building real MTD aggregation; the user then asked for it directly, live-recompute over a
+versioned "Generate MTD" action (ADR-0006 has the full trade-off). **Trade-off:** the MTD page shows no
+compliance checklist — a sum of several audits (possibly different templates) has no one coherent
+department/finding list, so `MtdReportBody` lists the contributing audits instead of `ComplianceSection`.
+Also not downloadable as a fixed, dated artifact the way a per-audit report is (nothing to point a
+`reports.version` at) — printing it captures only whatever is live at that moment.
+
+### UX-022 — Department checklist cards may break across a page, not held together (BUG-023)
+**Decision:** `Audit report v4.dc.html:439,510,624,714` marks every department card `data-avoid`
+(`page-break-inside:avoid`) — the mock's intent is that a department's checklist table never splits across
+a printed page. Our PDF only keeps that on the card's small header row now; the table body is left free to
+break, relying on the browser's native repeated-`<thead>` behavior on a table page-break (already the
+fallback the mock itself hits whenever a department is taller than one page, e.g. Purchase & Store's 9
+checkpoints in real captured data). **Why:** with real audit data (5-9 checkpoints per department, longer
+corrective-action prose than the mock's placeholder rows), keeping the whole-card avoid produced large
+blank gaps — a department that didn't quite fit in the space left on a page was pushed to the next page in
+its entirety, wasting most of the page it left behind (reported directly: "a lot of empty space"). Letting
+rows flow and repeating the header at the break reads acceptably (confirmed via a real Playwright render)
+and reclaims that space. **Trade-off:** a department can now visually split across two pages instead of
+always starting fresh; Section 1's single-block avoid and Section 2's forced page-break-before
+(`data-break`) are both left as the mock has them — those are page-level structural boundaries, not a
+per-row packing question, and changing them wasn't needed to fix the reported waste.
+
+### UX-023 — No "copy audit link" affordance on the restaurant detail screen (A5)
+**Decision:** removed the share-URL row and "Copy link" button that showed under each active audit on
+`restaurantDetail`, and the "create one to get a shareable link" empty-state copy that went with it; no
+`/a/[token]` route was ever built to receive it. Also renamed the "New Audit" panel and its CTA — "Create
+audit link" → "Create audit" (heading and button), and the "A shareable audit URL is generated on
+create…" helper line → "The audit appears in the auditor's portal on create — no link to send, no login
+setup needed." **Why:** the auditor reaches an assigned audit by logging into the Auditor Portal
+(own-auth), where it appears directly in their `pending` list — there is no link-based entry point into
+an audit, so both the copyable link and the "link" language throughout the create-audit panel implied a
+flow the product doesn't have. **Trade-off:** the `audits.token` column and its query field
+(`lib/queries/audits.ts`) are left in place unused — a schema change wasn't needed to fix the UI, and the
+column is harmless if a future deep-link flow wants it.
+
+### UX-024 — Checklist item status is Pass/Fail/N-A only *(reverses UX-007/UX-009's "observation")*
+**Decision:** removed `observation` as a checklist-item status. The auditor's four-way button
+(Pass/Fail/Observation/N-A) and the admin review screen's matching editor are now three-way
+(Pass/Fail/N-A); the `item_status` Postgres enum drops the value (migration `0005`, existing
+`observation` rows folded into `fail` since an observation already required a remark and counted as a
+finding exactly like fail); `generateReport`/`updateFinding`/`correctAuditItem` in `lib/actions/review.ts`
+and the report's `isFinding` check (`ComplianceSection.tsx`) now key on `fail` alone. **Why:** product
+call — a third middle status between Pass and Fail added a decision auditors didn't need; Fail already
+covers "this needs a remark, a finding, and counts against compliance." **Trade-off:** compliance %
+(UX-007) collapses to `pass / (pass + fail)` — the same arithmetic, just with `observation` items now
+inside `fail` rather than a separate bucket; nothing that already relied on "not pass, not N/A" needed to
+change. The `--status-observation-fg` design token is renamed `--status-warn-fg` since its only remaining
+uses (operational-file parse-status, "polish failed" notice) were never actually about this status — they
+just borrowed its amber.
+
+### UX-025 — PDF evidence thumbnails are real clickable links, on a long-lived signed URL (BUG-026, ADR-0009)
+**Decision:** `EvidenceThumbStatic` (the PDF-only, non-interactive evidence thumbnail) is now wrapped in
+a real `<a href={photo.url}>`, and `reportViewModel.ts` signs that URL with a 10-year TTL
+(`REPORT_EVIDENCE_URL_TTL_SECONDS`) instead of the storage layer's normal 1-hour default. Chromium's
+print-to-PDF (`renderReportPdf.tsx`) preserves the anchor as a clickable link annotation in the
+published PDF, so clicking a thumbnail opens the full photo. **Why:** the PDF is a durable artifact
+opened long after publish; UX-017's "rasterized pixels only" approach kept the thumbnail visible
+forever but gave no way to reach the full-resolution photo or any non-image evidence file from the PDF
+itself (BUG-026). **Trade-off:** the signed URL embedded in the PDF is a long-lived bearer credential —
+anyone holding the PDF or a forwarded link can view that one photo for up to 10 years, with no
+revocation short of deleting the file. Considered and rejected: a report-token-gated redirect route
+(more correct/revocable, more build cost — the documented fallback if a real Client Portal ever needs
+this) and a public bucket (reverses the "never public" storage invariant for no cost benefit). Scope:
+new publishes only — already-published PDFs keep their original, now-expired links. See ADR-0009.
